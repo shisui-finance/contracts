@@ -1,0 +1,5 @@
+test_get_absolute_difference.cairo
+├── when a is higher than b
+│   └── it should return the difference
+└── when a is lower than b
+    └── it should return the absolute difference

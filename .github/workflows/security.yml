@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: software-mansion/setup-scarb@v1
+      - uses: software-mansion/setup-scarb@v1.3
         with:
           scarb-version: "0.7.0"
 
