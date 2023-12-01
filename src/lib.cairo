@@ -5,3 +5,7 @@ mod dependencies {
 mod core {
     mod address_provider;
 }
+
+mod utils {
+    mod precision;
+}
