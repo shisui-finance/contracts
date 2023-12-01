@@ -1,0 +1,11 @@
+test_set_addresses.cairo
+├── when the caller is not the owner
+│   └── it should revert
+└── when the caller is the owner
+    ├── when the addresses has already been set
+    │   └── it should revert
+    ├── when the addresses array length is not equal to 15
+    │   └── it should revert
+    └── when at least one of the addresses is the zero address
+        ├── it should set all addresses
+        └── it should emit a {AddressesSet} event
