@@ -1,0 +1,22 @@
+[package]
+name = "shisui"
+version = "0.1.0"
+license = "GPL-3.0-or-later"
+keywords = ["starknet", "defi", "syntethics"]
+
+
+# See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest.html
+
+[dependencies]
+starknet = ">=2.3.1"
+snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry", tag = "v0.11.0" }
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+
+[cairo]
+sierra-replace-ids = true
+
+[tool.snforge]
+exit_first = false
