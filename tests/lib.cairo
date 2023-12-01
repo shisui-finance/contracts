@@ -1,5 +1,10 @@
 mod unit {
     mod concrete {
+        mod components {
+            mod safety_transfer {
+                mod test_decimals_correction;
+            }
+        }
         mod core {
             mod address_provider {
                 mod set_addresses {
@@ -80,3 +85,4 @@ mod integration {
     }
 }
 
+mod tests_lib;
