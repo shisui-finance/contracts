@@ -1,0 +1,64 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  security:
+    name: security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 - Check out main branch
+        uses: actions/checkout@v4
+      - name: Step 2 - Install Semgrep
+        run: |
+          pip install semgrep==1.45.0
+      - name: Step 3 - Run Semgrep
+        run: semgrep --config https://github.com/avnu-labs/semgrep-cairo-rules/releases/download/v0.0.1/cairo-rules.yaml ./src > semgrep-output.txt
+      - name: Step 4 - Save Semgrep Output as an Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: semgrep-cairo
+          path: semgrep-output.txt
+  build:
+    name: build
+    needs: security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 - Check out main branch
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Step 2 - Install dependencies
+        uses: ./.github/actions/install
+      - name: Step 3 - Trying to build
+        run: scarb build
+      - name: Step 4 - Save compilation cache
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            target
+          key: build-${{ github.ref_name }}
+
+  test:
+    needs: build
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 - Check out main branch
+        uses: actions/checkout@v4
+      - name: Step 2 - Install dependencies
+        uses: ./.github/actions/install
+      - name: Step 3 - Run tests
+        run: snforge test
+
+  format:
+    needs: build
+    name: check-format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 - Check out main branch
+        uses: actions/checkout@v4
+      - name: Step 2 - Install dependencies
+        uses: ./.github/actions/install
+      - name: Step 3 - Check cairo format
+        run: scarb fmt --check
