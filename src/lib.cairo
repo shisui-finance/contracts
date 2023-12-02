@@ -1,4 +1,4 @@
-mod dependencies {
+mod components {
     mod shisui_math;
 }
 

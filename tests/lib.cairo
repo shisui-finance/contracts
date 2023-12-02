@@ -15,7 +15,7 @@ mod unit {
         }
     }
     mod fuzz {
-        mod dependencies {
+        mod components {
             mod shisui_math {
                 mod dec_pow {
                     mod test_dec_pow;
