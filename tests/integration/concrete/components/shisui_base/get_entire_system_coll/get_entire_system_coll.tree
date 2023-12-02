@@ -1,0 +1,5 @@
+test_get_entire_system_coll.cairo
+├── when the _asset is not whitelisted
+│   └── it should return 0
+└── when the _asset is whitelisted
+    └── it should return the correct amount

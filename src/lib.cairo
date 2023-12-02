@@ -9,4 +9,5 @@ mod core {
 
 mod utils {
     mod precision;
+    mod array;
 }

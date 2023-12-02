@@ -1,0 +1,7 @@
+test_require_user_accepts_fee.cairo
+├── when the _max_fee_percentage is zero
+│   └── it should revert
+└── when the _max_fee_percentage is not zero
+    ├── when the _max_fee_percentage is lower than the calculated fee
+    │   └── it should revert
+    └── it not revert
