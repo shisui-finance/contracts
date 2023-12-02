@@ -1,5 +1,6 @@
 mod components {
     mod shisui_math;
+    mod shisui_base;
 }
 
 mod core {

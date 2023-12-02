@@ -1,6 +1,5 @@
 #[starknet::component]
-mod shisui_math {
+mod shisui_base {
     #[storage]
     struct Storage {}
 }
-
