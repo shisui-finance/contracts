@@ -1,0 +1,6 @@
+test_set_pending_admin.cairo
+├── when caller is not timelock contract
+│   └── it should revert with Timelock__TimelockOnly
+└── when caller is the timelock contract
+    └── it should set the pending admin with value passed
+    └── it should emit {NewPendingAdmin} event

@@ -1,0 +1,11 @@
+test_set_delay.cairo
+├── when delay is lower than MINIMUM_DELAY
+│   └── it should revert with Timelock__DelayMustExceedMininumDelay
+├── when delay is higher than MAXIMUM_DELAY
+│   └── it should revert with Timelock__DelayMustNotExceedMaximumDelay
+└── when delay is valid
+    ├── when caller is not timelock contract
+    │   └── it should revert with Timelock__TimelockOnly
+    └── when caller is timelock contract
+        ├── it should set delay to given value
+        └── it should emit {NewDelay} event

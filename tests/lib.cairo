@@ -55,6 +55,28 @@ mod integration {
                 }
             }
         }
+        mod core {
+            mod timelock {
+                mod accept_admin {
+                    mod test_accept_admin;
+                }
+                mod cancel_transaction {
+                    mod test_cancel_transaction;
+                }
+                mod execute_transaction {
+                    mod test_execute_transaction;
+                }
+                mod queue_transaction {
+                    mod test_queue_transaction;
+                }
+                mod set_delay {
+                    mod test_set_delay;
+                }
+                mod set_pending_admin {
+                    mod test_set_pending_admin;
+                }
+            }
+        }
     }
 }
 

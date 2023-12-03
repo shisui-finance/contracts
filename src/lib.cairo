@@ -5,6 +5,7 @@ mod components {
 
 mod core {
     mod address_provider;
+    mod timelock;
 }
 
 mod utils {
