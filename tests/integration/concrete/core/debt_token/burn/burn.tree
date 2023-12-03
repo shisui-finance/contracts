@@ -1,0 +1,10 @@
+test_burn.cairo
+├── when caller is neither the Borrower Operations nor the Vessel Manager nor the Stability Pool
+│   └── it should revert
+├── when caller is the Borrower Operations contract
+│   └── it should burn the amount from the caller balance
+├── when caller is the Vessel Manager
+│   └── it should burn the amount from the caller balance
+└── when caller is the Stability Pool
+    └── it should burn the amount from the caller balance
+ 

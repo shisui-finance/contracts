@@ -1,0 +1,5 @@
+test_burn_from_whitelisted_contract.cairo
+├── when caller is not whitelisted
+│   └── it should revert
+└── when caller is whitelisted
+    └── it should burn the amount from the caller balance

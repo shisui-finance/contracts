@@ -1,0 +1,8 @@
+test_mint.cairo
+├── when caller is not the Borrower Operations contract
+│   └── it should revert
+└── when caller is the Borrower Operations contract
+    ├── when _asset is under emergency stop minting collateral
+    │   └── it should revet
+    └── when _asset is not under emergency stop minting collateral
+        └── it should mint new tokens to the recipient

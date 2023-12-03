@@ -1,0 +1,5 @@
+test_mint_from_whitelisted_contract.cairo
+├── when caller is not whitelisted
+│   └── it should revert
+└── when caller is whitelisted
+    └── it should mint new tokens for the caller

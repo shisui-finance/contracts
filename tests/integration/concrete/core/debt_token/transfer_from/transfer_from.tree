@@ -1,0 +1,7 @@
+test_transfer.cairo
+├── when _recipient is address zero
+│   └── it should revert
+├── when _recipient is the contract itself
+│   └── it should revert
+└── when _recipient is neither the debt token address nor address zero
+    └── it should transfer the debt token from the sender to the recipient
