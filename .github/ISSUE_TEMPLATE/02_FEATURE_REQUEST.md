@@ -8,27 +8,27 @@ assignees: ""
 
 # Feature Request
 
-**Describe the Feature Request**
+## Describe the Feature Request
 
 <!-- A clear and concise description of what the feature request is. Please include if your feature request is related to a problem. -->
 
-**Describe Preferred Solution**
+## Describe Solution
 
 <!-- A clear and concise description of what you want to happen. -->
 
-**Describe Alternatives**
+## Requirement
 
-<!-- A clear and concise description of any alternative solutions or features you've considered. -->
+<!-- A clear list of what is needed for this issue (others issues to complete, etc.) -->
 
-**Related Code**
+## Related Code
 
 <!-- If you are able to illustrate the bug or feature request with an example, please provide it here. -->
 
-**Additional Context**
+## Additional Context
 
 <!-- List any other information that is relevant to your issue. Stack traces, related issues, suggestions on how to add, use case, Stack Overflow links, forum links, screenshots, OS if applicable, etc. -->
 
-**If the feature request is approved, would you be willing to submit a PR?**
+## If the feature request is approved, would you be willing to submit a PR? 
 _(Help can be provided if you need assistance submitting a PR)_
-
+- [ ] Yes/No
 <!-- Yes or  No -->
