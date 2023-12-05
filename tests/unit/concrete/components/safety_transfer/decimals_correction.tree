@@ -1,0 +1,7 @@
+test_decimals_correction.cairo
+├── given_normal_conditions_when_calling_safety_transfer_with_16_dec_component_then_works
+├── given_normal_conditions_when_calling_safety_transfer_with_16_dec_then_works
+├── given_normal_conditions_when_calling_safety_transfer_with_18_dec_then_works
+├── given_normal_conditions_when_calling_safety_transfer_with_20_dec_then_works
+├── given_normal_conditions_when_calling_safety_transfer_with_0_amount_then_works
+└── given_token_address_0_then_it_fails
