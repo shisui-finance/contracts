@@ -7,11 +7,14 @@ mod components {
 mod core {
     mod address_provider;
     mod timelock;
+    mod gas_pool;
+    mod price_feed;
 }
 
 mod utils {
     mod precision;
     mod array;
+    mod traits;
     mod math;
 }
 

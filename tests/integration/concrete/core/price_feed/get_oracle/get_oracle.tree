@@ -1,0 +1,5 @@
+test_get_oracle.tree
+├── when token oracle is not set
+│   └── it should return default data
+└── when token oracle is set
+    └── it should return the correct data

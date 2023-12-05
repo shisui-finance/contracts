@@ -116,6 +116,17 @@ mod integration {
                     mod test_burn_from_whitelisted_contract;
                 }
             }
+            mod price_feed {
+                mod set_oracle {
+                    mod test_set_oracle;
+                }
+                mod fetch_price {
+                    mod test_fetch_price;
+                }
+                mod get_oracle {
+                    mod test_get_oracle;
+                }
+            }
         }
     }
 }

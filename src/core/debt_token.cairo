@@ -101,11 +101,11 @@ mod DebtToken {
 
     #[generate_trait]
     impl InternalFunctions of InternalFunctionsTrait {
-        fn require_valid_recipient(_recipient: ContractAddress) {}
-        fn require_caller_is_whitelisted_contract() {}
-        fn require_caller_is_borrower_operations() {}
-        fn require_caller_is_bo_or_vesselm_or_sp() {}
-        fn require_caller_is_stability_pool() {}
-        fn require_caller_is_vesselm_or_sp() {}
+        fn require_valid_recipient(self: @ContractState, _recipient: ContractAddress) {}
+        fn require_caller_is_whitelisted_contract(self: @ContractState) {}
+        fn require_caller_is_borrower_operations(self: @ContractState) {}
+        fn require_caller_is_bo_or_vesselm_or_sp(self: @ContractState) {}
+        fn require_caller_is_stability_pool(self: @ContractState) {}
+        fn require_caller_is_vesselm_or_sp(self: @ContractState) {}
     }
 }
