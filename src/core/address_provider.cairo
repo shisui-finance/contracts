@@ -126,7 +126,7 @@ mod AddressProvider {
         fn set_shvt_staking(ref self: ContractState, _shvt_staking: ContractAddress) {
             self.ownable.assert_only_owner();
             self.assert_not_address_zero(_shvt_staking);
-            self.community_issuance.write(_shvt_staking);
+            self.shvt_staking.write(_shvt_staking);
         }
 
         fn get_active_pool(ref self: ContractState) -> ContractAddress {
