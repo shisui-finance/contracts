@@ -15,7 +15,7 @@ mod ShisuiMathComponent {
         // -round product up if 19'th mantissa digit >= 5
         // -round product down if 19'th mantissa digit < 5
         // Used only inside the exponentiation, _dec_pow().
-        fn dec_mul(a: u256, b: u256) -> u256 {
+        fn _dec_mul(a: u256, b: u256) -> u256 {
             let prod_ab = a * b;
 
             (prod_ab + (DECIMAL_PRECISION / 2)) / DECIMAL_PRECISION
@@ -46,6 +46,10 @@ mod ShisuiMathComponent {
                 return DECIMAL_PRECISION;
             }
 
+            if (_minutes == 1) {
+                return _base;
+            }
+
             let mut y = DECIMAL_PRECISION;
             let mut x = _base;
             let mut n = _minutes;
@@ -56,17 +60,17 @@ mod ShisuiMathComponent {
                     break;
                 }
                 if (n % 2 == 0) {
-                    x = InternalImpl::dec_mul(x, x);
+                    x = InternalImpl::_dec_mul(x, x);
                     n = n / 2;
                 } else {
                     // if (n % 2 != 0)
-                    y = InternalImpl::dec_mul(x, y);
-                    x = InternalImpl::dec_mul(x, x);
+                    y = InternalImpl::_dec_mul(x, y);
+                    x = InternalImpl::_dec_mul(x, x);
                     n = (n - 1) / 2;
                 }
             };
 
-            InternalImpl::dec_mul(x, y)
+            InternalImpl::_dec_mul(x, y)
         }
 
         fn _get_absolute_difference(_a: u256, _b: u256) -> u256 {
@@ -91,7 +95,7 @@ mod ShisuiMathComponent {
                 let newCollRatio = _coll * _price / _debt;
 
                 return newCollRatio;
-            }// Return the maximal value for uint256 if the Vessel has a debt of 0. Represents "infinite" CR.
+            } // Return the maximal value for uint256 if the Vessel has a debt of 0. Represents "infinite" CR.
             else {
                 BoundedU256::max()
             }
