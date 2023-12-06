@@ -20,6 +20,7 @@ mod pools {
 }
 
 mod utils {
+    mod errors;
     mod precision;
     mod array;
     mod traits;

@@ -5,6 +5,22 @@ use snforge_std::{
 use starknet::{ContractAddress, Felt252TryIntoContractAddress, contract_address_const};
 
 
+/// Utility function to pre-calculate the address of a mock contract & deploy it.
+///
+/// # Arguments
+///
+/// * `contract` - The contract class
+/// * `calldata` - The calldata used for the contract constructor
+///
+/// # Returns
+///
+/// * `ContractAddress` - The pre-calculated address of the deployed contract
+fn deploy_mock_contract(contract: ContractClass, calldata: @Array<felt252>) -> ContractAddress {
+    let future_deployed_address = contract.precalculate_address(calldata);
+    start_prank(CheatTarget::One(future_deployed_address), contract_address_const::<'caller'>());
+    contract.deploy_at(calldata, future_deployed_address).unwrap()
+}
+
 /// Utility function to deploy a SafetyTransferMockContract contract and return its address.
 ///
 /// # Returns
@@ -26,18 +42,14 @@ fn deploy_erc20_mock(decimals: u8) -> ContractAddress {
     deploy_mock_contract(contract, @constructor_calldata)
 }
 
-/// Utility function to pre-calculate the address of a mock contract & deploy it.
-///
-/// # Arguments
-///
-/// * `contract` - The contract class
-/// * `calldata` - The calldata used for the contract constructor
+
+/// Utility function to deploy a AddressProvider contract and return its address.
 ///
 /// # Returns
 ///
-/// * `ContractAddress` - The pre-calculated address of the deployed contract
-fn deploy_mock_contract(contract: ContractClass, calldata: @Array<felt252>) -> ContractAddress {
-    let future_deployed_address = contract.precalculate_address(calldata);
-    start_prank(CheatTarget::One(future_deployed_address), contract_address_const::<'caller'>());
-    contract.deploy_at(calldata, future_deployed_address).unwrap()
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_address_provider() -> ContractAddress {
+    let contract = declare('AddressProvider');
+    let constructor_calldata = array![];
+    deploy_mock_contract(contract, @constructor_calldata)
 }
