@@ -4,9 +4,9 @@ use shisui::utils::array::{StoreContractAddressSpan};
 
 #[starknet::interface]
 trait IAddressProvider<TContractState> {
-    fn set_addresses(ref self: TContractState, _addresses: Span<ContractAddress>);
-    fn set_community_issuance(ref self: TContractState, _community_issuance: ContractAddress);
-    fn set_shvt_staking(ref self: TContractState, _shvt_staking: ContractAddress);
+    fn set_addresses(ref self: TContractState, addresses: Span<ContractAddress>);
+    fn set_community_issuance(ref self: TContractState, community_issuance: ContractAddress);
+    fn set_shvt_staking(ref self: TContractState, shvt_staking: ContractAddress);
     fn get_active_pool(self: @TContractState) -> ContractAddress;
     fn get_admin_contract(self: @TContractState) -> ContractAddress;
     fn get_borrower_operations(self: @TContractState) -> ContractAddress;
@@ -80,16 +80,16 @@ mod AddressProvider {
 
     #[external(v0)]
     impl AddressProviderImpl of super::IAddressProvider<ContractState> {
-        fn set_addresses(ref self: ContractState, _addresses: Span<ContractAddress>) {
+        fn set_addresses(ref self: ContractState, addresses: Span<ContractAddress>) {
             self.ownable.assert_only_owner();
             if (self.is_address_setup_initialized.read()) {
                 panic_with_felt252(Errors::AddressProvider__AlreadySet);
             }
-            if (_addresses.len() != 15) {
+            if (addresses.len() != 15) {
                 panic_with_felt252(Errors::AddressProvider__Expected15Addresses);
             }
 
-            let mut addr = _addresses;
+            let mut addr = addresses;
             loop {
                 match addr.pop_front() {
                     Option::Some(elem) => self.assert_not_address_zero(*elem),
@@ -97,35 +97,35 @@ mod AddressProvider {
                 }
             };
 
-            self.active_pool.write(*_addresses[0]);
-            self.admin_contract.write(*_addresses[1]);
-            self.borrower_operations.write(*_addresses[2]);
-            self.coll_surplus_pool.write(*_addresses[3]);
-            self.debt_token.write(*_addresses[4]);
-            self.default_pool.write(*_addresses[5]);
-            self.fee_collector.write(*_addresses[6]);
-            self.gas_pool_address.write(*_addresses[7]);
-            self.price_feed.write(*_addresses[8]);
-            self.sorted_vessels.write(*_addresses[9]);
-            self.stability_pool.write(*_addresses[10]);
-            self.timelock_address.write(*_addresses[11]);
-            self.treasury_address.write(*_addresses[12]);
-            self.vessel_manager.write(*_addresses[13]);
-            self.vessel_manager_operations.write(*_addresses[14]);
+            self.active_pool.write(*addresses[0]);
+            self.admin_contract.write(*addresses[1]);
+            self.borrower_operations.write(*addresses[2]);
+            self.coll_surplus_pool.write(*addresses[3]);
+            self.debt_token.write(*addresses[4]);
+            self.default_pool.write(*addresses[5]);
+            self.fee_collector.write(*addresses[6]);
+            self.gas_pool_address.write(*addresses[7]);
+            self.price_feed.write(*addresses[8]);
+            self.sorted_vessels.write(*addresses[9]);
+            self.stability_pool.write(*addresses[10]);
+            self.timelock_address.write(*addresses[11]);
+            self.treasury_address.write(*addresses[12]);
+            self.vessel_manager.write(*addresses[13]);
+            self.vessel_manager_operations.write(*addresses[14]);
             self.is_address_setup_initialized.write(true);
         }
 
 
-        fn set_community_issuance(ref self: ContractState, _community_issuance: ContractAddress) {
+        fn set_community_issuance(ref self: ContractState, community_issuance: ContractAddress) {
             self.ownable.assert_only_owner();
-            self.assert_not_address_zero(_community_issuance);
-            self.community_issuance.write(_community_issuance);
+            self.assert_not_address_zero(community_issuance);
+            self.community_issuance.write(community_issuance);
         }
 
-        fn set_shvt_staking(ref self: ContractState, _shvt_staking: ContractAddress) {
+        fn set_shvt_staking(ref self: ContractState, shvt_staking: ContractAddress) {
             self.ownable.assert_only_owner();
-            self.assert_not_address_zero(_shvt_staking);
-            self.shvt_staking.write(_shvt_staking);
+            self.assert_not_address_zero(shvt_staking);
+            self.shvt_staking.write(shvt_staking);
         }
 
         fn get_active_pool(self: @ContractState) -> ContractAddress {
