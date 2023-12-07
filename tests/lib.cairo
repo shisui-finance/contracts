@@ -61,6 +61,41 @@ mod integration {
             }
         }
         mod core {
+            mod admin_contract {
+                mod add_new_collateral {
+                    mod test_add_new_collateral;
+                }
+                mod set_borrowing_fee {
+                    mod test_set_borrowing_fee;
+                }
+                mod set_ccr {
+                    mod test_set_ccr;
+                }
+                mod set_collateral_parameters {
+                    mod test_set_collateral_parameters;
+                }
+                mod set_is_active {
+                    mod test_set_is_active;
+                }
+                mod set_mcr {
+                    mod test_set_mcr;
+                }
+                mod set_min_net_debt {
+                    mod test_set_min_net_debt;
+                }
+                mod set_mint_cap {
+                    mod test_set_mint_cap;
+                }
+                mod set_percent_divisor {
+                    mod test_set_percent_divisor;
+                }
+                mod set_redemption_block_timestamp {
+                    mod test_set_redemption_block_timestamp;
+                }
+                mod set_redemption_fee_floor {
+                    mod test_set_redemption_fee_floor;
+                }
+            }
             mod timelock {
                 mod accept_admin {
                     mod test_accept_admin;

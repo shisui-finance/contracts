@@ -1,0 +1,13 @@
+test_set_percent_divisor.cairo
+├── when caller is not the timelock
+│   └── it should revert CommunErrors__OnlyTimelock
+└── when caller is the timelock
+    ├── when collateral is not active
+    │   └── it should revert AdminContract__CollateralNotActive
+    └──  when collateral is active
+        ├── when value is not between 2 and 200
+        │   └── it should revert AdminContract__SafeCheckError
+        └── when value is between 2 and 200
+            ├── it should correclty set the percent divisor
+            └── it should emit {PercentDivisorChanged} event
+

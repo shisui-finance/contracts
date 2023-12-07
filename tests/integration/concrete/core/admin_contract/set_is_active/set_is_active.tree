@@ -1,0 +1,8 @@
+test_set_is_active.cairo
+├── when caller is not the timelock
+│   └── it should revert CommunErrors__OnlyTimelock
+└── when caller is the timelock
+    ├── when collateral not exist
+    │   └── it should revert AdminContract__CollateralNotExist
+    └──  when collateral is active
+        └── it should correclty set the is_active
