@@ -7,23 +7,23 @@ trait IAddressProvider<TContractState> {
     fn set_addresses(ref self: TContractState, _addresses: Span<ContractAddress>);
     fn set_community_issuance(ref self: TContractState, _community_issuance: ContractAddress);
     fn set_shvt_staking(ref self: TContractState, _shvt_staking: ContractAddress);
-    fn get_active_pool(ref self: TContractState) -> ContractAddress;
-    fn get_admin_contract(ref self: TContractState) -> ContractAddress;
-    fn get_borrower_operations(ref self: TContractState) -> ContractAddress;
-    fn get_coll_surplus_pool(ref self: TContractState) -> ContractAddress;
-    fn get_community_issuance(ref self: TContractState) -> ContractAddress;
-    fn get_debt_token(ref self: TContractState) -> ContractAddress;
-    fn get_default_pool(ref self: TContractState) -> ContractAddress;
-    fn get_fee_collector(ref self: TContractState) -> ContractAddress;
-    fn get_gas_pool_address(ref self: TContractState) -> ContractAddress;
-    fn get_shvt_staking(ref self: TContractState) -> ContractAddress;
-    fn get_price_feed(ref self: TContractState) -> ContractAddress;
-    fn get_sorted_vessels(ref self: TContractState) -> ContractAddress;
-    fn get_stability_pool(ref self: TContractState) -> ContractAddress;
-    fn get_timelock_address(ref self: TContractState) -> ContractAddress;
-    fn get_treasury_address(ref self: TContractState) -> ContractAddress;
-    fn get_vessel_manager(ref self: TContractState) -> ContractAddress;
-    fn get_vessel_manager_operations(ref self: TContractState) -> ContractAddress;
+    fn get_active_pool(self: @TContractState) -> ContractAddress;
+    fn get_admin_contract(self: @TContractState) -> ContractAddress;
+    fn get_borrower_operations(self: @TContractState) -> ContractAddress;
+    fn get_coll_surplus_pool(self: @TContractState) -> ContractAddress;
+    fn get_community_issuance(self: @TContractState) -> ContractAddress;
+    fn get_debt_token(self: @TContractState) -> ContractAddress;
+    fn get_default_pool(self: @TContractState) -> ContractAddress;
+    fn get_fee_collector(self: @TContractState) -> ContractAddress;
+    fn get_gas_pool_address(self: @TContractState) -> ContractAddress;
+    fn get_shvt_staking(self: @TContractState) -> ContractAddress;
+    fn get_price_feed(self: @TContractState) -> ContractAddress;
+    fn get_sorted_vessels(self: @TContractState) -> ContractAddress;
+    fn get_stability_pool(self: @TContractState) -> ContractAddress;
+    fn get_timelock_address(self: @TContractState) -> ContractAddress;
+    fn get_treasury_address(self: @TContractState) -> ContractAddress;
+    fn get_vessel_manager(self: @TContractState) -> ContractAddress;
+    fn get_vessel_manager_operations(self: @TContractState) -> ContractAddress;
 }
 
 #[starknet::contract]
@@ -128,71 +128,71 @@ mod AddressProvider {
             self.shvt_staking.write(_shvt_staking);
         }
 
-        fn get_active_pool(ref self: ContractState) -> ContractAddress {
+        fn get_active_pool(self: @ContractState) -> ContractAddress {
             return self.active_pool.read();
         }
 
-        fn get_admin_contract(ref self: ContractState) -> ContractAddress {
+        fn get_admin_contract(self: @ContractState) -> ContractAddress {
             return self.admin_contract.read();
         }
 
-        fn get_borrower_operations(ref self: ContractState) -> ContractAddress {
+        fn get_borrower_operations(self: @ContractState) -> ContractAddress {
             return self.borrower_operations.read();
         }
 
-        fn get_coll_surplus_pool(ref self: ContractState) -> ContractAddress {
+        fn get_coll_surplus_pool(self: @ContractState) -> ContractAddress {
             return self.coll_surplus_pool.read();
         }
 
-        fn get_community_issuance(ref self: ContractState) -> ContractAddress {
+        fn get_community_issuance(self: @ContractState) -> ContractAddress {
             return self.community_issuance.read();
         }
 
-        fn get_debt_token(ref self: ContractState) -> ContractAddress {
+        fn get_debt_token(self: @ContractState) -> ContractAddress {
             return self.debt_token.read();
         }
 
-        fn get_default_pool(ref self: ContractState) -> ContractAddress {
+        fn get_default_pool(self: @ContractState) -> ContractAddress {
             return self.default_pool.read();
         }
 
-        fn get_fee_collector(ref self: ContractState) -> ContractAddress {
+        fn get_fee_collector(self: @ContractState) -> ContractAddress {
             return self.fee_collector.read();
         }
 
-        fn get_gas_pool_address(ref self: ContractState) -> ContractAddress {
+        fn get_gas_pool_address(self: @ContractState) -> ContractAddress {
             return self.gas_pool_address.read();
         }
 
-        fn get_shvt_staking(ref self: ContractState) -> ContractAddress {
+        fn get_shvt_staking(self: @ContractState) -> ContractAddress {
             return self.shvt_staking.read();
         }
 
-        fn get_price_feed(ref self: ContractState) -> ContractAddress {
+        fn get_price_feed(self: @ContractState) -> ContractAddress {
             return self.price_feed.read();
         }
 
-        fn get_sorted_vessels(ref self: ContractState) -> ContractAddress {
+        fn get_sorted_vessels(self: @ContractState) -> ContractAddress {
             return self.sorted_vessels.read();
         }
 
-        fn get_stability_pool(ref self: ContractState) -> ContractAddress {
+        fn get_stability_pool(self: @ContractState) -> ContractAddress {
             return self.stability_pool.read();
         }
 
-        fn get_timelock_address(ref self: ContractState) -> ContractAddress {
+        fn get_timelock_address(self: @ContractState) -> ContractAddress {
             return self.timelock_address.read();
         }
 
-        fn get_treasury_address(ref self: ContractState) -> ContractAddress {
+        fn get_treasury_address(self: @ContractState) -> ContractAddress {
             return self.treasury_address.read();
         }
 
-        fn get_vessel_manager(ref self: ContractState) -> ContractAddress {
+        fn get_vessel_manager(self: @ContractState) -> ContractAddress {
             return self.vessel_manager.read();
         }
 
-        fn get_vessel_manager_operations(ref self: ContractState) -> ContractAddress {
+        fn get_vessel_manager_operations(self: @ContractState) -> ContractAddress {
             return self.vessel_manager_operations.read();
         }
     }
