@@ -28,7 +28,6 @@ trait IAddressProvider<TContractState> {
 
 #[starknet::contract]
 mod AddressProvider {
-    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait;
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::access::ownable::OwnableComponent;
     use shisui::utils::errors::CommunErrors;
