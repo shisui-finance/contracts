@@ -73,6 +73,7 @@ mod AddressProvider {
         const AddressProvider__AlreadySet: felt252 = 'Protocol addresses already set';
         const AddressProvider__Expected15Addresses: felt252 = 'Expected 15 addresses';
     }
+
     #[constructor]
     fn constructor(ref self: ContractState) {
         self.ownable.initializer(get_caller_address());
@@ -82,12 +83,8 @@ mod AddressProvider {
     impl AddressProviderImpl of super::IAddressProvider<ContractState> {
         fn set_addresses(ref self: ContractState, addresses: Span<ContractAddress>) {
             self.ownable.assert_only_owner();
-            if (self.is_address_setup_initialized.read()) {
-                panic_with_felt252(Errors::AddressProvider__AlreadySet);
-            }
-            if (addresses.len() != 15) {
-                panic_with_felt252(Errors::AddressProvider__Expected15Addresses);
-            }
+            assert(!self.is_address_setup_initialized.read(), Errors::AddressProvider__AlreadySet);
+            assert(addresses.len() == 15, Errors::AddressProvider__Expected15Addresses);
 
             let mut addr = addresses;
             loop {
@@ -199,10 +196,9 @@ mod AddressProvider {
 
     #[generate_trait]
     impl AddressProviderInternalImpl of AddressProviderInternalTrait {
+        #[inline(always)]
         fn assert_not_address_zero(ref self: ContractState, address: ContractAddress) {
-            if (address.is_zero()) {
-                panic_with_felt252(CommunErrors::CommunErrors__AddressZero);
-            }
+            assert(address.is_non_zero(), CommunErrors::CommunErrors__AddressZero);
         }
     }
 }
