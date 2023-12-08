@@ -63,7 +63,6 @@ mod ShisuiMathComponent {
                     x = InternalImpl::_dec_mul(x, x);
                     n = n / 2;
                 } else {
-                    // if (n % 2 != 0)
                     y = InternalImpl::_dec_mul(x, y);
                     x = InternalImpl::_dec_mul(x, x);
                     n = (n - 1) / 2;
@@ -92,14 +91,11 @@ mod ShisuiMathComponent {
 
         fn _compute_cr(_coll: u256, _debt: u256, _price: u256) -> u256 {
             if (_debt != 0) {
-                let newCollRatio = _coll * _price / _debt;
-
-                return newCollRatio;
+                _coll * _price / _debt
             } // Return the maximal value for uint256 if the Vessel has a debt of 0. Represents "infinite" CR.
             else {
                 BoundedU256::max()
             }
-            return 0;
         }
     }
 }

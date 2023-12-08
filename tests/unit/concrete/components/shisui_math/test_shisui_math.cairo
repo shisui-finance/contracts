@@ -1,5 +1,6 @@
 use shisui::components::shisui_math::ShisuiMathComponent::{InternalImpl, EXPONENT_CAP};
 use core::integer::BoundedU256;
+use debug::PrintTrait;
 
 #[test]
 fn test_dec_mul() {
@@ -255,4 +256,69 @@ fn test_dec_pow_exponent() {
 
         i += 1;
     };
+}
+
+// Tests are taken from : https://github.com/Gravita-Protocol/Gravita-SmartContracts/blob/95e3b30d877540eecda276deaff6e21e19e51460/test/gravita/VesselManagerTest.js#L6647
+
+#[test]
+fn test_compute_cr_with_price_0() {
+    let price = 0;
+    let coll = 1000000000000000000;
+    let debt = 100000000000000000000;
+
+    let res = InternalImpl::_compute_cr(coll, debt, price);
+    assert(res == 0, 'wrong cr');
+}
+
+#[test]
+fn test_compute_cr_with_coll_1_eth() {
+    let price = 100000000000000000000;
+    let coll = 1000000000000000000;
+    let debt = 100000000000000000000;
+
+    let res = InternalImpl::_compute_cr(coll, debt, price);
+    assert(res == 1000000000000000000, 'wrong cr');
+}
+
+#[test]
+fn test_compute_cr_with_coll_200_eth() {
+    let price = 100000000000000000000;
+    let coll = 200000000000000000000;
+    let debt = 30000000000000000000;
+
+    let res = InternalImpl::_compute_cr(coll, debt, price);
+    assert(res >= 666666666666666665666, 'wrong cr');
+    assert(res <= 666666666666666667666, 'wrong cr');
+}
+
+#[test]
+fn test_compute_cr_with_coll_1350_eth() {
+    let price = 250000000000000000000;
+    let coll = 1350000000000000000000;
+    let debt = 127000000000000000000;
+
+    let res = InternalImpl::_compute_cr(coll, debt, price);
+    assert(res >= 2657480314960629000000, 'wrong cr');
+    assert(res <= 2657480314960631000000, 'wrong cr');
+}
+
+#[test]
+fn test_compute_cr_with_coll_1_eth_debt_54321() {
+    let price = 100000000000000000000;
+    let coll = 1000000000000000000;
+    let debt = 54321000000000000000000;
+
+    let res = InternalImpl::_compute_cr(coll, debt, price);
+    assert(res >= 1840908672519756, 'wrong cr');
+    assert(res <= 1840908672521756, 'wrong cr');
+}
+
+#[test]
+fn test_compute_cr_with_debt_0() {
+    let price = 100000000000000000000;
+    let coll = 1000000000000000000;
+    let debt = 0;
+
+    let res = InternalImpl::_compute_cr(coll, debt, price);
+    assert(res == BoundedU256::max(), 'wrong cr');
 }
