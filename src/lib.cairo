@@ -23,10 +23,12 @@ mod utils {
     mod array;
     mod traits;
     mod math;
+    mod hash;
 }
 
 mod mocks {
     mod safety_transfer_mock;
     mod erc20_mock;
+    mod simple_contract_mock;
 }
 

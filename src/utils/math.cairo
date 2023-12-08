@@ -2,7 +2,7 @@
 /// * `x` - The number to raise.
 /// * `n` - The exponent.
 /// # Returns
-/// * `u128` - The result of x raised to the power of n.
+/// * `u256` - The result of x raised to the power of n.
 fn pow(x: u256, n: u8) -> u256 {
     if n == 0 {
         1

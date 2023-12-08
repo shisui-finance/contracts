@@ -2,7 +2,7 @@ test_queue_transaction.cairo
 ├── when caller is not the admin
 │   └── it should revert with Timelock__AdminOnly
 └── when caller is the admin
-    ├── when eta is lower than the current block timestamp - delay
+    ├── when eta is lower than the current block timestamp + delay
     │   └── it should revert with Timelock__ETAMustSatisfyDelay
     ├── when eta is greater than the current block timestamp + delay + GRACE_PERIOD
     │   └── it should revert with Timelock__ETAMustSatisfyDelay

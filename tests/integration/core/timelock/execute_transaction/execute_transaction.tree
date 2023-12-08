@@ -10,7 +10,7 @@ test_execute_transaction.cairo
     │   └── it should revert with Timelock__TxExpired
     └── when tx_hash is in queue AND current block timestamp is valid
         ├── when call is not successful
-        │   └── it should revert with Timelock__TxReverted
+        │   └── it should revert
         └── when call is successful
             ├── it should set tx_hash from queue to false
             ├── it should excute the transaction
