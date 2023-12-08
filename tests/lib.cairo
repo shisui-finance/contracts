@@ -189,6 +189,20 @@ mod integration {
                     mod test_received_erc20;
                 }
             }
+            mod default_pool {
+                mod decrease_debt {
+                    mod test_decrease_debt;
+                }
+                mod increase_debt {
+                    mod test_increase_debt;
+                }
+                mod send_asset_to_active_pool {
+                    mod test_send_asset_to_active_pool;
+                }
+                mod received_erc20 {
+                    mod test_received_erc20;
+                }
+            }
         }
     }
 }

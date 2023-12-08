@@ -13,6 +13,7 @@ mod core {
 }
 
 mod pools {
+    mod default_pool;
     mod collateral_surplus_pool;
     mod active_pool;
 }

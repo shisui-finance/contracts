@@ -1,0 +1,11 @@
+test_send_asset_to_active_pool.cairo
+├── when caller is not the Vessel Manager contract
+│   └── it should revert with CommunErrors__CallerNotAuthorized
+└── when caller is the Vessel Manager contract
+    ├── when amount scale to asset decimals is zero
+    │   └── it should do nothing
+    └── when amount scale to asset decimals is not zero
+        ├── it should correclty transfer the amount of asset to the Active Pool
+        ├── it should emit {DefaultPoolAssetBalanceUpdated} event
+        ├── it should emit {AssetSent} event
+        └── it should correclty call  the Active Pool receive_erc20() function
