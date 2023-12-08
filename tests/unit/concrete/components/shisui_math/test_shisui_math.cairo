@@ -1,4 +1,3 @@
-use core::array::ArrayTrait;
 use shisui::components::shisui_math::ShisuiMathComponent::{InternalImpl, EXPONENT_CAP};
 use core::integer::BoundedU256;
 

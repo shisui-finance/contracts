@@ -14,21 +14,3 @@ fn pow(x: u256, n: u8) -> u256 {
         pow(x * x, n / 2)
     }
 }
-
-fn pow256(x: u256, mut n: u256) -> u256 {
-    let mut result = 1;
-    let mut base = x;
-
-    loop {
-        if n & 1 == 1 {
-            result = result * base;
-        }
-
-        n = n / 2;
-        if n == 0 {
-            break result;
-        }
-
-        base = base * base;
-    }
-}
