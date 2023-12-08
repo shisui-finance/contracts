@@ -12,6 +12,10 @@ mod core {
     mod admin_contract;
 }
 
+mod pools {
+    mod collateral_surplus_pool;
+}
+
 mod utils {
     mod precision;
     mod array;

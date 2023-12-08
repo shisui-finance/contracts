@@ -1,0 +1,6 @@
+test_received_erc20.cairo
+├── when caller is not the Active Pool contract
+│   └── it should revert with CommunErrors__CallerNotAuthorized
+└── when caller is the Active Pool contract
+    ├── it should correclty update the total balance for a given asset
+    └── it should emit {CollBalanceUpdated} event
