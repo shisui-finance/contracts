@@ -14,6 +14,7 @@ mod core {
 
 mod pools {
     mod collateral_surplus_pool;
+    mod active_pool;
 }
 
 mod utils {

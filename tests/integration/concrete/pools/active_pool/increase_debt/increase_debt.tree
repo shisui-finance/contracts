@@ -1,0 +1,6 @@
+test_increase_debt.cairo
+├── when caller is neither the Borrower Operation nor the Vessel Manager contract
+│   └── it should revert with CommunErrors__CallerNotAuthorized
+└── when caller is either the Borrower Operation or the Vessel Manager contract
+    ├── it should correclty increase the debt balance for the given asset with the given amount
+    └── it should emit {ActivePoolDebtUpdated} event
