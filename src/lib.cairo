@@ -26,6 +26,7 @@ mod utils {
     mod traits;
     mod math;
     mod shisui_math;
+    mod convert;
 }
 
 mod mocks {
