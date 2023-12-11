@@ -9,6 +9,7 @@ mod core {
     mod timelock;
     mod gas_pool;
     mod price_feed;
+    mod fee_collector;
     mod admin_contract;
 }
 

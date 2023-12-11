@@ -1,0 +1,11 @@
+test_handle_redemption_fee.cairo
+├── when caller is not the Vessel Manager contract
+│   └── it should revert with CommunErrors__CallerNotAuthorized
+└── when caller is the Vessel Manager contract
+    ├── when borrowers array length is 0
+    │   └── it should revert with FeeCollector__ArrayMismatch
+    ├── when borrowers array length is not equal to assets array length
+    │   └── it should revert with FeeCollector__ArrayMismatch
+    └── when array lengths are equal and not 0
+        ├── it should correctly collect fees and delete the fee_record
+        └── it should emit {FeeRecordUpdated} event

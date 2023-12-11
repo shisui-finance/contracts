@@ -164,6 +164,29 @@ mod integration {
                 mod test_get_oracle;
             }
         }
+        mod fee_collector {
+            mod increase_debt {
+                mod test_increase_debt;
+            }
+            mod decrease_debt {
+                mod test_decrease_debt;
+            }
+            mod close_debt {
+                mod test_close_debt;
+            }
+            mod liquidate_debt {
+                mod test_liquidate_debt;
+            }
+            mod collect_fees {
+                mod test_collect_fees;
+            }
+            mod handle_redemption_fee {
+                mod test_handle_redemption_fee;
+            }
+            mod set_route_to_SHVT_staking {
+                mod test_set_route_to_SHVT_staking;
+            }
+        }
     }
     mod pools {
         mod collateral_surplus_pool {
