@@ -278,6 +278,10 @@ mod Timelock {
                 );
         }
 
+        // *********************************************************************
+        // TODO @gaetbout check how to hit Result::Err() when call is unsuccesful
+        // existing test case : when_caller_is_admin_and_block_timestamp_is_valid_and_call_not_valid_it_should_revert()
+        // **********************************************************************
         fn execute_transaction(
             ref self: ContractState,
             target: ContractAddress,
