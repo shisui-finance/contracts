@@ -17,7 +17,9 @@ use shisui::core::timelock::{ITimelockDispatcher, ITimelockDispatcherTrait};
 /// # Returns
 ///
 /// * `ContractAddress` - The pre-calculated address of the deployed contract
-fn deploy_mock_contract_precalc_address(contract: ContractClass, calldata: @Array<felt252>) -> ContractAddress {
+fn deploy_mock_contract_precalc_address(
+    contract: ContractClass, calldata: @Array<felt252>
+) -> ContractAddress {
     let future_deployed_address = contract.precalculate_address(calldata);
     start_prank(CheatTarget::One(future_deployed_address), contract_address_const::<'caller'>());
     contract.deploy_at(calldata, future_deployed_address).unwrap()
