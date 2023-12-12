@@ -1,6 +1,5 @@
-use shisui::components::shisui_math::ShisuiMathComponent::{InternalImpl, EXPONENT_CAP};
+use shisui::components::shisui_math::ShisuiMathComponent::InternalImpl;
 use core::integer::BoundedU256;
-use debug::PrintTrait;
 
 #[test]
 fn test_dec_mul() {
@@ -20,159 +19,164 @@ fn test_dec_mul_rounding_down() {
     assert(res == 1, 'wrong product');
 }
 
-//Tests are taken from : https://github.com/Gravita-Protocol/Gravita-SmartContracts/blob/95e3b30d877540eecda276deaff6e21e19e51460/test/gravita/FeeArithmeticTest.js#L472
+//Following tests are taken from : https://github.com/Gravita-Protocol/Gravita-SmartContracts/blob/95e3b30d877540eecda276deaff6e21e19e51460/test/gravita/FeeArithmeticTest.js#L375
 
 #[test]
+// For exponent = 0, returns 1, regardless of base
 fn test_dec_pow_exponent_0() {
     let res = InternalImpl::_dec_pow(0, 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base 0');
 
     let res = InternalImpl::_dec_pow(1, 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base 1');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base 10^18');
 
     let res = InternalImpl::_dec_pow(123244254546, 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base 123244254546');
 
     let res = InternalImpl::_dec_pow(990000000000000000, 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base 99*10^16');
 
     let res = InternalImpl::_dec_pow(897890990909098978678609090, 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base big number');
 
-    let res = InternalImpl::_dec_pow(8789789000000000000, 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    let res = InternalImpl::_dec_pow(8789789000000000000000000000000000, 0);
+    assert(res == 1000000000000000000, 'wrong result base huge number');
 
     let res = InternalImpl::_dec_pow(BoundedU256::max(), 0);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base max u256');
 }
 
 #[test]
+// For exponent = 1, returns base, regardless of base
 fn test_dec_pow_exponent_1() {
     let res = InternalImpl::_dec_pow(0, 1);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result base 0');
 
     let res = InternalImpl::_dec_pow(1, 1);
-    assert(res == 1, 'wrong product');
+    assert(res == 1, 'wrong result base 1');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 1);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result base 10^18');
 
     let res = InternalImpl::_dec_pow(123244254546, 1);
-    assert(res == 123244254546, 'wrong product');
+    assert(res == 123244254546, 'wrong result base 123244254546');
 
     let res = InternalImpl::_dec_pow(990000000000000000, 1);
-    assert(res == 990000000000000000, 'wrong product');
+    assert(res == 990000000000000000, 'wrong result base 99*10^16');
 
     let res = InternalImpl::_dec_pow(897890990909098978678609090, 1);
-    assert(res == 897890990909098978678609090, 'wrong product');
+    assert(res == 897890990909098978678609090, 'wrong result base big number');
 
-    let res = InternalImpl::_dec_pow(8789789000000000000, 1);
-    assert(res == 8789789000000000000, 'wrong product');
+    let res = InternalImpl::_dec_pow(8789789000000000000000000000000000, 1);
+    assert(res == 8789789000000000000000000000000000, 'wrong result base huge number');
 
     let res = InternalImpl::_dec_pow(BoundedU256::max(), 1);
-    assert(res == BoundedU256::max(), 'wrong product');
+    assert(res == BoundedU256::max(), 'wrong result base max u256');
 }
 
 #[test]
+// For base = 0, returns 0 for any exponent other than 0
 fn test_dec_pow_base_0() {
     let res = InternalImpl::_dec_pow(0, 1);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 1');
 
     let res = InternalImpl::_dec_pow(0, 3);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 3');
 
     let res = InternalImpl::_dec_pow(0, 17);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 17');
 
     let res = InternalImpl::_dec_pow(0, 44);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 44');
 
     let res = InternalImpl::_dec_pow(0, 118);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 118');
 
     let res = InternalImpl::_dec_pow(0, 1000);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 1000');
 
     let res = InternalImpl::_dec_pow(0, 1000000);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 10^6');
 
     let res = InternalImpl::_dec_pow(0, 1000000000);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 10^9');
 
     let res = InternalImpl::_dec_pow(0, 1000000000000);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 10^12');
 
     let res = InternalImpl::_dec_pow(0, 1000000000000000000);
-    assert(res == 0, 'wrong product');
+    assert(res == 0, 'wrong result exponent 10^18');
 }
 
 #[test]
+// For base = 1, returns 1 for any exponent
 fn test_dec_pow_base_1() {
     let res = InternalImpl::_dec_pow(1000000000000000000, 1);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 1');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 3);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 3');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 17);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 17');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 44);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 44');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 118);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 118');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 1000);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 1000');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 1000000);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 10^6');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 1000000000);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 10^9');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 1000000000000);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 10^12');
 
     let res = InternalImpl::_dec_pow(1000000000000000000, 1000000000000000000);
-    assert(res == 1000000000000000000, 'wrong product');
+    assert(res == 1000000000000000000, 'wrong result exponent 10^18');
 }
 
 #[test]
+// For exponent = 2, returns the square of the base
 fn test_dec_pow_exponent_2() {
     let res = InternalImpl::_dec_pow(1000000000000000000, 2);
-    assert(res == 1000000000000000000, 'wrong product1');
+    assert(res == 1000000000000000000, 'wrong result base 1');
 
     let res = InternalImpl::_dec_pow(1500000000000000000, 2);
-    assert(res == 2250000000000000000, 'wrong product2');
+    assert(res == 2250000000000000000, 'wrong wrong result base 1.5');
 
     let res = InternalImpl::_dec_pow(500000000000000000, 2);
-    assert(res == 250000000000000000, 'wrong product3');
+    assert(res == 250000000000000000, 'wrong wrong result base 0.5');
 
     let res = InternalImpl::_dec_pow(321000000000000000, 2);
-    assert(res == 103041000000000000, 'wrong product4');
+    assert(res == 103041000000000000, 'wrong wrong result base 0.321');
 
     let res = InternalImpl::_dec_pow(2000000000000000000, 2);
-    assert(res == 4000000000000000000, 'wrong product5');
+    assert(res == 4000000000000000000, 'wrong wrong result base 2');
 
     let res = InternalImpl::_dec_pow(100000000000000000, 2);
-    assert(res == 10000000000000000, 'wrong product6');
+    assert(res == 10000000000000000, 'wrong wrong result base 0.1');
 
     let res = InternalImpl::_dec_pow(10000000000000000, 2);
-    assert(res == 100000000000000, 'wrong product7');
+    assert(res == 100000000000000, 'wrong wrong result base 0.01');
 
     let res = InternalImpl::_dec_pow(990000000000000000, 2);
-    assert(res == 980100000000000000, 'wrong product8');
+    assert(res == 980100000000000000, 'wrong wrong result base 0.99');
 
     let res = InternalImpl::_dec_pow(125435000000000000000, 2);
-    assert(res == 15733939225000000000000, 'wrong product9');
+    assert(res == 15733939225000000000000, 'wrong wrong result base 125.435');
 
     let res = InternalImpl::_dec_pow(99999000000000000000000, 2);
-    assert(res == 9999800001000000000000000000, 'wrong product10');
+    assert(res == 9999800001000000000000000000, 'wrong wrong result base 99999');
 }
 
 #[test]
@@ -247,20 +251,22 @@ fn test_dec_pow_exponent() {
 
         let res = InternalImpl::_dec_pow(base, exponent);
 
+        // Allow absolute error tolerance of 1e-14
         if (expectedResult >= 10000) {
-            assert(res >= expectedResult - 10000, 'wrong product12');
+            assert(res >= expectedResult - 10000, 'wrong result');
         } else {
-            assert(res >= 0, 'wrong product13');
+            assert(res >= 0, 'wrong result');
         }
-        assert(res <= expectedResult + 10000, 'wrong product1');
+        assert(res <= expectedResult + 10000, 'wrong result');
 
         i += 1;
     };
 }
 
-// Tests are taken from : https://github.com/Gravita-Protocol/Gravita-SmartContracts/blob/95e3b30d877540eecda276deaff6e21e19e51460/test/gravita/VesselManagerTest.js#L6647
+//Following tests are taken from : https://github.com/Gravita-Protocol/Gravita-SmartContracts/blob/95e3b30d877540eecda276deaff6e21e19e51460/test/gravita/VesselManagerTest.js#L6649C13-L6649C13
 
 #[test]
+// Returns 0 if vessel's coll is worth 0
 fn test_compute_cr_with_price_0() {
     let price = 0;
     let coll = 1000000000000000000;
@@ -271,6 +277,7 @@ fn test_compute_cr_with_price_0() {
 }
 
 #[test]
+// Returns 2^256-1 for ETH:USD = 100, coll = 1 ETH, debt = 100 GRAI
 fn test_compute_cr_with_coll_1_eth() {
     let price = 100000000000000000000;
     let coll = 1000000000000000000;
@@ -281,6 +288,7 @@ fn test_compute_cr_with_coll_1_eth() {
 }
 
 #[test]
+// Returns correct ICR for ETH:USD = 100, coll = 200 ETH, debt = 30 GRAI
 fn test_compute_cr_with_coll_200_eth() {
     let price = 100000000000000000000;
     let coll = 200000000000000000000;
@@ -292,6 +300,7 @@ fn test_compute_cr_with_coll_200_eth() {
 }
 
 #[test]
+// Returns correct ICR for ETH:USD = 250, coll = 1350 ETH, debt = 127 GRAI
 fn test_compute_cr_with_coll_1350_eth() {
     let price = 250000000000000000000;
     let coll = 1350000000000000000000;
@@ -303,6 +312,7 @@ fn test_compute_cr_with_coll_1350_eth() {
 }
 
 #[test]
+// Returns correct ICR for ETH:USD = 100, coll = 1 ETH, debt = 54321 GRAI
 fn test_compute_cr_with_coll_1_eth_debt_54321() {
     let price = 100000000000000000000;
     let coll = 1000000000000000000;
@@ -314,6 +324,7 @@ fn test_compute_cr_with_coll_1_eth_debt_54321() {
 }
 
 #[test]
+// Returns 2^256-1 if vessel has non-zero coll and zero debt
 fn test_compute_cr_with_debt_0() {
     let price = 100000000000000000000;
     let coll = 1000000000000000000;
