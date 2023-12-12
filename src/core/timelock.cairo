@@ -1,6 +1,5 @@
 use starknet::ContractAddress;
 
-
 #[starknet::interface]
 trait ITimelock<TContractState> {
     fn set_delay(ref self: TContractState, delay: u256);
@@ -44,23 +43,14 @@ trait ITimelock<TContractState> {
 
 #[starknet::contract]
 mod Timelock {
-    use core::traits::Into;
-    use core::zeroable::Zeroable;
-    use core::array::ArrayTrait;
-    use core::starknet::event::EventEmitter;
-    use core::option::OptionTrait;
-    use core::serde::Serde;
-    use core::traits::TryInto;
-    use core::box::BoxTrait;
-    use starknet::{
-        ContractAddress, contract_address_const, get_caller_address, get_contract_address,
-        get_block_timestamp, call_contract_syscall
-    };
-    use poseidon::PoseidonTrait;
-    use shisui::utils::hash::ISpanFelt252Hash;
     use core::hash::HashStateTrait;
     use core::hash::HashStateExTrait;
-    use starknet::SyscallResultTrait;
+    use poseidon::PoseidonTrait;
+    use starknet::{
+        ContractAddress, contract_address_const, get_caller_address, get_contract_address,
+        get_block_timestamp, call_contract_syscall, SyscallResultTrait
+    };
+    use shisui::utils::hash::ISpanFelt252Hash;
 
     const MINIMUM_DELAY: u256 = consteval_int!(2 * 24 * 60 * 60); // 2 days
     const MAXIMUM_DELAY: u256 = consteval_int!(15 * 24 * 60 * 60); // 15 days
@@ -93,6 +83,7 @@ mod Timelock {
 
     #[derive(Drop, starknet::Event)]
     struct NewAdmin {
+        old_admin: ContractAddress,
         #[key]
         new_admin: ContractAddress
     }
@@ -165,11 +156,11 @@ mod Timelock {
     //                              CONSTRUCTOR
     // *************************************************************************
     #[constructor]
-    fn constructor(ref self: ContractState, _delay: u256, _admin: ContractAddress) {
-        self.is_valid_delay(_delay);
-        assert(_admin.is_non_zero(), Errors::Timelock__ZeroAddressAdmin);
-        self.admin.write(_admin);
-        self.delay.write(_delay);
+    fn constructor(ref self: ContractState, delay: u256, admin: ContractAddress) {
+        self.is_valid_delay(delay);
+        assert(admin.is_non_zero(), Errors::Timelock__ZeroAddressAdmin);
+        self.admin.write(admin);
+        self.delay.write(delay);
     }
 
     // *************************************************************************
@@ -217,9 +208,10 @@ mod Timelock {
             let caller = get_caller_address();
             assert(caller == self.pending_admin.read(), Errors::Timelock__PendingAdminOnly);
 
+            let old_admin = self.admin.read();
             self.admin.write(caller);
             self.pending_admin.write(contract_address_const::<0>());
-            self.emit(NewAdmin { new_admin: caller });
+            self.emit(NewAdmin { old_admin, new_admin: caller });
         }
 
         fn set_pending_admin(ref self: ContractState, pending_admin: ContractAddress) {
@@ -317,9 +309,9 @@ mod Timelock {
     // *************************************************************************
     #[generate_trait]
     impl InternalFunctions of InternalFunctionsTrait {
-        fn is_valid_delay(self: @ContractState, _delay: u256) {
-            assert(_delay > MINIMUM_DELAY, Errors::Timelock__DelayMustExceedMininumDelay);
-            assert(_delay < MAXIMUM_DELAY, Errors::Timelock__DelayMustNotExceedMaximumDelay);
+        fn is_valid_delay(self: @ContractState, delay: u256) {
+            assert(delay > MINIMUM_DELAY, Errors::Timelock__DelayMustExceedMininumDelay);
+            assert(delay < MAXIMUM_DELAY, Errors::Timelock__DelayMustNotExceedMaximumDelay);
         }
 
         fn admin_only(self: @ContractState) {

@@ -72,10 +72,10 @@ fn deploy_simple_storage_mock() -> ContractAddress {
 ///
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_timelock_mock(
-    _delay: u256, _admin: ContractAddress
+    delay: u256, admin: ContractAddress
 ) -> (ITimelockDispatcher, ContractAddress) {
     let contract = declare('Timelock');
-    let constructor_calldata = array![_delay.low.into(), _delay.high.into(), _admin.into()];
+    let constructor_calldata = array![delay.low.into(), delay.high.into(), admin.into()];
     let timelock_address = deploy_mock_contract(contract, @constructor_calldata);
     (ITimelockDispatcher { contract_address: timelock_address }, timelock_address)
 }

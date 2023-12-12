@@ -58,7 +58,7 @@ fn when_caller_is_admin_and_tx_in_queue_it_should_works() {
     let signature = selector!("signature");
     let data = array!['0x01'];
     let eta = MINIMUM_DELAY + 20000;
-    let tx_hash = 0x3d1394918f9a449d63ca74a79bdc7d573179ea887fae5a9896d1f93b6894384;
+    let tx_hash = 0x594c81121ebd7aeb82dbd64afb237b821480ddf87e41d308940cda027cd7efd;
     timelock.queue_transaction(target, signature, data.span(), eta);
     let mut spy = spy_events(SpyOn::One(timelock_address));
     timelock.cancel_transaction(target, signature, data.span(), eta);

@@ -132,7 +132,7 @@ fn when_caller_is_admin_and_valid_eta_it_should_work() {
     let mut spy = spy_events(SpyOn::One(timelock_address));
     //call queue_transaction
     timelock.queue_transaction(target, signature, data.span(), eta);
-    let tx_hash = 0x3d1394918f9a449d63ca74a79bdc7d573179ea887fae5a9896d1f93b6894384;
+    let tx_hash = 0x594c81121ebd7aeb82dbd64afb237b821480ddf87e41d308940cda027cd7efd;
     spy
         .assert_emitted(
             @array![
@@ -155,12 +155,12 @@ fn init() -> (ITimelockDispatcher, ContractAddress) {
 }
 
 fn get_hash(
-    _target: ContractAddress, _signature: felt252, _data: Span<felt252>, _eta: u256
+    target: ContractAddress, signature: felt252, data: Span<felt252>, eta: u256
 ) -> felt252 {
     let mut hash_state = PoseidonTrait::new();
-    hash_state = hash_state.update_with(_target);
-    hash_state = hash_state.update_with(_signature);
-    hash_state = hash_state.update_with(_data.hash_span());
-    hash_state = hash_state.update_with(_eta);
+    hash_state = hash_state.update_with(target);
+    hash_state = hash_state.update_with(signature);
+    hash_state = hash_state.update_with(data.hash_span());
+    hash_state = hash_state.update_with(eta);
     hash_state.finalize()
 }

@@ -24,13 +24,14 @@ fn when_caller_not_timelock_contract_it_should_revert() {
 #[test]
 fn when_caller_is_pending_admin_it_should_work() {
     let (timelock, timelock_address) = init();
-    let admin_address = contract_address_const::<'admin'>();
+    let old_admin_address = timelock.get_admin();
+    let new_admin_address = contract_address_const::<'new_admin'>();
     // set pending admin
     start_prank(CheatTarget::One(timelock_address), timelock_address);
-    timelock.set_pending_admin(admin_address);
+    timelock.set_pending_admin(new_admin_address);
     stop_prank(CheatTarget::One(timelock_address));
     // accept admin
-    start_prank(CheatTarget::One(timelock_address), admin_address);
+    start_prank(CheatTarget::One(timelock_address), new_admin_address);
     let mut spy = spy_events(SpyOn::One(timelock_address));
     timelock.accept_admin();
     spy
@@ -38,13 +39,17 @@ fn when_caller_is_pending_admin_it_should_work() {
             @array![
                 (
                     timelock_address,
-                    Timelock::Event::NewAdmin(Timelock::NewAdmin { new_admin: admin_address })
+                    Timelock::Event::NewAdmin(
+                        Timelock::NewAdmin {
+                            old_admin: old_admin_address, new_admin: new_admin_address
+                        }
+                    )
                 )
             ]
         );
     assert(spy.events.len() == 0, 'There should be no events');
     assert(timelock.get_pending_admin().is_zero(), 'Pending admin not reset');
-    assert(timelock.get_admin() == admin_address, 'Wrong admin set');
+    assert(timelock.get_admin() == new_admin_address, 'Wrong admin set');
 }
 
 fn init() -> (ITimelockDispatcher, ContractAddress) {
