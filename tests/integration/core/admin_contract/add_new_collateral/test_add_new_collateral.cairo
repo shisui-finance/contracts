@@ -18,28 +18,10 @@ fn setup() -> (IAddressProviderDispatcher, ContractAddress) {
 #[should_panic(expected: ('Caller is not the owner',))]
 fn given_caller_is_not_owner_it_should_revert() {
     let (address_provider, address_provider_address) = setup();
-    let addresses: Span<ContractAddress> = array![
-        contract_address_const::<0x1>(),
-        contract_address_const::<0x2>(),
-        contract_address_const::<0x3>(),
-        contract_address_const::<0x4>(),
-        contract_address_const::<0x5>(),
-        contract_address_const::<0x6>(),
-        contract_address_const::<0x7>(),
-        contract_address_const::<0x8>(),
-        contract_address_const::<0x9>(),
-        contract_address_const::<0x10>(),
-        contract_address_const::<0x11>(),
-        contract_address_const::<0x12>(),
-        contract_address_const::<0x13>(),
-        contract_address_const::<0x14>(),
-    ]
-        .span();
     start_prank(
         CheatTarget::One(address_provider_address), contract_address_const::<'not_owner'>()
     );
-
-    address_provider.set_addresses(addresses);
+    address_provider.set_addresses(array![].span());
 }
 
 // This tests check that contract owner can't call twice the function
@@ -123,6 +105,63 @@ fn given_caller_is_owner_and_at_least_one_address_is_zero_it_should_revert() {
         contract_address_const::<0x13>(),
         contract_address_const::<0x14>(),
         contract_address_const::<0x15>(),
+    ]
+        .span();
+
+    address_provider.set_addresses(addresses);
+}
+// This tests check that no address zero is allowed
+// It calls address_provider.set_addresses()
+// The test expects the call to revert
+#[test]
+#[should_panic(expected: ('Address is zero',))]
+fn given_caller_is_owner_and_first_address_is_zero_it_should_revert() {
+    let (address_provider, address_provider_address) = setup();
+    let addresses: Span<ContractAddress> = array![
+        contract_address_const::<0x0>(),
+        contract_address_const::<0x2>(),
+        contract_address_const::<0x3>(),
+        contract_address_const::<0x4>(),
+        contract_address_const::<0x5>(),
+        contract_address_const::<0x6>(),
+        contract_address_const::<0x7>(),
+        contract_address_const::<0x8>(),
+        contract_address_const::<0x9>(),
+        contract_address_const::<0x10>(),
+        contract_address_const::<0x11>(),
+        contract_address_const::<0x12>(),
+        contract_address_const::<0x13>(),
+        contract_address_const::<0x14>(),
+        contract_address_const::<0x15>(),
+    ]
+        .span();
+
+    address_provider.set_addresses(addresses);
+}
+
+// This tests check that no address zero is allowed
+// It calls address_provider.set_addresses()
+// The test expects the call to revert
+#[test]
+#[should_panic(expected: ('Address is zero',))]
+fn given_caller_is_owner_and_last_address_is_zero_it_should_revert() {
+    let (address_provider, address_provider_address) = setup();
+    let addresses: Span<ContractAddress> = array![
+        contract_address_const::<0x1>(),
+        contract_address_const::<0x2>(),
+        contract_address_const::<0x3>(),
+        contract_address_const::<0x4>(),
+        contract_address_const::<0x5>(),
+        contract_address_const::<0x6>(),
+        contract_address_const::<0x7>(),
+        contract_address_const::<0x8>(),
+        contract_address_const::<0x9>(),
+        contract_address_const::<0x10>(),
+        contract_address_const::<0x11>(),
+        contract_address_const::<0x12>(),
+        contract_address_const::<0x13>(),
+        contract_address_const::<0x14>(),
+        contract_address_const::<0x0>(),
     ]
         .span();
 
