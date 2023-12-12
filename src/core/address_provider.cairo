@@ -28,6 +28,7 @@ trait IAddressProvider<TContractState> {
 
 #[starknet::contract]
 mod AddressProvider {
+    use core::zeroable::Zeroable;
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::access::ownable::OwnableComponent;
     use shisui::utils::errors::CommunErrors;
@@ -40,7 +41,6 @@ mod AddressProvider {
 
     #[storage]
     struct Storage {
-        is_address_setup_initialized: bool,
         active_pool: ContractAddress,
         admin_contract: ContractAddress,
         borrower_operations: ContractAddress,
@@ -83,7 +83,7 @@ mod AddressProvider {
     impl AddressProviderImpl of super::IAddressProvider<ContractState> {
         fn set_addresses(ref self: ContractState, addresses: Span<ContractAddress>) {
             self.ownable.assert_only_owner();
-            assert(!self.is_address_setup_initialized.read(), Errors::AddressProvider__AlreadySet);
+            assert(self.active_pool.read().is_zero(), Errors::AddressProvider__AlreadySet);
             assert(addresses.len() == 15, Errors::AddressProvider__Expected15Addresses);
 
             let mut addr = addresses;
@@ -109,7 +109,6 @@ mod AddressProvider {
             self.treasury_address.write(*addresses[12]);
             self.vessel_manager.write(*addresses[13]);
             self.vessel_manager_operations.write(*addresses[14]);
-            self.is_address_setup_initialized.write(true);
         }
 
 
