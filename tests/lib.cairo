@@ -1,8 +1,5 @@
 mod unit {
     mod components {
-        mod safety_transfer {
-            mod test_decimals_correction;
-        }
     }
     mod core {
         mod address_provider {
@@ -27,6 +24,11 @@ mod unit {
             }
             mod compute_nominal_cr {
                 mod test_compute_nominal_cr;
+            }
+        }
+        mod convert {
+            mod decimals_correction {
+                mod test_decimals_correction;
             }
         }
     }
