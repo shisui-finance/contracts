@@ -228,6 +228,23 @@ mod integration {
                 mod test_received_erc20;
             }
         }
+        mod sorted_vessels {
+            mod find_insert_position {
+                mod test_find_insert_position;
+            }
+            mod insert {
+                mod test_insert;
+            }
+            mod remove {
+                mod test_remove;
+            }
+            mod re_insert {
+                mod test_re_insert;
+            }
+            mod valid_insert_position {
+                mod test_valid_insert_position;
+            }
+        }
     }
 }
 

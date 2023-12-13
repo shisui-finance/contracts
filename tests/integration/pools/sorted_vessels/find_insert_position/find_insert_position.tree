@@ -1,0 +1,7 @@
+test_find_insert_position.cairo
+├── when the NICR is lower than the tail's NICR
+│   └── it should return (tail, zero)
+├── when the NICR is higher than the head's NICR
+│   └── it should return (zero, head)
+└── when the NICR is between the tail's NICR and the head's NICR
+    └── it should return the right position
