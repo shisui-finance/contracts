@@ -7,10 +7,16 @@ version = "0.8.0"
 source = "git+https://github.com/OpenZeppelin/cairo-contracts.git?tag=v0.8.0#c23e8e96de60e6e3159b1ff8591a1187269c0eb7"
 
 [[package]]
+name = "pragma_lib"
+version = "1.0.0"
+source = "git+https://github.com/astraly-labs/pragma-lib#24bb4da111ae7eb00e7cf40d4f1767c86d6447cd"
+
+[[package]]
 name = "shisui"
 version = "0.1.0"
 dependencies = [
  "openzeppelin",
+ "pragma_lib",
  "snforge_std",
 ]
 
