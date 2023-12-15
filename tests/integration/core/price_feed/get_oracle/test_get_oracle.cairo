@@ -1,10 +1,9 @@
 use traits::TryInto;
-use option::OptionTrait;
 use starknet::{ContractAddress, contract_address_const};
-use snforge_std::{start_prank, start_warp, CheatTarget, PrintTrait};
+use snforge_std::{CheatTarget, PrintTrait};
 use shisui::core::{
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait},
-    price_feed::{PriceFeed, IPriceFeedDispatcher, IPriceFeedDispatcherTrait}
+    price_feed::{IPriceFeedDispatcher, IPriceFeedDispatcherTrait}
 };
 use shisui::utils::math::pow;
 use shisui::mocks::pragma_oracle_mock::{

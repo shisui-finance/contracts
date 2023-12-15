@@ -1,5 +1,4 @@
 use traits::TryInto;
-use option::OptionTrait;
 use starknet::{ContractAddress, contract_address_const};
 use snforge_std::{
     start_prank, start_warp, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions, PrintTrait
@@ -58,7 +57,7 @@ fn given_set_new_oracle_caller_is_not_owner_it_should_revert() {
 #[should_panic(expected: ('Unknown Pair Id Error',))]
 fn given_valid_caller_when_decimals_response_is_zero_it_should_revert() {
     let (address_provider, price_feed, pragma_mock) = setup();
-    update_pragma_data(pragma_mock, pow(10, 6), 0, 0_64);
+    update_pragma_data(pragma_mock, pow(10, 6), 0, 0_u64);
     price_feed.set_oracle(contract_address_const::<'ETH/USD'>(), 'ETH/USD', DEFAULT_TIMEOUT);
 }
 
