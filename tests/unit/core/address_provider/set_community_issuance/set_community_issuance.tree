@@ -1,8 +1,0 @@
-test_set_community_issuance.cairo
-├── when the caller is not the owner
-│   └── it should revert
-└── when the caller is the owner
-    ├── when the address is the zero address
-    │   └── it should revert with CommunErrors__AddressZero
-    └── when the address is not the zero address
-        └── it should set the community issuance address
