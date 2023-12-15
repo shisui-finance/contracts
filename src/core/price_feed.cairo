@@ -3,19 +3,17 @@ use shisui::utils::traits::ContractAddressDefault;
 
 #[derive(Serde, Drop, Copy, starknet::Store, Default)]
 struct OracleRecord {
-    oracle: ContractAddress,
-    timeout_seconds: u64,
-    decimals: u8,
+    pair_id: felt252,
+    timeout_seconds: u64
 }
 
 
 #[starknet::interface]
 trait IPriceFeed<TContractState> {
+    fn set_pragma_contract(ref self: TContractState, pragma_contract: ContractAddress);
+
     fn set_oracle(
-        ref self: TContractState,
-        _token: ContractAddress,
-        _oracle: ContractAddress,
-        _timeout_seconds: u64,
+        ref self: TContractState, token: ContractAddress, pair_id: felt252, timeout_seconds: u64
     );
 
     // @notice Fetches the price for an asset from a previosly configured oracle.
@@ -26,72 +24,185 @@ trait IPriceFeed<TContractState> {
     //     - VesselManagerOperations.liquidate_vessels()
     //     - VesselManagerOperations.batch_liquidate_vessels()
     //     - VesselManagerOperations.redeem_collateral()
-    fn fetch_price(self: @TContractState, _token: ContractAddress) -> u256;
+    fn fetch_price(self: @TContractState, token: ContractAddress) -> u256;
 
-    fn get_oracles(self: @TContractState, _token: ContractAddress) -> OracleRecord;
+    fn get_oracle(self: @TContractState, token: ContractAddress) -> OracleRecord;
+
+    fn get_pragma_contract(self: @TContractState) -> ContractAddress;
+
+    fn get_address_provider(self: @TContractState) -> ContractAddress;
 }
 
 
 #[starknet::contract]
 mod PriceFeed {
-    use starknet::ContractAddress;
+    use core::option::OptionTrait;
+    use core::traits::TryInto;
+    use starknet::{
+        ContractAddress, get_caller_address, contract_address_const, get_block_timestamp
+    };
+
+    use openzeppelin::access::ownable::OwnableComponent;
+    use pragma_lib::abi::{IPragmaABIDispatcher, IPragmaABIDispatcherTrait};
+    use pragma_lib::types::{AggregationMode, DataType, PragmaPricesResponse};
     use shisui::core::address_provider::{
         IAddressProviderDispatcher, IAddressProviderDispatcherTrait
     };
+    use shisui::utils::errors::CommunErrors;
+    use shisui::utils::math::pow;
+    use shisui::utils::constants::TARGET_DECIMALS;
     use super::OracleRecord;
 
-    const TARGET_DECIMALS: u8 = 18;
+    use snforge_std::PrintTrait;
+
+    component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+
+    #[abi(embed_v0)]
+    impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
+    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     #[storage]
     struct Storage {
+        pragma_contract: IPragmaABIDispatcher,
         address_provider: IAddressProviderDispatcher,
         oracles: LegacyMap<ContractAddress, OracleRecord>,
+        #[substorage(v0)]
+        ownable: OwnableComponent::Storage,
+    }
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        #[flat]
+        OwnableEvent: OwnableComponent::Event,
+        NewOracleRegistered: NewOracleRegistered,
+    }
+
+
+    #[derive(Drop, starknet::Event)]
+    struct NewOracleRegistered {
+        #[key]
+        token: ContractAddress,
+        pair_id: felt252,
+        timeout_seconds: u64
     }
 
     mod Errors {
-        const PriceFeed__ExistingOracleRequired: felt252 = 'Existing Oracle Required';
-        const PriceFeed__InvalidDecimalsError: felt252 = 'Invalid Decimals Error';
         const PriceFeed__InvalidOracleResponseError: felt252 = 'Invalid Oracle Response Error';
-        const PriceFeed__TimelockOnlyError: felt252 = 'Timelock Only Error';
         const PriceFeed__UnknownAssetError: felt252 = 'Unknown Asset Error';
+        const PriceFeed__InvalidPairId: felt252 = 'Unknown Pair Id Error';
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, address_provider: IAddressProviderDispatcher) {}
+    fn constructor(
+        ref self: ContractState, address_provider: ContractAddress, pragma_contract: ContractAddress
+    ) {
+        self.pragma_contract.write(IPragmaABIDispatcher { contract_address: pragma_contract });
+        self
+            .address_provider
+            .write(IAddressProviderDispatcher { contract_address: address_provider });
+        self.ownable.initializer(get_caller_address());
+    }
 
     #[external(v0)]
     impl PriceFeedImpl of super::IPriceFeed<ContractState> {
-        fn set_oracle(
-            ref self: ContractState,
-            _token: ContractAddress,
-            _oracle: ContractAddress,
-            _timeout_seconds: u64
-        ) {}
-
-        fn fetch_price(self: @ContractState, _token: ContractAddress) -> u256 {
-            return 0;
+        fn set_pragma_contract(ref self: ContractState, pragma_contract: ContractAddress) {
+            self._require_owner_or_timelock(self.pragma_contract.read().contract_address.is_zero());
+            self.pragma_contract.write(IPragmaABIDispatcher { contract_address: pragma_contract });
         }
 
-        fn get_oracles(self: @ContractState, _token: ContractAddress) -> OracleRecord {
-            return Default::default();
+        fn set_oracle(
+            ref self: ContractState, token: ContractAddress, pair_id: felt252, timeout_seconds: u64
+        ) {
+            let mut oracle: OracleRecord = self.oracles.read(token);
+            self._require_owner_or_timelock(oracle.pair_id.is_zero());
+
+            oracle.pair_id = pair_id;
+            oracle.timeout_seconds = timeout_seconds;
+
+            self._fetch_oracle_scaled_price(oracle);
+
+            self.oracles.write(token, oracle);
+            self
+                .emit(
+                    NewOracleRegistered {
+                        token: token, pair_id: pair_id, timeout_seconds: timeout_seconds
+                    }
+                );
+        }
+
+        fn fetch_price(self: @ContractState, token: ContractAddress) -> u256 {
+            let oracle: OracleRecord = self.oracles.read(token);
+            assert(oracle.pair_id.is_non_zero(), Errors::PriceFeed__UnknownAssetError);
+
+            return self._fetch_oracle_scaled_price(oracle);
+        }
+
+
+        fn get_oracle(self: @ContractState, token: ContractAddress) -> OracleRecord {
+            return self.oracles.read(token);
+        }
+
+        fn get_pragma_contract(self: @ContractState) -> ContractAddress {
+            return self.pragma_contract.read().contract_address;
+        }
+        fn get_address_provider(self: @ContractState) -> ContractAddress {
+            return self.address_provider.read().contract_address;
         }
     }
 
     #[generate_trait]
     impl InternalFunctions of InternalFunctionsTrait {
-        fn _fetch_decimals(_oracle: ContractAddress) -> u8 {
-            return 18;
-        }
-        fn _fetch_oracle_scaled_price(_oracle_price: u256, _price_timestamp: u64) -> u256 {
-            return 0;
-        }
-        fn _is_stale_price(_priceTimestamp: u256, _oracle_timeout_seconds: u64) -> bool {
-            return false;
+        fn _fetch_oracle_scaled_price(self: @ContractState, oracle: OracleRecord) -> u256 {
+            let prices_response: PragmaPricesResponse = self._fetch_oracle(oracle);
+            let price = self
+                ._scale_price_by_digits(
+                    prices_response.price.into(), prices_response.decimals.try_into().unwrap()
+                );
+            assert(price.is_non_zero(), Errors::PriceFeed__InvalidOracleResponseError);
+            return price;
         }
 
-        fn _scale_price_by_digits(_price: u256, _price_digits: u256) -> u256 {
-            return 0;
+        fn _fetch_oracle(self: @ContractState, oracle: OracleRecord) -> PragmaPricesResponse {
+            let pragma_contract: IPragmaABIDispatcher = self.pragma_contract.read();
+            let data: PragmaPricesResponse = pragma_contract
+                .get_data(DataType::SpotEntry(oracle.pair_id), AggregationMode::Median(()));
+
+            assert(data.decimals.is_non_zero(), Errors::PriceFeed__InvalidPairId);
+            assert(
+                self._is_not_stale_price(data.last_updated_timestamp, oracle.timeout_seconds),
+                Errors::PriceFeed__InvalidOracleResponseError
+            );
+            return data;
         }
-        fn _require_owner_or_timelock(_token: ContractAddress) {}
+
+        fn _is_not_stale_price(
+            self: @ContractState, price_timestamp: u64, oracle_timeout_seconds: u64
+        ) -> bool {
+            return get_block_timestamp() - price_timestamp <= oracle_timeout_seconds;
+        }
+
+        fn _scale_price_by_digits(self: @ContractState, price: u256, price_decimals: u8) -> u256 {
+            if (price_decimals > TARGET_DECIMALS) {
+                return price / pow(10, (price_decimals - TARGET_DECIMALS));
+            }
+            if (price_decimals < TARGET_DECIMALS) {
+                return price * pow(10, (TARGET_DECIMALS - price_decimals));
+            }
+            return price;
+        }
+
+
+        fn _require_owner_or_timelock(self: @ContractState, is_new: bool) {
+            let caller = get_caller_address();
+            if (is_new) {
+                self.ownable.assert_only_owner();
+            } else {
+                assert(
+                    caller == self.address_provider.read().get_timelock_address(),
+                    CommunErrors::CommunErrors__OnlyTimelock
+                );
+            }
+        }
     }
 }

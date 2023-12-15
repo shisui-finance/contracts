@@ -38,8 +38,29 @@ fn deploy_safety_transfer_mock() -> ContractAddress {
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_erc20_mock(decimals: u8) -> ContractAddress {
     let contract = declare('ERC20Mock');
-    let constructor_calldata = array![decimals.into()];
-    deploy_mock_contract(contract, @constructor_calldata)
+    deploy_mock_contract(contract, @array![decimals.into()])
+}
+
+/// Utility function to deploy a pragma oracle mock contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_pragma_oracle_mock() -> ContractAddress {
+    let contract = declare('PragmaOracleMock');
+    deploy_mock_contract(contract, @array![])
+}
+
+/// Utility function to deploy a pragma oracle mock contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_price_feed(
+    address_provider: ContractAddress, pragma_contract: ContractAddress
+) -> ContractAddress {
+    let contract = declare('PriceFeed');
+    deploy_mock_contract(contract, @array![address_provider.into(), pragma_contract.into()])
 }
 
 
@@ -50,6 +71,5 @@ fn deploy_erc20_mock(decimals: u8) -> ContractAddress {
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_address_provider() -> ContractAddress {
     let contract = declare('AddressProvider');
-    let constructor_calldata = array![];
-    deploy_mock_contract(contract, @constructor_calldata)
+    deploy_mock_contract(contract, @array![])
 }

@@ -31,5 +31,6 @@ mod utils {
 mod mocks {
     mod safety_transfer_mock;
     mod erc20_mock;
+    mod pragma_oracle_mock;
 }
 
