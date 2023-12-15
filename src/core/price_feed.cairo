@@ -36,7 +36,6 @@ trait IPriceFeed<TContractState> {
 
 #[starknet::contract]
 mod PriceFeed {
-    use core::option::OptionTrait;
     use core::traits::TryInto;
     use starknet::{
         ContractAddress, get_caller_address, contract_address_const, get_block_timestamp
