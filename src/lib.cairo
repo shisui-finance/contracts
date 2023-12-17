@@ -12,6 +12,7 @@ mod core {
 }
 
 mod pools {
+    mod stability_pool;
     mod sorted_vessels;
     mod default_pool;
     mod collateral_surplus_pool;

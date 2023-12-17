@@ -64,6 +64,7 @@ mod integration {
     }
     mod core {
         mod admin_contract {
+            mod setup;
             mod add_new_collateral {
                 mod test_add_new_collateral;
             }
