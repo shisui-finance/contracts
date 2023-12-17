@@ -9,5 +9,5 @@ test_set_mcr.cairo
         │   └── it should revert AdminContract__SafeCheckError
         └── when value is between 101% and 1000%
             ├── it should correclty set the mcr
-            └── it should emit {MCRChanged} event
+            └── it should emit {MCRUpdated} event
 

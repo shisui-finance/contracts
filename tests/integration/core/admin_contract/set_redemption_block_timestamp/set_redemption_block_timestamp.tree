@@ -6,5 +6,5 @@ test_set_redemption_block_timestamp.cairo
     │   └── it should revert AdminContract__CollateralNotActive
     └──  when collateral is active
         ├── it should correclty set the redemption block timestamp
-        └── it should emit {RedemptionBlockTimestampChanged} event
+        └── it should emit {RedemptionBlockTimestampUpdated} event
 

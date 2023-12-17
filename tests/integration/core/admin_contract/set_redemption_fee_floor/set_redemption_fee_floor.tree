@@ -9,5 +9,5 @@ test_set_redemption_fee_floor.cairo
         │   └── it should revert AdminContract__SafeCheckError
         └── when value is between 0.1% and 10%
             ├── it should correclty set the redemption fee floor
-            └── it should emit {RedemptionFeeFloorChanged} event
+            └── it should emit {RedemptionFeeFloorUpdated} event
 

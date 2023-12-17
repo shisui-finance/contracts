@@ -3,6 +3,6 @@ test_remove_whitelist.cairo
 │   └── it should revert
 └── when caller is owner
     ├── it should  set whitelist to false for the given address
-    └── it should emit {WhitelistChanged} event
+    └── it should emit {WhitelistUpdated} event
 
  

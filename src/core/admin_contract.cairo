@@ -107,6 +107,8 @@ mod AdminContract {
     use shisui::pools::stability_pool::{IStabilityPoolDispatcher, IStabilityPoolDispatcherTrait};
     use super::CollateralParams;
 
+
+    use snforge_std::PrintTrait;
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
     #[abi(embed_v0)]
@@ -312,7 +314,6 @@ mod AdminContract {
         fn set_borrowing_fee(
             ref self: ContractState, collateral: ContractAddress, borrowing_fee: u256
         ) {
-            self._only_timelock();
             self
                 ._safe_check(
                     'Borrowing Fee', collateral, borrowing_fee, 0, _100_pct / 10
@@ -576,6 +577,7 @@ mod AdminContract {
                 panic(
                     array![
                         parameter,
+                        collateral.into(),
                         entered_value.try_into().unwrap(),
                         min.try_into().unwrap(),
                         max.try_into().unwrap()

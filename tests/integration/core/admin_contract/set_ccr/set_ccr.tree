@@ -9,5 +9,5 @@ test_set_ccr.cairo
         │   └── it should revert AdminContract__SafeCheckError
         └── when value is between 100% and 1000%
             ├── it should correclty set the ccr
-            └── it should emit {CCRChanged} event
+            └── it should emit {CCRUpdated} event
 

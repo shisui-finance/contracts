@@ -9,5 +9,5 @@ test_set_percent_divisor.cairo
         │   └── it should revert AdminContract__SafeCheckError
         └── when value is between 2 and 200
             ├── it should correclty set the percent divisor
-            └── it should emit {PercentDivisorChanged} event
+            └── it should emit {PercentDivisorUpdated} event
 
