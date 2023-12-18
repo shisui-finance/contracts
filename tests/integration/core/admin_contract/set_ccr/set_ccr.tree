@@ -6,7 +6,7 @@ test_set_ccr.cairo
     │   └── it should revert AdminContract__CollateralNotActive
     └──  when collateral is active
         ├── when value is not between 100% and 1000%
-        │   └── it should revert AdminContract__SafeCheckError
+        │   └── it should revert AdminContract__ValueOutOfRange
         └── when value is between 100% and 1000%
             ├── it should correclty set the ccr
             └── it should emit {CCRUpdated} event

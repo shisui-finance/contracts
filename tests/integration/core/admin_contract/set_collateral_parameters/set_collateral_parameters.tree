@@ -3,7 +3,7 @@ test_set_collateral_parameters.cairo
 │   └── it should revert OnlyTimelock
 └── when caller is the timelock
     ├── when at least one param is not in correct range
-    │   └── it should revert AdminContract__SafeCheckError
+    │   └── it should revert AdminContract__ValueOutOfRange
     └── when params valid
         ├── it should correctly set collateral parameters
         └── it should emit {CollateralAdded} event

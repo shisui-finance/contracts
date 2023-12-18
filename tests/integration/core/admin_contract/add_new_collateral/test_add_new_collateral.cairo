@@ -67,10 +67,10 @@ fn given_caller_valid_and_collateral_already_exist_it_should_revert() {
 #[test]
 fn given_setup_not_initialized_and_caller_is_owner_it_should_correctly_add_the_collateral() {
     let (address_provider, admin_contract, _) = setup();
-    let collateral_addresss = contract_address_const::<'collateral'>();
+    let collateral_address = contract_address_const::<'collateral'>();
     let mut spy = spy_events(SpyOn::One(admin_contract.contract_address));
     admin_contract
-        .add_new_collateral(collateral_addresss, debt_token_gas_compensation, valid_decimals);
+        .add_new_collateral(collateral_address, debt_token_gas_compensation, valid_decimals);
     // event check
     spy
         .assert_emitted(
@@ -78,60 +78,60 @@ fn given_setup_not_initialized_and_caller_is_owner_it_should_correctly_add_the_c
                 (
                     admin_contract.contract_address,
                     AdminContract::Event::CollateralAdded(
-                        AdminContract::CollateralAdded { collateral: collateral_addresss }
+                        AdminContract::CollateralAdded { collateral: collateral_address }
                     )
                 )
             ]
         );
     assert(spy.events.len() == 0, 'There should be no events');
-    assert(admin_contract.get_index(collateral_addresss) == 0, 'index should be 0');
-    assert(admin_contract.get_is_active(collateral_addresss) == false, 'is_active should be false');
+    assert(admin_contract.get_index(collateral_address) == 0, 'index should be 0');
+    assert(admin_contract.get_is_active(collateral_address) == false, 'is_active should be false');
     assert(
-        admin_contract.get_ccr(collateral_addresss) == AdminContract::CCR_DEFAULT,
+        admin_contract.get_ccr(collateral_address) == AdminContract::CCR_DEFAULT,
         'CCR should be default'
     );
     assert(
-        admin_contract.get_mcr(collateral_addresss) == AdminContract::MCR_DEFAULT,
+        admin_contract.get_mcr(collateral_address) == AdminContract::MCR_DEFAULT,
         'MCR should be default'
     );
     assert(
         admin_contract
-            .get_borrowing_fee(collateral_addresss) == AdminContract::BORROWING_FEE_DEFAULT,
+            .get_borrowing_fee(collateral_address) == AdminContract::BORROWING_FEE_DEFAULT,
         'borrowing_fee should be default'
     );
     assert(
-        admin_contract.get_min_net_debt(collateral_addresss) == AdminContract::MIN_NET_DEBT_DEFAULT,
+        admin_contract.get_min_net_debt(collateral_address) == AdminContract::MIN_NET_DEBT_DEFAULT,
         'min_net_debt should be default'
     );
     assert(
-        admin_contract.get_mint_cap(collateral_addresss) == AdminContract::MINT_CAP_DEFAULT,
+        admin_contract.get_mint_cap(collateral_address) == AdminContract::MINT_CAP_DEFAULT,
         'mint_cap should be default'
     );
     assert(
         admin_contract
-            .get_percent_divisor(collateral_addresss) == AdminContract::PERCENT_DIVISOR_DEFAULT,
+            .get_percent_divisor(collateral_address) == AdminContract::PERCENT_DIVISOR_DEFAULT,
         'pct divisor should be default'
     );
     assert(
         admin_contract
             .get_redemption_fee_floor(
-                collateral_addresss
+                collateral_address
             ) == AdminContract::REDEMPTION_FEE_FLOOR_DEFAULT,
         'redemp fee should be default'
     );
     assert(
         admin_contract
             .get_redemption_block_timestamp(
-                collateral_addresss
+                collateral_address
             ) == AdminContract::REDEMPTION_BLOCK_TIMESTAMP_DEFAULT,
         'redemp block should be default'
     );
     assert(
         admin_contract
-            .get_debt_token_gas_compensation(collateral_addresss) == debt_token_gas_compensation,
+            .get_debt_token_gas_compensation(collateral_address) == debt_token_gas_compensation,
         'gas_compensation should be 1000'
     );
-    let indices = admin_contract.get_indices(array![collateral_addresss].span());
+    let indices = admin_contract.get_indices(array![collateral_address].span());
     assert(indices.len() == 1, 'indices length should be 1');
     assert(*indices[0] == 0_usize, 'index should be 0');
 }
@@ -139,12 +139,12 @@ fn given_setup_not_initialized_and_caller_is_owner_it_should_correctly_add_the_c
 #[test]
 fn given_setup_is_initialized_and_caller_is_timelock_it_should_correctly_add_the_collateral() {
     let (address_provider, admin_contract, timelock_address) = setup();
-    let collateral_addresss = contract_address_const::<'collateral'>();
+    let collateral_address = contract_address_const::<'collateral'>();
     admin_contract.set_setup_initialized();
     start_prank(CheatTarget::One(admin_contract.contract_address), timelock_address);
     let mut spy = spy_events(SpyOn::One(admin_contract.contract_address));
     admin_contract
-        .add_new_collateral(collateral_addresss, debt_token_gas_compensation, valid_decimals);
+        .add_new_collateral(collateral_address, debt_token_gas_compensation, valid_decimals);
     // event check
     spy
         .assert_emitted(
@@ -152,60 +152,60 @@ fn given_setup_is_initialized_and_caller_is_timelock_it_should_correctly_add_the
                 (
                     admin_contract.contract_address,
                     AdminContract::Event::CollateralAdded(
-                        AdminContract::CollateralAdded { collateral: collateral_addresss }
+                        AdminContract::CollateralAdded { collateral: collateral_address }
                     )
                 )
             ]
         );
     assert(spy.events.len() == 0, 'There should be no events');
-    assert(admin_contract.get_index(collateral_addresss) == 0, 'index should be 0');
-    assert(admin_contract.get_is_active(collateral_addresss) == false, 'is_active should be false');
+    assert(admin_contract.get_index(collateral_address) == 0, 'index should be 0');
+    assert(admin_contract.get_is_active(collateral_address) == false, 'is_active should be false');
     assert(
-        admin_contract.get_ccr(collateral_addresss) == AdminContract::CCR_DEFAULT,
+        admin_contract.get_ccr(collateral_address) == AdminContract::CCR_DEFAULT,
         'CCR should be default'
     );
     assert(
-        admin_contract.get_mcr(collateral_addresss) == AdminContract::MCR_DEFAULT,
+        admin_contract.get_mcr(collateral_address) == AdminContract::MCR_DEFAULT,
         'MCR should be default'
     );
     assert(
         admin_contract
-            .get_borrowing_fee(collateral_addresss) == AdminContract::BORROWING_FEE_DEFAULT,
+            .get_borrowing_fee(collateral_address) == AdminContract::BORROWING_FEE_DEFAULT,
         'borrowing_fee should be default'
     );
     assert(
-        admin_contract.get_min_net_debt(collateral_addresss) == AdminContract::MIN_NET_DEBT_DEFAULT,
+        admin_contract.get_min_net_debt(collateral_address) == AdminContract::MIN_NET_DEBT_DEFAULT,
         'min_net_debt should be default'
     );
     assert(
-        admin_contract.get_mint_cap(collateral_addresss) == AdminContract::MINT_CAP_DEFAULT,
+        admin_contract.get_mint_cap(collateral_address) == AdminContract::MINT_CAP_DEFAULT,
         'mint_cap should be default'
     );
     assert(
         admin_contract
-            .get_percent_divisor(collateral_addresss) == AdminContract::PERCENT_DIVISOR_DEFAULT,
+            .get_percent_divisor(collateral_address) == AdminContract::PERCENT_DIVISOR_DEFAULT,
         'pct divisor should be default'
     );
     assert(
         admin_contract
             .get_redemption_fee_floor(
-                collateral_addresss
+                collateral_address
             ) == AdminContract::REDEMPTION_FEE_FLOOR_DEFAULT,
         'redemp fee should be default'
     );
     assert(
         admin_contract
             .get_redemption_block_timestamp(
-                collateral_addresss
+                collateral_address
             ) == AdminContract::REDEMPTION_BLOCK_TIMESTAMP_DEFAULT,
         'redemp block should be default'
     );
     assert(
         admin_contract
-            .get_debt_token_gas_compensation(collateral_addresss) == debt_token_gas_compensation,
+            .get_debt_token_gas_compensation(collateral_address) == debt_token_gas_compensation,
         'gas_compensation should be 1000'
     );
-    let indices = admin_contract.get_indices(array![collateral_addresss].span());
+    let indices = admin_contract.get_indices(array![collateral_address].span());
     assert(indices.len() == 1, 'indices length should be 1');
     assert(*indices[0] == 0_usize, 'index should be 0');
 }

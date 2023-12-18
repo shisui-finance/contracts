@@ -8,8 +8,12 @@ test_set_borrowing_fee.cairo
     │   └── it should revert AdminContract__CollateralNotActive
     └──  when collateral is active
         ├── when value is not between 0 and 0.1e18
-        │   └── it should revert AdminContract__SafeCheckError
-        └── when value is between 0 and 0.1e18
-            ├── it should correclty set the borrowing fee
-            └── it should emit {BorrowingFeeUpdated} event
+        │   └── it should revert AdminContract__ValueOutOfRange
+        ├── when value is equal to 0
+        │   └── it should correclty set the borrowing fee
+        ├── when value is equal to 0.1e18
+        │   └── it should correclty set the borrowing fee
+        ├── when value is between 0 and 0.1e18
+        │   └── it should correclty set the borrowing fee
+        └── it should emit {BorrowingFeeUpdated} event
 

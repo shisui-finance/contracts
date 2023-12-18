@@ -6,7 +6,7 @@ test_set_mcr.cairo
     │   └── it should revert AdminContract__CollateralNotActive
     └──  when collateral is active
         ├── when value is not between 101% and 1000%
-        │   └── it should revert AdminContract__SafeCheckError
+        │   └── it should revert AdminContract__ValueOutOfRange
         └── when value is between 101% and 1000%
             ├── it should correclty set the mcr
             └── it should emit {MCRUpdated} event
