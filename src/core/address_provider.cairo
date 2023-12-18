@@ -23,13 +23,13 @@ mod AddressesKey {
 
 #[starknet::interface]
 trait IAddressProvider<TContractState> {
-    fn set_address(ref self: TContractState, key: felt252, address: ContractAddress);
+    fn set_address(ref self: TContractState, key: felt252, new_address: ContractAddress);
     fn get_address(self: @TContractState, key: felt252) -> ContractAddress;
 }
 
 #[starknet::contract]
 mod AddressProvider {
-    use core::zeroable::Zeroable;
+    use zeroable::Zeroable;
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::access::ownable::OwnableComponent;
     use shisui::utils::errors::CommunErrors;
@@ -56,11 +56,11 @@ mod AddressProvider {
         NewAddressRegistered: NewAddressRegistered,
     }
 
-
     #[derive(Drop, starknet::Event)]
     struct NewAddressRegistered {
         key: felt252,
-        address: ContractAddress,
+        old_address: ContractAddress,
+        new_address: ContractAddress,
     }
 
     #[constructor]
@@ -70,11 +70,12 @@ mod AddressProvider {
 
     #[external(v0)]
     impl AddressProviderImpl of super::IAddressProvider<ContractState> {
-        fn set_address(ref self: ContractState, key: felt252, address: ContractAddress) {
-            self.assert_address_not_zero(address);
-            self._require_owner_or_timelock(self.addresses.read(key).is_zero());
-            self.addresses.write(key, address);
-            self.emit(NewAddressRegistered { key, address });
+        fn set_address(ref self: ContractState, key: felt252, new_address: ContractAddress) {
+            self.assert_address_not_zero(new_address);
+            self.only_owner_or_timelock(self.addresses.read(key).is_zero());
+            let old_address = self.addresses.read(key);
+            self.addresses.write(key, new_address);
+            self.emit(NewAddressRegistered { key, old_address, new_address });
         }
 
         fn get_address(self: @ContractState, key: felt252) -> ContractAddress {
@@ -90,7 +91,7 @@ mod AddressProvider {
         }
 
         #[inline(always)]
-        fn _require_owner_or_timelock(self: @ContractState, is_new: bool) {
+        fn only_owner_or_timelock(self: @ContractState, is_new: bool) {
             let caller = get_caller_address();
             if (is_new) {
                 self.ownable.assert_only_owner();

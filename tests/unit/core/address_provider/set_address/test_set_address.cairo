@@ -3,6 +3,7 @@ use snforge_std::{start_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAs
 use shisui::core::address_provider::{
     IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey, AddressProvider
 };
+use shisui::utils::traits::ContractAddressDefault;
 
 fn setup() -> (IAddressProviderDispatcher, ContractAddress) {
     let contract_address: ContractAddress = tests::tests_lib::deploy_address_provider();
@@ -60,7 +61,9 @@ fn given_caller_is_owner_it_should_set_new_address() {
                     address_provider.contract_address,
                     AddressProvider::Event::NewAddressRegistered(
                         AddressProvider::NewAddressRegistered {
-                            key: 'active_pool', address: active_pool_address,
+                            key: 'active_pool',
+                            old_address: Default::default(),
+                            new_address: active_pool_address,
                         }
                     )
                 )
@@ -103,9 +106,8 @@ fn given_caller_is_timelock_it_should_update_key_address() {
     let (address_provider, address_provider_address) = setup();
     let timelock_address = contract_address_const::<'timelock'>();
     let new_active_pool_address = contract_address_const::<'new_active_pool'>();
-
-    address_provider
-        .set_address(AddressesKey::active_pool, contract_address_const::<'active_pool'>());
+    let first_active_pool_address = contract_address_const::<'active_pool'>();
+    address_provider.set_address(AddressesKey::active_pool, first_active_pool_address);
 
     address_provider.set_address(AddressesKey::timelock, timelock_address);
 
@@ -123,7 +125,9 @@ fn given_caller_is_timelock_it_should_update_key_address() {
                     address_provider.contract_address,
                     AddressProvider::Event::NewAddressRegistered(
                         AddressProvider::NewAddressRegistered {
-                            key: 'active_pool', address: new_active_pool_address,
+                            key: 'active_pool',
+                            old_address: first_active_pool_address,
+                            new_address: new_active_pool_address,
                         }
                     )
                 )
