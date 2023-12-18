@@ -1,10 +1,12 @@
 test_set_mint_cap.cairo
-├── when caller is not the timelock
-│   └── it should revert OnlyTimelock
-└── when caller is the timelock
-    ├── when collateral is not active
-    │   └── it should revert AdminContract__CollateralNotActive
-    └──  when collateral is active
+├── when setup is not initialized and caller not the owner
+│   └── it should revert CommunErrors__OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
+│   └── it should revert CommunErrors__OnlyTimelock
+└── when caller is valid
+    ├── when collateral not exist
+    │   └── it should revert AdminContract__CollateralNotExist
+    └──  when collateral exist
         ├── it should correclty set the mint cap
         └── it should emit {MintCapUpdated} event
 

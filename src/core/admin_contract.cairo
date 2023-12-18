@@ -363,6 +363,7 @@ mod AdminContract {
 
         fn set_mint_cap(ref self: ContractState, collateral: ContractAddress, mint_cap: u256) {
             self.only_timelock();
+            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             let old_mint_cap = params.mint_cap;
             params.mint_cap = mint_cap;
