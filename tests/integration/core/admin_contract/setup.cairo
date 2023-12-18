@@ -7,7 +7,7 @@ use shisui::pools::stability_pool::{IStabilityPoolDispatcher, IStabilityPoolDisp
 
 use tests::tests_lib::{deploy_address_provider, deploy_admin_contract, deploy_stability_pool};
 
-fn setup() -> (IAddressProviderDispatcher, IAdminContractDispatcher, ContractAddress) {
+fn setup() -> (IAdminContractDispatcher, ContractAddress) {
     let address_provider_address: ContractAddress = deploy_address_provider();
     let address_provider: IAddressProviderDispatcher = IAddressProviderDispatcher {
         contract_address: address_provider_address
@@ -24,5 +24,5 @@ fn setup() -> (IAddressProviderDispatcher, IAdminContractDispatcher, ContractAdd
     address_provider.set_address(AddressesKey::timelock, timelock_address);
     address_provider.set_address(AddressesKey::stability_pool, stability_pool_address);
 
-    return (address_provider, admin_contract, timelock_address);
+    return (admin_contract, timelock_address);
 }

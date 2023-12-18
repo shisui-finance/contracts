@@ -7,6 +7,6 @@ test_set_mint_cap.cairo
     ├── when collateral not exist
     │   └── it should revert AdminContract__CollateralNotExist
     └──  when collateral exist
-        ├── it should correclty set the mint cap
+        ├── it should correclty set the Mint Cap
         └── it should emit {MintCapUpdated} event
 

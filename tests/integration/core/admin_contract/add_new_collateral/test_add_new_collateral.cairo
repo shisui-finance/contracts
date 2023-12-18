@@ -1,8 +1,7 @@
 use starknet::{ContractAddress, contract_address_const};
 use snforge_std::{start_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions};
-use shisui::core::{
-    address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
-    admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait, AdminContract}
+use shisui::core::admin_contract::{
+    IAdminContractDispatcher, IAdminContractDispatcherTrait, AdminContract
 };
 use super::super::setup::setup;
 
@@ -12,7 +11,7 @@ const debt_token_gas_compensation: u256 = 1000;
 #[test]
 #[should_panic(expected: ('Caller is not Owner',))]
 fn given_setup_not_initialized_and_caller_is_not_owner_it_should_revert() {
-    let (address_provider, admin_contract, _) = setup();
+    let (admin_contract, _) = setup();
 
     start_prank(
         CheatTarget::One(admin_contract.contract_address), contract_address_const::<'not_owner'>()
@@ -26,7 +25,7 @@ fn given_setup_not_initialized_and_caller_is_not_owner_it_should_revert() {
 #[test]
 #[should_panic(expected: ('Caller not Timelock',))]
 fn given_setup_is_initialized_and_caller_is_not_timelock_it_should_revert() {
-    let (address_provider, admin_contract, _) = setup();
+    let (admin_contract, _) = setup();
     admin_contract.set_setup_initialized();
 
     start_prank(
@@ -42,7 +41,7 @@ fn given_setup_is_initialized_and_caller_is_not_timelock_it_should_revert() {
 #[test]
 #[should_panic(expected: ('Collateral decimals not default',))]
 fn given_caller_valid_and_decimals_not_valid_it_should_revert() {
-    let (address_provider, admin_contract, _) = setup();
+    let (admin_contract, _) = setup();
     let wrong_decimals = 8;
     admin_contract
         .add_new_collateral(
@@ -53,7 +52,7 @@ fn given_caller_valid_and_decimals_not_valid_it_should_revert() {
 #[test]
 #[should_panic(expected: ('Collateral already exist',))]
 fn given_caller_valid_and_collateral_already_exist_it_should_revert() {
-    let (address_provider, admin_contract, _) = setup();
+    let (admin_contract, _) = setup();
     admin_contract
         .add_new_collateral(
             contract_address_const::<'collateral'>(), debt_token_gas_compensation, valid_decimals
@@ -66,7 +65,7 @@ fn given_caller_valid_and_collateral_already_exist_it_should_revert() {
 
 #[test]
 fn given_setup_not_initialized_and_caller_is_owner_it_should_correctly_add_the_collateral() {
-    let (address_provider, admin_contract, _) = setup();
+    let (admin_contract, _) = setup();
     let collateral_address = contract_address_const::<'collateral'>();
     let mut spy = spy_events(SpyOn::One(admin_contract.contract_address));
     admin_contract
@@ -97,39 +96,39 @@ fn given_setup_not_initialized_and_caller_is_owner_it_should_correctly_add_the_c
     assert(
         admin_contract
             .get_borrowing_fee(collateral_address) == AdminContract::BORROWING_FEE_DEFAULT,
-        'borrowing_fee should be default'
+        'Borrowing Fee should be default'
     );
     assert(
         admin_contract.get_min_net_debt(collateral_address) == AdminContract::MIN_NET_DEBT_DEFAULT,
-        'min_net_debt should be default'
+        'Min Net Debt should be default'
     );
     assert(
         admin_contract.get_mint_cap(collateral_address) == AdminContract::MINT_CAP_DEFAULT,
-        'mint_cap should be default'
+        'Mint Cap should be default'
     );
     assert(
         admin_contract
             .get_percent_divisor(collateral_address) == AdminContract::PERCENT_DIVISOR_DEFAULT,
-        'pct divisor should be default'
+        'Pct Divisor should be default'
     );
     assert(
         admin_contract
             .get_redemption_fee_floor(
                 collateral_address
             ) == AdminContract::REDEMPTION_FEE_FLOOR_DEFAULT,
-        'redemp fee should be default'
+        'Redemp Fee should be default'
     );
     assert(
         admin_contract
             .get_redemption_block_timestamp(
                 collateral_address
             ) == AdminContract::REDEMPTION_BLOCK_TIMESTAMP_DEFAULT,
-        'redemp block should be default'
+        'Redemp Time should be default'
     );
     assert(
         admin_contract
             .get_debt_token_gas_compensation(collateral_address) == debt_token_gas_compensation,
-        'gas_compensation should be 1000'
+        'Gas Compensation should be 1000'
     );
     let indices = admin_contract.get_indices(array![collateral_address].span());
     assert(indices.len() == 1, 'indices length should be 1');
@@ -138,7 +137,7 @@ fn given_setup_not_initialized_and_caller_is_owner_it_should_correctly_add_the_c
 
 #[test]
 fn given_setup_is_initialized_and_caller_is_timelock_it_should_correctly_add_the_collateral() {
-    let (address_provider, admin_contract, timelock_address) = setup();
+    let (admin_contract, timelock_address) = setup();
     let collateral_address = contract_address_const::<'collateral'>();
     admin_contract.set_setup_initialized();
     start_prank(CheatTarget::One(admin_contract.contract_address), timelock_address);
@@ -171,39 +170,39 @@ fn given_setup_is_initialized_and_caller_is_timelock_it_should_correctly_add_the
     assert(
         admin_contract
             .get_borrowing_fee(collateral_address) == AdminContract::BORROWING_FEE_DEFAULT,
-        'borrowing_fee should be default'
+        'Borrowing Fee should be default'
     );
     assert(
         admin_contract.get_min_net_debt(collateral_address) == AdminContract::MIN_NET_DEBT_DEFAULT,
-        'min_net_debt should be default'
+        'Min Net Debt should be default'
     );
     assert(
         admin_contract.get_mint_cap(collateral_address) == AdminContract::MINT_CAP_DEFAULT,
-        'mint_cap should be default'
+        'Mint Cap should be default'
     );
     assert(
         admin_contract
             .get_percent_divisor(collateral_address) == AdminContract::PERCENT_DIVISOR_DEFAULT,
-        'pct divisor should be default'
+        'Pct Divisor should be default'
     );
     assert(
         admin_contract
             .get_redemption_fee_floor(
                 collateral_address
             ) == AdminContract::REDEMPTION_FEE_FLOOR_DEFAULT,
-        'redemp fee should be default'
+        'Redemp Fee should be default'
     );
     assert(
         admin_contract
             .get_redemption_block_timestamp(
                 collateral_address
             ) == AdminContract::REDEMPTION_BLOCK_TIMESTAMP_DEFAULT,
-        'redemp block should be default'
+        'Redemp Time should be default'
     );
     assert(
         admin_contract
             .get_debt_token_gas_compensation(collateral_address) == debt_token_gas_compensation,
-        'gas_compensation should be 1000'
+        'Gas Compensation should be 1000'
     );
     let indices = admin_contract.get_indices(array![collateral_address].span());
     assert(indices.len() == 1, 'indices length should be 1');
@@ -212,7 +211,7 @@ fn given_setup_is_initialized_and_caller_is_timelock_it_should_correctly_add_the
 
 #[test]
 fn given_caller_is_valid_it_should_correctly_add_multi_collateral() {
-    let (address_provider, admin_contract, timelock_address) = setup();
+    let (admin_contract, _) = setup();
     let collateral_1_addresss = contract_address_const::<'collateral_1'>();
     let collateral_2_addresss = contract_address_const::<'collateral_2'>();
     admin_contract

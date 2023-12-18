@@ -10,10 +10,10 @@ test_set_min_net_debt.cairo
         ├── when value is not between 0 and 2000
         │   └── it should revert AdminContract__ValueOutOfRange
         ├── when value is euqal to 0
-        │   └── it should correclty set the min net debt
+        │   └── it should correclty set the Min Net Debt
         ├── when value is equal to 2000
-        │   └── it should correclty set the min net debt
+        │   └── it should correclty set the Min Net Debt
         ├── when value is  between 0 and 2000
-        │   └── it should correclty set the min net debt
+        │   └── it should correclty set the Min Net Debt
         └── it should emit {MinNetDebtUpdated} event
 

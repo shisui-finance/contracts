@@ -10,10 +10,10 @@ test_set_borrowing_fee.cairo
         ├── when value is not between 0 and 0.1e18
         │   └── it should revert AdminContract__ValueOutOfRange
         ├── when value is equal to 0
-        │   └── it should correclty set the borrowing fee
+        │   └── it should correclty set the Borrowing Fee
         ├── when value is equal to 0.1e18
-        │   └── it should correclty set the borrowing fee
+        │   └── it should correclty set the Borrowing Fee
         ├── when value is between 0 and 0.1e18
-        │   └── it should correclty set the borrowing fee
+        │   └── it should correclty set the Borrowing Fee
         └── it should emit {BorrowingFeeUpdated} event
 
