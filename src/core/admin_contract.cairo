@@ -411,6 +411,7 @@ mod AdminContract {
             ref self: ContractState, collateral: ContractAddress, block_timestamp: u64
         ) {
             self.only_timelock();
+            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             let old_redemption_block_timestamp = params.redemption_block_timestamp;
             params.redemption_block_timestamp = block_timestamp;
