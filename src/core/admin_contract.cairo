@@ -88,14 +88,9 @@ trait IAdminContract<TContractState> {
 
 #[starknet::contract]
 mod AdminContract {
-    use shisui::core::admin_contract::IAdminContract;
-    use core::starknet::event::EventEmitter;
-    use core::option::OptionTrait;
-    use core::array::ArrayTrait;
-    use openzeppelin::access::ownable::interface::IOwnable;
-    use core::zeroable::Zeroable;
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::access::ownable::OwnableComponent;
+
 
     use shisui::utils::{
         constants::DECIMAL_PRECISION, array::StoreContractAddressArray, errors::CommunErrors,
@@ -109,6 +104,7 @@ mod AdminContract {
 
 
     use snforge_std::PrintTrait;
+
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
     #[abi(embed_v0)]
@@ -306,6 +302,7 @@ mod AdminContract {
 
         fn set_is_active(ref self: ContractState, collateral: ContractAddress, active: bool) {
             self.only_timelock();
+            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             params.is_active = active;
             self.collateral_params.write(collateral, params);
