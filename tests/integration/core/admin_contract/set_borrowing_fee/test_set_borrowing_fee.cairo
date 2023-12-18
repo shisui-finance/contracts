@@ -95,7 +95,7 @@ fn given_valid_caller_and_value_equal_min_it_should_update_the_borring_fee_value
 fn given_valid_caller_and_value_equal_max_it_should_update_the_borring_fee_value() {
     let (address_provider, admin_contract, collateral_address, _) = test_setup();
     admin_contract.set_is_active(collateral_address, true);
-    let max_value = AdminContract::_100_pct / 10;
+    let max_value = AdminContract::ONE_HUNDRED_PCT / 10;
     let mut spy = spy_events(SpyOn::One(admin_contract.contract_address));
 
     admin_contract.set_borrowing_fee(collateral_address, max_value);

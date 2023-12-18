@@ -90,8 +90,6 @@ trait IAdminContract<TContractState> {
 mod AdminContract {
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::access::ownable::OwnableComponent;
-
-
     use shisui::utils::{
         constants::DECIMAL_PRECISION, array::StoreContractAddressArray, errors::CommunErrors,
         math::pow
@@ -106,16 +104,13 @@ mod AdminContract {
     };
     use super::CollateralParams;
 
-
-    use snforge_std::PrintTrait;
-
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
-    const _100_pct: u256 = 1_000_000_000_000_000_000; // 1e18 == 100%
+    const ONE_HUNDRED_PCT: u256 = 1_000_000_000_000_000_000; // 1e18 == 100%
     const DEFAULT_DECIMALS: u8 = 18;
 
     const BORROWING_FEE_DEFAULT: u256 = 5_000_000_000_000_000; // 0.5%
@@ -294,14 +289,17 @@ mod AdminContract {
             redemption_fee_floor: u256,
         ) {
             self.only_timelock();
-            self.set_is_active(collateral, true);
-            self.set_borrowing_fee(collateral, borrowing_fee);
-            self.set_ccr(collateral, ccr);
-            self.set_mcr(collateral, mcr);
-            self.set_min_net_debt(collateral, min_net_debt);
-            self.set_mint_cap(collateral, mint_cap);
-            self.set_percent_divisor(collateral, percent_divisor);
-            self.set_redemption_fee_floor(collateral, redemption_fee_floor);
+            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
+            let mut params = self.collateral_params.read(collateral);
+            params.is_active = true;
+            self.set_borrowing_fee_internal(ref params, collateral, borrowing_fee);
+            self.set_ccr_internal(ref params, collateral, ccr);
+            self.set_mcr_internal(ref params, collateral, mcr);
+            self.set_min_net_debt_internal(ref params, collateral, min_net_debt);
+            self.set_mint_cap_internal(ref params, collateral, mint_cap);
+            self.set_percent_divisor_internal(ref params, collateral, percent_divisor);
+            self.set_redemption_fee_floor_internal(ref params, collateral, redemption_fee_floor);
+            self.collateral_params.write(collateral, params);
         }
 
         fn set_is_active(ref self: ContractState, collateral: ContractAddress, active: bool) {
@@ -316,99 +314,58 @@ mod AdminContract {
             ref self: ContractState, collateral: ContractAddress, borrowing_fee: u256
         ) {
             self.only_timelock();
-            self
-                .safe_check(
-                    'Borrowing Fee', collateral, borrowing_fee, 0, _100_pct / 10
-                ); // 0% - 10%
             let mut params = self.collateral_params.read(collateral);
-            let old_borrowing_fee = params.borrowing_fee;
-            params.borrowing_fee = borrowing_fee;
+            self.set_borrowing_fee_internal(ref params, collateral, borrowing_fee);
             self.collateral_params.write(collateral, params);
-            self.emit(BorrowingFeeUpdated { collateral, old_borrowing_fee, borrowing_fee });
         }
 
         fn set_ccr(ref self: ContractState, collateral: ContractAddress, ccr: u256) {
             self.only_timelock();
-            self.safe_check('CCR', collateral, ccr, _100_pct, _100_pct * 10); // 100% - 1000%
             let mut params = self.collateral_params.read(collateral);
-            let old_ccr = params.ccr;
-            params.ccr = ccr;
+            self.set_ccr_internal(ref params, collateral, ccr);
             self.collateral_params.write(collateral, params);
-            self.emit(CCRUpdated { collateral, old_ccr, ccr });
         }
 
         fn set_mcr(ref self: ContractState, collateral: ContractAddress, mcr: u256) {
             self.only_timelock();
-            self
-                .safe_check(
-                    'MCR', collateral, mcr, _100_pct + pow(10, 16), _100_pct * 10
-                ); // 101% - 1000%
             let mut params = self.collateral_params.read(collateral);
-            let old_mcr = params.mcr;
-            params.mcr = mcr;
+            self.set_mcr_internal(ref params, collateral, mcr);
             self.collateral_params.write(collateral, params);
-            self.emit(MCRUpdated { collateral, old_mcr, mcr });
         }
 
         fn set_min_net_debt(
             ref self: ContractState, collateral: ContractAddress, min_net_debt: u256
         ) {
             self.only_timelock();
-            self
-                .safe_check(
-                    'Min Net Debt', collateral, min_net_debt, 0, 2 * pow(10, 21)
-                ); // 0 - 2_000
             let mut params = self.collateral_params.read(collateral);
-            let old_min_net_debt = params.min_net_debt;
-            params.min_net_debt = min_net_debt;
+            self.set_min_net_debt_internal(ref params, collateral, min_net_debt);
             self.collateral_params.write(collateral, params);
-            self.emit(MinNetDebtUpdated { collateral, old_min_net_debt, min_net_debt });
         }
 
         fn set_mint_cap(ref self: ContractState, collateral: ContractAddress, mint_cap: u256) {
             self.only_timelock();
             assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
-            let old_mint_cap = params.mint_cap;
-            params.mint_cap = mint_cap;
+            self.set_mint_cap_internal(ref params, collateral, mint_cap);
             self.collateral_params.write(collateral, params);
-            self.emit(MintCapUpdated { collateral, old_mint_cap, mint_cap });
         }
 
         fn set_percent_divisor(
             ref self: ContractState, collateral: ContractAddress, percent_divisor: u256
         ) {
             self.only_timelock();
-            self.safe_check('Percent Divisor', collateral, percent_divisor, 2, 200);
             let mut params = self.collateral_params.read(collateral);
-            let old_percent_divisor = params.percent_divisor;
-            params.percent_divisor = percent_divisor;
+            self.set_percent_divisor_internal(ref params, collateral, percent_divisor);
             self.collateral_params.write(collateral, params);
-            self.emit(PercentDivisorUpdated { collateral, old_percent_divisor, percent_divisor });
         }
 
         fn set_redemption_fee_floor(
             ref self: ContractState, collateral: ContractAddress, redemption_fee_floor: u256
         ) {
             self.only_timelock();
-            self
-                .safe_check(
-                    'Redemption Fee Floor',
-                    collateral,
-                    redemption_fee_floor,
-                    pow(10, 15),
-                    pow(10, 17)
-                ); // min: 0.10% - max: 10%
             let mut params = self.collateral_params.read(collateral);
-            let old_redemption_fee_floor = params.redemption_fee_floor;
-            params.redemption_fee_floor = redemption_fee_floor;
+            self.set_redemption_fee_floor_internal(ref params, collateral, redemption_fee_floor);
             self.collateral_params.write(collateral, params);
-            self
-                .emit(
-                    RedemptionFeeFloorUpdated {
-                        collateral, old_redemption_fee_floor, redemption_fee_floor
-                    }
-                );
         }
 
         fn set_redemption_block_timestamp(
@@ -417,17 +374,8 @@ mod AdminContract {
             self.only_timelock();
             assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
-            let old_redemption_block_timestamp = params.redemption_block_timestamp;
-            params.redemption_block_timestamp = block_timestamp;
+            self.set_redemption_block_timestamp_internal(ref params, collateral, block_timestamp);
             self.collateral_params.write(collateral, params);
-            self
-                .emit(
-                    RedemptionBlockTimestampUpdated {
-                        collateral,
-                        old_redemption_block_timestamp,
-                        redemption_block_timestamp: block_timestamp
-                    }
-                );
         }
 
         fn set_setup_initialized(ref self: ContractState) {
@@ -563,6 +511,142 @@ mod AdminContract {
     #[generate_trait]
     impl InternalFunctions of InternalFunctionsTrait {
         #[inline(always)]
+        fn set_borrowing_fee_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            borrowing_fee: u256
+        ) {
+            // min: 0% - max: 10%
+            self.safe_check(@coll_params, 'Borrowing Fee', borrowing_fee, 0, ONE_HUNDRED_PCT / 10);
+
+            let old_borrowing_fee = coll_params.borrowing_fee;
+            coll_params.borrowing_fee = borrowing_fee;
+
+            self.emit(BorrowingFeeUpdated { collateral, old_borrowing_fee, borrowing_fee });
+        }
+
+        #[inline(always)]
+        fn set_ccr_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            ccr: u256
+        ) {
+            // min: 100% - max: 1000%
+            self.safe_check(@coll_params, 'CCR', ccr, ONE_HUNDRED_PCT, ONE_HUNDRED_PCT * 10);
+
+            let old_ccr = coll_params.ccr;
+            coll_params.ccr = ccr;
+
+            self.emit(CCRUpdated { collateral, old_ccr, ccr });
+        }
+
+        #[inline(always)]
+        fn set_mcr_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            mcr: u256
+        ) {
+            // min: 101% - max: 1000%
+            self
+                .safe_check(
+                    @coll_params, 'MCR', mcr, ONE_HUNDRED_PCT + pow(10, 16), ONE_HUNDRED_PCT * 10
+                );
+            let old_mcr = coll_params.mcr;
+            coll_params.mcr = mcr;
+            self.emit(MCRUpdated { collateral, old_mcr, mcr });
+        }
+
+        #[inline(always)]
+        fn set_min_net_debt_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            min_net_debt: u256
+        ) {
+            // min: 0 - max: 2_000
+            self.safe_check(@coll_params, 'Min Net Debt', min_net_debt, 0, 2 * pow(10, 21));
+
+            let old_min_net_debt = coll_params.min_net_debt;
+            coll_params.min_net_debt = min_net_debt;
+
+            self.emit(MinNetDebtUpdated { collateral, old_min_net_debt, min_net_debt });
+        }
+
+        #[inline(always)]
+        fn set_mint_cap_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            mint_cap: u256
+        ) {
+            let old_mint_cap = coll_params.mint_cap;
+            coll_params.mint_cap = mint_cap;
+            self.emit(MintCapUpdated { collateral, old_mint_cap, mint_cap });
+        }
+
+        #[inline(always)]
+        fn set_percent_divisor_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            percent_divisor: u256
+        ) {
+            // min: 2 - max: 200
+            self.safe_check(@coll_params, 'Percent Divisor', percent_divisor, 2, 200);
+            let old_percent_divisor = coll_params.percent_divisor;
+            coll_params.percent_divisor = percent_divisor;
+            self.emit(PercentDivisorUpdated { collateral, old_percent_divisor, percent_divisor });
+        }
+
+        #[inline(always)]
+        fn set_redemption_fee_floor_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            redemption_fee_floor: u256
+        ) {
+            self
+                // min: 0.10% - max: 10%
+                .safe_check(
+                    @coll_params,
+                    'Redemption Fee Floor',
+                    redemption_fee_floor,
+                    pow(10, 15),
+                    pow(10, 17)
+                );
+            let old_redemption_fee_floor = coll_params.redemption_fee_floor;
+            coll_params.redemption_fee_floor = redemption_fee_floor;
+            self
+                .emit(
+                    RedemptionFeeFloorUpdated {
+                        collateral, old_redemption_fee_floor, redemption_fee_floor
+                    }
+                );
+        }
+
+        #[inline(always)]
+        fn set_redemption_block_timestamp_internal(
+            ref self: ContractState,
+            ref coll_params: CollateralParams,
+            collateral: ContractAddress,
+            block_timestamp: u64
+        ) {
+            let old_redemption_block_timestamp = coll_params.redemption_block_timestamp;
+            coll_params.redemption_block_timestamp = block_timestamp;
+            self
+                .emit(
+                    RedemptionBlockTimestampUpdated {
+                        collateral,
+                        old_redemption_block_timestamp,
+                        redemption_block_timestamp: block_timestamp
+                    }
+                );
+        }
+
+        #[inline(always)]
         fn exist(self: @ContractState, collateral: ContractAddress) -> bool {
             return self.collateral_params.read(collateral).mcr.is_non_zero();
         }
@@ -584,17 +668,14 @@ mod AdminContract {
         #[inline(always)]
         fn safe_check(
             self: @ContractState,
+            coll_params: @CollateralParams,
             parameter: felt252,
-            collateral: ContractAddress,
             entered_value: u256,
             min: u256,
             max: u256
         ) {
-            assert(
-                self.collateral_params.read(collateral).is_active,
-                Errors::AdminContract__CollateralNotActive
-            );
-            // Todo: refact with a panic passing all the info
+            assert(*coll_params.is_active, Errors::AdminContract__CollateralNotActive);
+            // Todo: refact with a panic(array![parameter, entered_value.try_into().unwrap(), min.try_into().unwrap(), max.try_into().unwrap()])
             assert(
                 entered_value >= min && entered_value <= max, Errors::AdminContract__ValueOutOfRange
             );

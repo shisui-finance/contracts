@@ -49,7 +49,7 @@ fn given_valid_caller_and_collateral_not_exist_it_should_revert() {
 }
 
 #[test]
-#[should_panic]
+#[should_panic(expected: ('Value out of range',))]
 fn given_valid_caller_and_at_least_one_value_out_of_range_it_should_revert() {
     let (address_provider, admin_contract, collateral_address, _) = test_setup();
 
