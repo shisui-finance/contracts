@@ -99,7 +99,11 @@ mod AdminContract {
     use shisui::core::address_provider::{
         IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey
     };
-    use shisui::pools::stability_pool::{IStabilityPoolDispatcher, IStabilityPoolDispatcherTrait};
+    use shisui::pools::{
+        stability_pool::{IStabilityPoolDispatcher, IStabilityPoolDispatcherTrait},
+        active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait},
+        default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait}
+    };
     use super::CollateralParams;
 
 
@@ -507,7 +511,21 @@ mod AdminContract {
         }
 
         fn get_total_asset_debt(self: @ContractState, asset: ContractAddress) -> u256 {
-            return 0;
+            let active_pool_debt_balance = IActivePoolDispatcher {
+                contract_address: self
+                    .address_provider
+                    .read()
+                    .get_address(AddressesKey::active_pool)
+            }
+                .get_debt_token_balance(asset);
+            let default_pool_debt_balance = IDefaultPoolDispatcher {
+                contract_address: self
+                    .address_provider
+                    .read()
+                    .get_address(AddressesKey::default_pool)
+            }
+                .get_debt_token_balance(asset);
+            return active_pool_debt_balance + default_pool_debt_balance;
         }
 
         fn get_collaterals_params(
