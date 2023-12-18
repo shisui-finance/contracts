@@ -1,9 +1,13 @@
 test_set_collateral_parameters.cairo
-├── when caller is not the timelock
-│   └── it should revert OnlyTimelock
-└── when caller is the timelock
-    ├── when at least one param is not in correct range
-    │   └── it should revert AdminContract__ValueOutOfRange
-    └── when params valid
-        ├── it should correctly set collateral parameters
-        └── it should emit {CollateralAdded} event
+├── when setup is not initialized and caller not the owner
+│   └── it should revert CommunErrors__OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
+│   └── it should revert CommunErrors__OnlyTimelock
+└── when caller is valid
+    ├── when collateral not exist
+    │   └── it should revert AdminContract__CollateralNotExist
+    └── when collateral exist
+        ├── when at least one param is not in correct range
+        │   └── it should revert AdminContract__ValueOutOfRange
+        └── when params valid
+            └──  it should correctly set collateral parameters

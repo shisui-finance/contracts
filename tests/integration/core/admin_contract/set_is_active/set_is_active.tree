@@ -6,5 +6,5 @@ test_set_is_active.cairo
 └── when caller is valid
     ├── when collateral not exist
     │   └── it should revert AdminContract__CollateralNotExist
-    └──  when collateral exist
+    └── when collateral exist
         └── it should correclty set collateral is_active var
