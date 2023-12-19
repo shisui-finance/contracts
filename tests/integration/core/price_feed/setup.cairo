@@ -1,13 +1,12 @@
-use starknet::{ContractAddress, contract_address_const};
+use starknet::ContractAddress;
 use shisui::core::{
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait},
-    price_feed::{PriceFeed, IPriceFeedDispatcher, IPriceFeedDispatcherTrait}
+    price_feed::{IPriceFeedDispatcher, IPriceFeedDispatcherTrait}
 };
-use shisui::utils::math::pow;
 use shisui::mocks::pragma_oracle_mock::{
-    IPragmaOracleMockDispatcher, IPragmaOracleMockDispatcherTrait, PricesData
+    IPragmaOracleMockDispatcher, IPragmaOracleMockDispatcherTrait
 };
-use tests::utils::{constant::DEFAULT_TIMEOUT, aggregator::update_pragma_response};
+
 use tests::tests_lib::{deploy_address_provider, deploy_pragma_oracle_mock, deploy_price_feed};
 
 fn setup() -> (IAddressProviderDispatcher, IPriceFeedDispatcher, IPragmaOracleMockDispatcher) {

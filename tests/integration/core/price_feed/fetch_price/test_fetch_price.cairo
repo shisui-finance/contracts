@@ -9,7 +9,7 @@ use shisui::mocks::pragma_oracle_mock::{
     IPragmaOracleMockDispatcher, IPragmaOracleMockDispatcherTrait
 };
 use tests::utils::{constant::DEFAULT_TIMEOUT, aggregator::update_pragma_response};
-use tests::tests_lib::{deploy_address_provider, deploy_pragma_oracle_mock, deploy_price_feed};
+
 use super::super::setup::setup;
 
 fn test_setup() -> (

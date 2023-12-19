@@ -36,29 +36,24 @@ trait IPriceFeed<TContractState> {
 
 #[starknet::contract]
 mod PriceFeed {
-    use core::traits::TryInto;
     use starknet::{
         ContractAddress, get_caller_address, contract_address_const, get_block_timestamp
     };
-
-    use openzeppelin::access::ownable::OwnableComponent;
+    use openzeppelin::access::ownable::{OwnableComponent, OwnableComponent::InternalImpl};
     use pragma_lib::abi::{IPragmaABIDispatcher, IPragmaABIDispatcherTrait};
     use pragma_lib::types::{AggregationMode, DataType, PragmaPricesResponse};
     use shisui::core::address_provider::{
-        IAddressProviderDispatcher, IAddressProviderDispatcherTrait
+        IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey
     };
     use shisui::utils::errors::CommunErrors;
     use shisui::utils::math::pow;
     use shisui::utils::constants::TARGET_DECIMALS;
     use super::OracleRecord;
 
-    use snforge_std::PrintTrait;
-
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
-    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     #[storage]
     struct Storage {
@@ -94,19 +89,19 @@ mod PriceFeed {
 
     #[constructor]
     fn constructor(
-        ref self: ContractState, address_provider: ContractAddress, pragma_contract: ContractAddress
+        ref self: ContractState,
+        address_provider: IAddressProviderDispatcher,
+        pragma_contract: IPragmaABIDispatcher
     ) {
-        self.pragma_contract.write(IPragmaABIDispatcher { contract_address: pragma_contract });
-        self
-            .address_provider
-            .write(IAddressProviderDispatcher { contract_address: address_provider });
+        self.pragma_contract.write(pragma_contract);
+        self.address_provider.write(address_provider);
         self.ownable.initializer(get_caller_address());
     }
 
     #[external(v0)]
     impl PriceFeedImpl of super::IPriceFeed<ContractState> {
         fn set_pragma_contract(ref self: ContractState, pragma_contract: ContractAddress) {
-            self._require_owner_or_timelock(self.pragma_contract.read().contract_address.is_zero());
+            self.assert_owner_or_timelock(self.pragma_contract.read().contract_address.is_zero());
             self.pragma_contract.write(IPragmaABIDispatcher { contract_address: pragma_contract });
         }
 
@@ -114,27 +109,22 @@ mod PriceFeed {
             ref self: ContractState, token: ContractAddress, pair_id: felt252, timeout_seconds: u64
         ) {
             let mut oracle: OracleRecord = self.oracles.read(token);
-            self._require_owner_or_timelock(oracle.pair_id.is_zero());
+            self.assert_owner_or_timelock(oracle.pair_id.is_zero());
 
             oracle.pair_id = pair_id;
             oracle.timeout_seconds = timeout_seconds;
 
-            self._fetch_oracle_scaled_price(oracle);
+            self.fetch_oracle_scaled_price(oracle);
 
             self.oracles.write(token, oracle);
-            self
-                .emit(
-                    NewOracleRegistered {
-                        token: token, pair_id: pair_id, timeout_seconds: timeout_seconds
-                    }
-                );
+            self.emit(NewOracleRegistered { token, pair_id, timeout_seconds });
         }
 
         fn fetch_price(self: @ContractState, token: ContractAddress) -> u256 {
             let oracle: OracleRecord = self.oracles.read(token);
             assert(oracle.pair_id.is_non_zero(), Errors::PriceFeed__UnknownAssetError);
 
-            return self._fetch_oracle_scaled_price(oracle);
+            return self.fetch_oracle_scaled_price(oracle);
         }
 
 
@@ -152,36 +142,36 @@ mod PriceFeed {
 
     #[generate_trait]
     impl InternalFunctions of InternalFunctionsTrait {
-        fn _fetch_oracle_scaled_price(self: @ContractState, oracle: OracleRecord) -> u256 {
-            let prices_response: PragmaPricesResponse = self._fetch_oracle(oracle);
+        fn fetch_oracle_scaled_price(self: @ContractState, oracle: OracleRecord) -> u256 {
+            let prices_response: PragmaPricesResponse = self.fetch_oracle(oracle);
             let price = self
-                ._scale_price_by_digits(
+                .scale_price_by_digits(
                     prices_response.price.into(), prices_response.decimals.try_into().unwrap()
                 );
             assert(price.is_non_zero(), Errors::PriceFeed__InvalidOracleResponseError);
             return price;
         }
 
-        fn _fetch_oracle(self: @ContractState, oracle: OracleRecord) -> PragmaPricesResponse {
+        fn fetch_oracle(self: @ContractState, oracle: OracleRecord) -> PragmaPricesResponse {
             let pragma_contract: IPragmaABIDispatcher = self.pragma_contract.read();
             let data: PragmaPricesResponse = pragma_contract
                 .get_data(DataType::SpotEntry(oracle.pair_id), AggregationMode::Median(()));
 
             assert(data.decimals.is_non_zero(), Errors::PriceFeed__InvalidPairId);
             assert(
-                self._is_not_stale_price(data.last_updated_timestamp, oracle.timeout_seconds),
+                self.is_not_stale_price(data.last_updated_timestamp, oracle.timeout_seconds),
                 Errors::PriceFeed__InvalidOracleResponseError
             );
             return data;
         }
 
-        fn _is_not_stale_price(
+        fn is_not_stale_price(
             self: @ContractState, price_timestamp: u64, oracle_timeout_seconds: u64
         ) -> bool {
             return get_block_timestamp() - price_timestamp <= oracle_timeout_seconds;
         }
 
-        fn _scale_price_by_digits(self: @ContractState, price: u256, price_decimals: u8) -> u256 {
+        fn scale_price_by_digits(self: @ContractState, price: u256, price_decimals: u8) -> u256 {
             if (price_decimals > TARGET_DECIMALS) {
                 return price / pow(10, (price_decimals - TARGET_DECIMALS));
             }
@@ -191,14 +181,13 @@ mod PriceFeed {
             return price;
         }
 
-
-        fn _require_owner_or_timelock(self: @ContractState, is_new: bool) {
+        fn assert_owner_or_timelock(self: @ContractState, is_new: bool) {
             let caller = get_caller_address();
-            if (is_new) {
+            if is_new {
                 self.ownable.assert_only_owner();
             } else {
                 assert(
-                    caller == self.address_provider.read().get_timelock_address(),
+                    caller == self.address_provider.read().get_address(AddressesKey::timelock),
                     CommunErrors::CommunErrors__OnlyTimelock
                 );
             }
