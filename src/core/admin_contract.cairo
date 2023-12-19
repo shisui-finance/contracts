@@ -89,7 +89,7 @@ trait IAdminContract<TContractState> {
 #[starknet::contract]
 mod AdminContract {
     use starknet::{ContractAddress, get_caller_address};
-    use openzeppelin::access::ownable::OwnableComponent;
+    use openzeppelin::access::ownable::{OwnableComponent, OwnableComponent::InternalImpl};
     use shisui::utils::{
         constants::DECIMAL_PRECISION, array::StoreContractAddressArray, errors::CommunErrors,
         math::pow
@@ -108,7 +108,6 @@ mod AdminContract {
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
-    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     const ONE_HUNDRED_PCT: u256 = 1_000_000_000_000_000_000; // 1e18 == 100%
     const DEFAULT_DECIMALS: u8 = 18;
