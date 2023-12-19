@@ -220,11 +220,12 @@ mod AdminContract {
 
 
     #[constructor]
-    fn constructor(ref self: ContractState, address_provider: ContractAddress) {
+    fn constructor(ref self: ContractState, address_provider: IAddressProviderDispatcher) {
+        assert(
+            address_provider.contract_address.is_non_zero(), CommunErrors::CommunErrors__AddressZero
+        );
+        self.address_provider.write(address_provider);
         self.ownable.initializer(get_caller_address());
-        self
-            .address_provider
-            .write(IAddressProviderDispatcher { contract_address: address_provider });
     }
 
     #[external(v0)]
