@@ -108,15 +108,16 @@ fn when_caller_is_admin_and_block_timestamp_is_valid_and_call_not_valid_it_shoul
 fn when_caller_is_admin_and_block_timestamp_is_valid_and_call_is_valid_it_should_work() {
     let (timelock, simple_contract) = init();
     set_admin(timelock);
-
+    let value: felt252 = 4;
     let (signature, data, eta) = queue_transaction(
-        timelock, simple_contract.contract_address, 4, MINIMUM_DELAY + 20000
+        timelock, simple_contract.contract_address, value, MINIMUM_DELAY + 20000
     );
 
     let tx_hash = get_hash(simple_contract.contract_address, signature, data, eta);
     start_warp(CheatTarget::One(timelock.contract_address), eta.try_into().unwrap() + 1);
     let mut spy = spy_events(SpyOn::One(timelock.contract_address));
-    timelock.execute_transaction(simple_contract.contract_address, signature, data, eta);
+    let result: Span<felt252> = timelock
+        .execute_transaction(simple_contract.contract_address, signature, data, eta);
     spy
         .assert_emitted(
             @array![
@@ -136,6 +137,7 @@ fn when_caller_is_admin_and_block_timestamp_is_valid_and_call_is_valid_it_should
         );
     assert(simple_contract.get() == 4, 'Call to simple contract failed');
     assert(!timelock.get_tx_status(tx_hash), 'Tx still in queued');
+    assert(*result[0] == 4, 'Wrong value return by syscall');
 }
 
 fn init() -> (ITimelockDispatcher, ISimpleStorageDispatcher) {

@@ -37,7 +37,7 @@ trait ITimelock<TContractState> {
         signature: felt252,
         data: Span<felt252>,
         eta: u256,
-    );
+    ) -> Span<felt252>;
 }
 
 
@@ -276,7 +276,7 @@ mod Timelock {
             signature: felt252,
             data: Span<felt252>,
             eta: u256
-        ) {
+        ) -> Span<felt252> {
             self.admin_only();
 
             let tx_hash = self.get_hash(target, signature, data, eta);
@@ -286,21 +286,20 @@ mod Timelock {
             assert(get_block_timestamp().into() <= eta + GRACE_PERIOD, Errors::Timelock__TxExpired);
 
             self.queued_transactions.write(tx_hash, false);
-            match call_contract_syscall(target, signature, data) {
-                Result::Ok(return_data) => {
-                    self
-                        .emit(
-                            ExecuteTransaction {
-                                tx_hash,
-                                target: target,
-                                signature: signature,
-                                input_data: data,
-                                eta: eta
-                            }
-                        );
-                },
-                Result::Err(revert_reason) => { panic_with_felt252(Errors::Timelock__TxReverted); },
+            let mut results: Array<Span<felt252>> = ArrayTrait::new();
+
+            let result = call_contract_syscall(target, signature, data);
+            if (result.is_err()) {
+                panic_with_felt252(Errors::Timelock__TxReverted);
             }
+
+            self
+                .emit(
+                    ExecuteTransaction {
+                        tx_hash, target: target, signature: signature, input_data: data, eta: eta
+                    }
+                );
+            result.unwrap()
         }
     }
 

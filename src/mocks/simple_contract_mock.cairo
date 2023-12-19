@@ -1,6 +1,6 @@
 #[starknet::interface]
 trait ISimpleStorage<TContractState> {
-    fn set(ref self: TContractState, x: u8);
+    fn set(ref self: TContractState, x: u8) -> u8;
     fn get(self: @TContractState) -> u8;
 }
 
@@ -17,9 +17,10 @@ mod SimpleStorage {
 
     #[external(v0)]
     impl SimpleStorage of super::ISimpleStorage<ContractState> {
-        fn set(ref self: ContractState, x: u8) {
+        fn set(ref self: ContractState, x: u8) -> u8 {
             assert(x < 200, 'Invalid int, must be <= 200');
             self.stored_data.write(x);
+            x
         }
         fn get(self: @ContractState) -> u8 {
             self.stored_data.read()
