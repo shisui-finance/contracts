@@ -14,17 +14,14 @@ fn decimals_correction(token: ContractAddress, amount: u256) -> u256 {
         return 0;
     }
 
-    let erc20 = IERC20MetadataDispatcher { contract_address: token };
-    let decimals: u8 = erc20.decimals();
+    let decimals: u8 = IERC20MetadataDispatcher { contract_address: token }.decimals();
     if decimals < 18 {
         let divisor: u256 = pow(10, 18 - decimals);
         assert(amount % divisor != 0, CommunErrors::CommunErrors__Invalid_amount);
         return amount / divisor;
-    } else {
-        if decimals > 18 {
-            let multiplier = pow(10, decimals - 18);
-            return amount * multiplier.into();
-        }
+    } else if decimals > 18 {
+        let multiplier = pow(10, decimals - 18);
+        return amount * multiplier.into();
     }
 
     return amount;
