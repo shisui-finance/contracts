@@ -1,6 +1,5 @@
 mod unit {
-    mod components {
-    }
+    mod components {}
     mod core {
         mod address_provider {
             mod set_address {
