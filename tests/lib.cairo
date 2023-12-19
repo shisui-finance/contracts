@@ -3,25 +3,30 @@ mod unit {
         mod safety_transfer {
             mod test_decimals_correction;
         }
+    }
+    mod core {
+        mod address_provider {
+            mod set_address {
+                mod test_set_address;
+            }
+        }
+    }
+    mod utils {
         mod shisui_math {
             mod dec_pow {
                 mod test_dec_pow;
+            }
+            mod get_absolute_difference {
+                mod test_get_absolute_difference;
+            }
+            mod dec_mul {
+                mod test_dec_mul;
             }
             mod compute_cr {
                 mod test_compute_cr;
             }
             mod compute_nominal_cr {
                 mod test_compute_nominal_cr;
-            }
-            mod get_absolute_difference {
-                mod test_get_absolute_difference;
-            }
-        }
-    }
-    mod core {
-        mod address_provider {
-            mod set_address {
-                mod test_set_address;
             }
         }
     }
@@ -240,6 +245,10 @@ mod integration {
             }
         }
     }
+}
+
+mod helpers {
+    mod constants;
 }
 
 mod tests_lib;

@@ -1,0 +1,10 @@
+test_compute_cr.cairo
+├── when debt is zero
+│   └── it should return max u256
+├── when price is zero
+│   └── it  should return 0
+└── when debt and price are not zero
+    ├── when result is exact
+    │   └── it should return it
+    └── when result is not exact
+        └── it should return the value in a tolerance range

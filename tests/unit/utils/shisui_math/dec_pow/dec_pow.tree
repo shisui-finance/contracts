@@ -1,0 +1,7 @@
+test_dec_mul.cairo
+├── when minutes is 0
+│   └── it should return 1e18
+├── when minutes higher than 1000 years
+│   └── it should not overflow
+└── when minutes is higher than 0 and lower than 1000 years
+    └── it should return correct value
