@@ -1,6 +1,5 @@
 mod components {
     mod shisui_base;
-    mod safety_transfer;
 }
 
 mod core {
@@ -27,10 +26,10 @@ mod utils {
     mod math;
     mod shisui_math;
     mod hash;
+    mod convert;
 }
 
 mod mocks {
-    mod safety_transfer_mock;
     mod erc20_mock;
     mod simple_contract_mock;
 }
