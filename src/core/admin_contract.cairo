@@ -89,7 +89,7 @@ trait IAdminContract<TContractState> {
 mod AdminContract {
     use starknet::{ContractAddress, get_caller_address};
 
-    use shisui::utils::{precision::DECIMAL_PRECISION, array::StoreContractAddressArray};
+    use shisui::utils::{constants::DECIMAL_PRECISION, array::StoreContractAddressArray};
     use shisui::core::address_provider::{
         IAddressProviderDispatcher, IAddressProviderDispatcherTrait
     };
