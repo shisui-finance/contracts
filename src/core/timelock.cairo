@@ -286,7 +286,6 @@ mod Timelock {
             assert(get_block_timestamp().into() <= eta + GRACE_PERIOD, Errors::Timelock__TxExpired);
 
             self.queued_transactions.write(tx_hash, false);
-            let mut results: Array<Span<felt252>> = ArrayTrait::new();
 
             let result = call_contract_syscall(target, signature, data);
             if (result.is_err()) {
@@ -299,6 +298,7 @@ mod Timelock {
                         tx_hash, target: target, signature: signature, input_data: data, eta: eta
                     }
                 );
+
             result.unwrap()
         }
     }
