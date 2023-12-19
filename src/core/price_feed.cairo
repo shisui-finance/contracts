@@ -1,5 +1,6 @@
 use starknet::ContractAddress;
 use shisui::utils::traits::ContractAddressDefault;
+use pragma_lib::abi::{IPragmaABIDispatcher, IPragmaABIDispatcherTrait};
 
 #[derive(Serde, Drop, Copy, starknet::Store, Default)]
 struct OracleRecord {
@@ -10,7 +11,7 @@ struct OracleRecord {
 
 #[starknet::interface]
 trait IPriceFeed<TContractState> {
-    fn set_pragma_contract(ref self: TContractState, pragma_contract: ContractAddress);
+    fn set_pragma_contract(ref self: TContractState, pragma_contract: IPragmaABIDispatcher);
 
     fn set_oracle(
         ref self: TContractState, token: ContractAddress, pair_id: felt252, timeout_seconds: u64
@@ -93,6 +94,12 @@ mod PriceFeed {
         address_provider: IAddressProviderDispatcher,
         pragma_contract: IPragmaABIDispatcher
     ) {
+        assert(
+            address_provider.contract_address.is_non_zero(), CommunErrors::CommunErrors__AddressZero
+        );
+        assert(
+            pragma_contract.contract_address.is_non_zero(), CommunErrors::CommunErrors__AddressZero
+        );
         self.pragma_contract.write(pragma_contract);
         self.address_provider.write(address_provider);
         self.ownable.initializer(get_caller_address());
@@ -100,9 +107,12 @@ mod PriceFeed {
 
     #[external(v0)]
     impl PriceFeedImpl of super::IPriceFeed<ContractState> {
-        fn set_pragma_contract(ref self: ContractState, pragma_contract: ContractAddress) {
+        fn set_pragma_contract(ref self: ContractState, pragma_contract: IPragmaABIDispatcher) {
+            assert(
+                pragma_contract.contract_address.is_non_zero(), Errors::PriceFeed__InvalidPairId
+            );
             self.assert_owner_or_timelock(self.pragma_contract.read().contract_address.is_zero());
-            self.pragma_contract.write(IPragmaABIDispatcher { contract_address: pragma_contract });
+            self.pragma_contract.write(pragma_contract);
         }
 
         fn set_oracle(
