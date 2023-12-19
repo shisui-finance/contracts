@@ -25,10 +25,12 @@ mod utils {
     mod traits;
     mod math;
     mod shisui_math;
+    mod hash;
     mod convert;
 }
 
 mod mocks {
     mod erc20_mock;
+    mod simple_contract_mock;
 }
 

@@ -44,7 +44,7 @@ mod ERC20Mock {
     #[constructor]
     fn constructor(ref self: ContractState, decimals: u8) {
         // Call the internal function that writes decimals to storage
-        self._set_decimals(decimals);
+        self.set_decimals(decimals);
         // Initialize ERC20
         let name = 'ERC20Mock';
         let symbol = 'MOCK';
@@ -75,7 +75,7 @@ mod ERC20Mock {
     // *************************************************************************
     #[generate_trait]
     impl InternalImpl of InternalTrait {
-        fn _set_decimals(ref self: ContractState, decimals: u8) {
+        fn set_decimals(ref self: ContractState, decimals: u8) {
             self.decimals.write(decimals);
         }
     }
