@@ -1,7 +1,7 @@
 test_fetch_price.cairo
-├── when _token oracle is not set
+├── when token oracle is not set
 │   └── it should revert with PriceFeed__UnknownAssetError
-└── when _token oracle is set
+└── when token oracle is set
     ├── when oracle price answer is 0
     │   └── it should revert with PriceFeed__InvalidOracleResponseError
     ├── when oracle answer is stale

@@ -154,6 +154,7 @@ mod integration {
             }
         }
         mod price_feed {
+            mod setup;
             mod set_oracle {
                 mod test_set_oracle;
             }
@@ -253,3 +254,9 @@ mod helpers {
 }
 
 mod tests_lib;
+
+mod utils {
+    mod constant;
+    mod aggregator;
+    mod callers;
+}

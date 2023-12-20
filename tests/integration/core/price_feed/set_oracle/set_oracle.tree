@@ -5,7 +5,7 @@ test_set_oracle.cairo
 │   └── it should revert with PriceFeed__TimelockOnlyError
 └── when caller is valid
     ├── when decimals is zero
-    │   └── it should revert with PriceFeed__InvalidDecimalsError
+    │   └── it should revert with PriceFeed__InvalidPairId
     └── when decimals is not zero
         ├── when oracle price is zero
         │   └── it should revert with PriceFeed__InvalidOracleResponseError

@@ -30,5 +30,6 @@ mod utils {
 
 mod mocks {
     mod erc20_mock;
+    mod pragma_oracle_mock;
 }
 
