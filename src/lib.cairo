@@ -1,7 +1,3 @@
-mod components {
-    mod shisui_base;
-}
-
 mod core {
     mod address_provider;
     mod timelock;
@@ -25,6 +21,7 @@ mod utils {
     mod traits;
     mod math;
     mod shisui_math;
+    mod shisui_base;
     mod convert;
 }
 
