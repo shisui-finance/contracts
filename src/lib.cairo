@@ -16,6 +16,7 @@ mod pools {
 }
 
 mod utils {
+    mod asserts;
     mod errors;
     mod constants;
     mod array;

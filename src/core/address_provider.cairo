@@ -29,9 +29,8 @@ trait IAddressProvider<TContractState> {
 
 #[starknet::contract]
 mod AddressProvider {
-    use zeroable::Zeroable;
     use starknet::{ContractAddress, get_caller_address};
-    use openzeppelin::access::ownable::OwnableComponent;
+    use openzeppelin::access::ownable::{OwnableComponent, OwnableComponent::InternalImpl};
     use shisui::utils::errors::CommunErrors;
     use super::AddressesKey;
 
@@ -39,7 +38,6 @@ mod AddressProvider {
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
-    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     #[storage]
     struct Storage {
