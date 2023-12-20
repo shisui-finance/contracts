@@ -1,5 +1,5 @@
 test_compute_nominal_cr.cairo
-├── when _debt is not zero
+├── when debt is not zero
 │   └── it should return the nominal collateral ratio
-└── when _debt is zero
+└── when debt is zero
     └── it should return max u256
