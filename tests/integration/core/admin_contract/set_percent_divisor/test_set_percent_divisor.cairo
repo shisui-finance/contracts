@@ -3,7 +3,7 @@ use snforge_std::{start_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAs
 use shisui::core::admin_contract::{
     IAdminContractDispatcher, IAdminContractDispatcherTrait, AdminContract
 };
-use shisui::utils::math::pow;
+
 use super::super::setup::setup;
 
 fn test_setup() -> (IAdminContractDispatcher, ContractAddress, ContractAddress) {

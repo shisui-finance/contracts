@@ -91,7 +91,7 @@ mod AdminContract {
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::access::ownable::{OwnableComponent, OwnableComponent::InternalImpl};
     use shisui::utils::{
-        constants::DECIMAL_PRECISION, array::StoreContractAddressArray, errors::CommunErrors,
+        constants::{DECIMAL_PRECISION, ONE}, array::StoreContractAddressArray, errors::CommunErrors,
         math::pow
     };
     use shisui::core::address_provider::{
@@ -109,16 +109,19 @@ mod AdminContract {
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
 
-    const ONE_HUNDRED_PCT: u256 = 1_000_000_000_000_000_000; // 1e18 == 100%
+    const ONE_THOUSAND_PCT: u256 = 10_000000000000000000; // 1e18 == 100%
+    const ONE_HUNDRED_PCT: u256 = 1_000000000000000000; // 1e18 == 100%
+    const TEN_PCT: u256 = 100000000000000000; // 1e18 == 100%
+    const ONE_PCT: u256 = 10000000000000000; // 1e18 == 1%
     const DEFAULT_DECIMALS: u8 = 18;
 
-    const BORROWING_FEE_DEFAULT: u256 = 5_000_000_000_000_000; // 0.5%
-    const CCR_DEFAULT: u256 = 1_500_000_000_000_000_000; // 1.5e18
-    const MCR_DEFAULT: u256 = 1_100_000_000_000_000_000; // 1.1e18
-    const MIN_NET_DEBT_DEFAULT: u256 = 2_000_000_000_000_000_000_000; // 2_000e18
-    const MINT_CAP_DEFAULT: u256 = 1_000_000_000_000_000_000_000_000; // 1 million
+    const BORROWING_FEE_DEFAULT: u256 = 5000000000000000; // 0.5%
+    const REDEMPTION_FEE_FLOOR_DEFAULT: u256 = 5000000000000000; // 0.5%
+    const CCR_DEFAULT: u256 = 1_500000000000000000; // 1.5e18
+    const MCR_DEFAULT: u256 = 1_100000000000000000; // 1.1e18
+    const MIN_NET_DEBT_DEFAULT: u256 = 2000_000000000000000000; // 2_000e18
+    const MINT_CAP_DEFAULT: u256 = 1000000_000000000000000000; // 1 million
     const PERCENT_DIVISOR_DEFAULT: u256 = 200; // dividing by 200 yields 0.5%
-    const REDEMPTION_FEE_FLOOR_DEFAULT: u256 = 5_000_000_000_000_000; // 0.5%
     const REDEMPTION_BLOCK_TIMESTAMP_DEFAULT: u64 = 0xffffffffffffffff_u64; // max u64
 
     mod AdminContractErrors {
@@ -518,7 +521,7 @@ mod AdminContract {
             borrowing_fee: u256
         ) {
             // min: 0% - max: 10%
-            self.safe_check(@coll_params, 'Borrowing Fee', borrowing_fee, 0, ONE_HUNDRED_PCT / 10);
+            self.safe_check(@coll_params, 'Borrowing Fee', borrowing_fee, 0, TEN_PCT);
 
             let old_borrowing_fee = coll_params.borrowing_fee;
             coll_params.borrowing_fee = borrowing_fee;
@@ -534,7 +537,7 @@ mod AdminContract {
             ccr: u256
         ) {
             // min: 100% - max: 1000%
-            self.safe_check(@coll_params, 'CCR', ccr, ONE_HUNDRED_PCT, ONE_HUNDRED_PCT * 10);
+            self.safe_check(@coll_params, 'CCR', ccr, ONE_HUNDRED_PCT, ONE_THOUSAND_PCT);
 
             let old_ccr = coll_params.ccr;
             coll_params.ccr = ccr;
@@ -550,10 +553,7 @@ mod AdminContract {
             mcr: u256
         ) {
             // min: 101% - max: 1000%
-            self
-                .safe_check(
-                    @coll_params, 'MCR', mcr, ONE_HUNDRED_PCT + pow(10, 16), ONE_HUNDRED_PCT * 10
-                );
+            self.safe_check(@coll_params, 'MCR', mcr, ONE_HUNDRED_PCT + ONE_PCT, ONE_THOUSAND_PCT);
             let old_mcr = coll_params.mcr;
             coll_params.mcr = mcr;
             self.emit(MCRUpdated { collateral, old_mcr, mcr });
@@ -567,7 +567,7 @@ mod AdminContract {
             min_net_debt: u256
         ) {
             // min: 0 - max: 2_000
-            self.safe_check(@coll_params, 'Min Net Debt', min_net_debt, 0, 2 * pow(10, 21));
+            self.safe_check(@coll_params, 'Min Net Debt', min_net_debt, 0, 2000 * ONE);
 
             let old_min_net_debt = coll_params.min_net_debt;
             coll_params.min_net_debt = min_net_debt;
@@ -614,8 +614,8 @@ mod AdminContract {
                     @coll_params,
                     'Redemption Fee Floor',
                     redemption_fee_floor,
-                    pow(10, 15),
-                    pow(10, 17)
+                    ONE_PCT / 10,
+                    TEN_PCT
                 );
             let old_redemption_fee_floor = coll_params.redemption_fee_floor;
             coll_params.redemption_fee_floor = redemption_fee_floor;

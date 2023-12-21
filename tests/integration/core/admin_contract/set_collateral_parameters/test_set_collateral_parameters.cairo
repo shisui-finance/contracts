@@ -1,7 +1,10 @@
 use starknet::{ContractAddress, contract_address_const};
 use snforge_std::{start_prank, CheatTarget};
-use shisui::core::admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait};
-use shisui::utils::math::pow;
+use shisui::core::admin_contract::{
+    IAdminContractDispatcher, IAdminContractDispatcherTrait, AdminContract
+};
+use shisui::utils::constants::ONE;
+
 use super::super::setup::setup;
 
 
@@ -54,13 +57,13 @@ fn given_valid_caller_and_at_least_one_value_out_of_range_it_should_revert() {
 #[test]
 fn given_valid_caller_it_should_update_the_collateral_params() {
     let (admin_contract, collateral_address, _) = test_setup();
-    let new_borrowing_fee = pow(10, 16);
-    let new_ccr = 8 * pow(10, 18);
-    let new_mcr = 8 * pow(10, 18);
-    let new_min_net_debt = 1000 * pow(10, 18);
-    let new_mint_cap = pow(10, 20);
+    let new_borrowing_fee = AdminContract::ONE_PCT; // 1%;
+    let new_ccr = 5 * AdminContract::ONE_HUNDRED_PCT; // 500%;
+    let new_mcr = 5 * AdminContract::ONE_HUNDRED_PCT; // 500%;
+    let new_min_net_debt = 1_000 * ONE;
+    let new_mint_cap = 100_000 * ONE;
     let new_percent_divisor = 100;
-    let new_redemption_fee_floor = pow(10, 16);
+    let new_redemption_fee_floor = AdminContract::ONE_PCT; // 1%;
     admin_contract
         .set_collateral_parameters(
             collateral_address,
@@ -93,14 +96,13 @@ fn given_setup_is_initialized_and_caller_is_timelock_it_should_correctly_update_
     let (admin_contract, collateral_address, timelock_address) = test_setup();
     admin_contract.set_setup_initialized();
 
-    let new_borrowing_fee = pow(10, 16);
-    let new_ccr = 8 * pow(10, 18);
-    let new_mcr = 8 * pow(10, 18);
-    let new_min_net_debt = 1000 * pow(10, 18);
-    let new_mint_cap = pow(10, 20);
+    let new_borrowing_fee = AdminContract::ONE_PCT; // 1%;
+    let new_ccr = 5 * AdminContract::ONE_HUNDRED_PCT; // 500%;
+    let new_mcr = 5 * AdminContract::ONE_HUNDRED_PCT; // 500%;
+    let new_min_net_debt = 1_000 * ONE;
+    let new_mint_cap = 100_000 * ONE;
     let new_percent_divisor = 100;
-    let new_redemption_fee_floor = pow(10, 16);
-
+    let new_redemption_fee_floor = AdminContract::ONE_PCT; // 1%;
     start_prank(CheatTarget::One(admin_contract.contract_address), timelock_address);
 
     admin_contract

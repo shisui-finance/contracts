@@ -1,4 +1,5 @@
-use core::integer::BoundedU256;
+use integer::BoundedU256;
+use traits::Into;
 use shisui::utils::{shisui_math::{dec_pow, get_absolute_difference}, constants::ONE};
 use tests::helpers::constants::TimeValues;
 
@@ -271,9 +272,9 @@ fn when_limit_range_value_are_selected_it_should_should_be_acceptable() {
     loop {
         match bases.pop_front() {
             Option::Some(values) => {
-                let base = *values[0];
-                let exponent = *values[1];
-                let expected_result = *values[2];
+                let base = (*values[0]).into();
+                let exponent = (*values[1]).into();
+                let expected_result = (*values[2]).into();
 
                 let res = dec_pow(base, exponent);
 
@@ -290,11 +291,11 @@ fn when_limit_range_value_are_selected_it_should_should_be_acceptable() {
 
 #[test]
 fn when_exponent_greater_than_1000_years_in_minutes_it_should_not_overflow() {
-    let exponent = TimeValues::MINUTES_IN_ONE_YEAR * 1000 + 9;
+    let exponent: u64 = TimeValues::MINUTES_IN_ONE_YEAR * 1000 + 9;
     let mut bases = array![000000000000000001, 999999999999900000, 999999999999999999];
     loop {
         match bases.pop_front() {
-            Option::Some(base) => { dec_pow(base, exponent); },
+            Option::Some(base) => { dec_pow(base, exponent.into()); },
             Option::None => { break; },
         }
     };

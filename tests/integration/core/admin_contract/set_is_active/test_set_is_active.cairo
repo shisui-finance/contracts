@@ -4,14 +4,10 @@ use shisui::core::admin_contract::{IAdminContractDispatcher, IAdminContractDispa
 
 use super::super::setup::setup;
 
-const valid_decimals: u8 = 18;
-const debt_token_gas_compensation: u256 = 1000;
-
 fn test_setup() -> (IAdminContractDispatcher, ContractAddress, ContractAddress) {
     let (admin_contract, timelock_address) = setup();
     let collateral_address = contract_address_const::<'collateral'>();
-    admin_contract
-        .add_new_collateral(collateral_address, debt_token_gas_compensation, valid_decimals);
+    admin_contract.add_new_collateral(collateral_address, 1000, 18);
 
     (admin_contract, collateral_address, timelock_address)
 }

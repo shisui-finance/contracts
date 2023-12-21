@@ -3,7 +3,7 @@ use snforge_std::{start_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAs
 use shisui::core::admin_contract::{
     IAdminContractDispatcher, IAdminContractDispatcherTrait, AdminContract
 };
-use shisui::utils::math::pow;
+use shisui::utils::constants::ONE;
 use super::super::setup::setup;
 
 fn test_setup() -> (IAdminContractDispatcher, ContractAddress, ContractAddress) {
@@ -49,7 +49,7 @@ fn given_valid_caller_and_collateral_not_exist_it_should_revert() {
 fn given_valid_caller_it_should_update_the_mint_cap_value() {
     let (admin_contract, collateral_address, _) = test_setup();
     admin_contract.set_is_active(collateral_address, true);
-    let value = pow(10, 20);
+    let value = 100_000 * ONE;
     let mut spy = spy_events(SpyOn::One(admin_contract.contract_address));
 
     admin_contract.set_mint_cap(collateral_address, value);
@@ -79,7 +79,7 @@ fn given_setup_is_initialized_and_caller_is_timelock_it_should_correctly_update_
     admin_contract.set_is_active(collateral_address, true);
     admin_contract.set_setup_initialized();
 
-    let value = pow(10, 20);
+    let value = 100_000 * ONE;
 
     let mut spy = spy_events(SpyOn::One(admin_contract.contract_address));
     start_prank(CheatTarget::One(admin_contract.contract_address), timelock_address);
