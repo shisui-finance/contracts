@@ -1,23 +1,17 @@
-use starknet::{ContractAddress, contract_address_const};
-use snforge_std::{
-    start_prank, start_warp, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions, PrintTrait
-};
+use starknet::ContractAddress;
+use snforge_std::{start_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions};
 use shisui::core::address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait};
 use shisui::pools::collateral_surplus_pool::{
     ICollateralSurplusPoolDispatcher, ICollateralSurplusPoolDispatcherTrait, CollateralSurplusPool
 };
 use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 
-use shisui::utils::math::pow;
-use shisui::mocks::pragma_oracle_mock::{
-    IPragmaOracleMockDispatcher, IPragmaOracleMockDispatcherTrait
-};
 
-use tests::utils::callers::{
-    active_pool_address, borrower_operation_address, vessel_manager_address, alice
-};
+use tests::utils::callers::{vessel_manager_address, alice};
 
 use super::super::setup::setup;
+
+const ONE_USDC: u256 = 1000000;
 
 fn test_setup() -> (
     IAddressProviderDispatcher, ICollateralSurplusPoolDispatcher, IERC20Dispatcher
@@ -26,8 +20,6 @@ fn test_setup() -> (
 
     return (address_provider, collateral_surplus_pool, asset);
 }
-
-const ONE_USDC: u256 = 1000000;
 
 #[test]
 #[should_panic(expected: ('Caller not Vessel Manager',))]

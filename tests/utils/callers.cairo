@@ -27,3 +27,7 @@ fn active_pool_address() -> ContractAddress {
 fn alice() -> ContractAddress {
     return contract_address_const::<'alice'>();
 }
+
+fn bob() -> ContractAddress {
+    return contract_address_const::<'bob'>();
+}
