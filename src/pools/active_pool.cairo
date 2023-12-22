@@ -39,6 +39,7 @@ mod ActivePool {
     };
     use shisui::interfaces::deposit::{IDepositDispatcher, IDepositDispatcherTrait};
 
+    component!(path: ReentrancyGuardComponent, storage: reentrancy, event: ReentrancyEvent);
 
     component!(path: ReentrancyGuardComponent, storage: reentrancy, event: ReentrancyEvent);
 
