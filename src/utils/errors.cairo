@@ -4,3 +4,7 @@ mod CommunErrors {
     const CommunErrors__OnlyTimelock: felt252 = 'Caller not Timelock';
     const CommunErrors__CallerNotAuthorized: felt252 = 'Caller is not authorized';
 }
+
+mod DebtTokenErrors {
+    const DebtTokenErrors__BurnAmountGtBalance: felt252 = 'Burn amount gt balance';
+}
