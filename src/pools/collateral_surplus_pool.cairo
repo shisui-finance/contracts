@@ -21,24 +21,13 @@ trait ICollateralSurplusPool<TContractState> {
 #[starknet::contract]
 mod CollateralSurplusPool {
     use starknet::{ContractAddress, get_caller_address, get_contract_address};
-    use openzeppelin::{
-        token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait},
-        access::ownable::{OwnableComponent, OwnableComponent::InternalImpl}
-    };
+    use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use shisui::core::address_provider::{
         IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey
     };
     use shisui::utils::{
         errors::CommunErrors, asserts::assert_address_non_zero, convert::decimals_correction
     };
-
-    use snforge_std::PrintTrait;
-
-    component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
-
-
-    #[abi(embed_v0)]
-    impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
 
     #[storage]
     struct Storage {
@@ -47,16 +36,12 @@ mod CollateralSurplusPool {
         balances: LegacyMap<ContractAddress, u256>,
         // Collateral surplus claimable by vessel owners
         user_balances: LegacyMap<(ContractAddress, ContractAddress), u256>,
-        #[substorage(v0)]
-        ownable: OwnableComponent::Storage,
     }
 
 
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
-        #[flat]
-        OwnableEvent: OwnableComponent::Event,
         CollBalanceUpdated: CollBalanceUpdated,
         AssetSent: AssetSent
     }
