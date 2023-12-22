@@ -2,6 +2,8 @@ test_add_whitelist.cairo
 ├── when caller is not owner
 │   └── it should revert
 └── when caller is owner
+    ├── when whitelisted address is address zero
+    │   └── it should revert with CommunErrors__AddressZero
     ├── it should set whitelist to true for the given address
     └── it should emit {WhitelistUpdated} event
 
