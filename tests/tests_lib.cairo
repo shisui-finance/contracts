@@ -83,3 +83,20 @@ fn deploy_debt_token(address_provider: ContractAddress) -> ContractAddress {
     let contract = declare('DebtToken');
     deploy_mock_contract(contract, @array![address_provider.into()])
 }
+
+
+/// Utility function to deploy a ActivePool contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_active_pool(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('ActivePool');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}
+
+
+fn deploy_receive_erc20_mock() -> ContractAddress {
+    let contract = declare('ReceiveERC20Mock');
+    deploy_mock_contract(contract, @array![])
+}

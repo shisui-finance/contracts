@@ -187,6 +187,7 @@ mod integration {
             }
         }
         mod active_pool {
+            mod setup;
             mod decrease_debt {
                 mod test_decrease_debt;
             }
