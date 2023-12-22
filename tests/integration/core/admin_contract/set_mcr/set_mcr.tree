@@ -1,0 +1,13 @@
+test_set_mcr.cairo
+├── when caller is not the timelock
+│   └── it should revert CommunErrors__OnlyTimelock
+└── when caller is the timelock
+    ├── when collateral is not active
+    │   └── it should revert AdminContract__CollateralNotActive
+    └──  when collateral is active
+        ├── when value is not between 101% and 1000%
+        │   └── it should revert AdminContract__SafeCheckError
+        └── when value is between 101% and 1000%
+            ├── it should correclty set the mcr
+            └── it should emit {MCRChanged} event
+

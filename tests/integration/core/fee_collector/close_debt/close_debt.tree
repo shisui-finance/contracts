@@ -1,0 +1,9 @@
+test_close_debt.cairo
+├── when caller is neither the Borrower Operator nor the Vessel Manager contract
+│   └── it should revert with CommunErrors__CallerNotAuthorized
+└── when caller is either the Borrower Operator or the Vessel Manager contract
+    └── when current timestamp is lower than the fee_record.to
+        ├── it should correctly burn the right amount of debt token
+        ├── when the current timestamp is greater than the fee_record.to
+        │   └── it should correctly delete the fee_record
+        └── it should emit {FeeRecordUpdated} event

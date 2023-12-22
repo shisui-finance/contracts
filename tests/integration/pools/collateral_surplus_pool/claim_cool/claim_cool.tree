@@ -1,0 +1,9 @@
+test_claim_cool.cairo
+├── when caller is not the Borrower Operation contract
+│   └── it should revert with CommunErrors__CallerNotAuthorized
+└── when caller is the Borrower Operation contract
+    ├── when no collaterals are available
+    │   └── it should revert with CollateralSurplusPool__NoAvailableCollateral
+    ├── when collaterals are available
+    ├── it should correclty transfer collateral to caller
+    └── it should emit {AssetSent} event

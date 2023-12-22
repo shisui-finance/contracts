@@ -1,0 +1,21 @@
+test_set_address.cairo
+├── when setting a new address to a key
+│   ├── when caller is not the owner
+│   │   └── it should revert
+│   └── when caller is the owner
+│       ├── when the address is zero
+│       │   └── it should revert with CommunErrors__AddressZero
+│       ├── when the key has already an address
+│       │   └── it should revert with CommunErrors__OnlyTimelock
+│       └── when the address is non-zero
+│           ├── it should set the address
+│           └── it should emit {NewAddressRegistered} event
+└── when updating a key address
+    ├── when caller is not the timelock contract
+    │   └── it should revert with CommunErrors__OnlyTimelock
+    └── when caller is the timelock contract
+        ├── when the address is zero
+        │   └── it should revert with CommunErrors__AddressZero
+        └── when the address is non-zero
+            ├── it should set the address
+            └── it should emit {NewAddressRegistered} event

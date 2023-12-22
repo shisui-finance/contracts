@@ -1,0 +1,13 @@
+test_set_redemption_fee_floor.cairo
+├── when caller is not the timelock
+│   └── it should revert CommunErrors__OnlyTimelock
+└── when caller is the timelock
+    ├── when collateral is not active
+    │   └── it should revert AdminContract__CollateralNotActive
+    └──  when collateral is active
+        ├── when value is not between 0.1% and 10%
+        │   └── it should revert AdminContract__SafeCheckError
+        └── when value is between 0.1% and 10%
+            ├── it should correclty set the redemption fee floor
+            └── it should emit {RedemptionFeeFloorChanged} event
+

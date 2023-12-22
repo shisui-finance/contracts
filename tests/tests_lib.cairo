@@ -5,6 +5,22 @@ use snforge_std::{
 use starknet::{ContractAddress, Felt252TryIntoContractAddress, contract_address_const};
 
 
+/// Utility function to pre-calculate the address of a mock contract & deploy it.
+///
+/// # Arguments
+///
+/// * `contract` - The contract class
+/// * `calldata` - The calldata used for the contract constructor
+///
+/// # Returns
+///
+/// * `ContractAddress` - The pre-calculated address of the deployed contract
+fn deploy_mock_contract(contract: ContractClass, calldata: @Array<felt252>) -> ContractAddress {
+    let future_deployed_address = contract.precalculate_address(calldata);
+    start_prank(CheatTarget::One(future_deployed_address), contract_address_const::<'caller'>());
+    contract.deploy_at(calldata, future_deployed_address).unwrap()
+}
+
 /// Utility function to deploy a SafetyTransferMockContract contract and return its address.
 ///
 /// # Returns
@@ -22,22 +38,38 @@ fn deploy_safety_transfer_mock() -> ContractAddress {
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_erc20_mock(decimals: u8) -> ContractAddress {
     let contract = declare('ERC20Mock');
-    let constructor_calldata = array![decimals.into()];
-    deploy_mock_contract(contract, @constructor_calldata)
+    deploy_mock_contract(contract, @array![decimals.into()])
 }
 
-/// Utility function to pre-calculate the address of a mock contract & deploy it.
-///
-/// # Arguments
-///
-/// * `contract` - The contract class
-/// * `calldata` - The calldata used for the contract constructor
+/// Utility function to deploy a pragma oracle mock contract and return its address.
 ///
 /// # Returns
 ///
-/// * `ContractAddress` - The pre-calculated address of the deployed contract
-fn deploy_mock_contract(contract: ContractClass, calldata: @Array<felt252>) -> ContractAddress {
-    let future_deployed_address = contract.precalculate_address(calldata);
-    start_prank(CheatTarget::One(future_deployed_address), contract_address_const::<'caller'>());
-    contract.deploy_at(calldata, future_deployed_address).unwrap()
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_pragma_oracle_mock() -> ContractAddress {
+    let contract = declare('PragmaOracleMock');
+    deploy_mock_contract(contract, @array![])
+}
+
+/// Utility function to deploy a pragma oracle mock contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_price_feed(
+    address_provider: ContractAddress, pragma_contract: ContractAddress
+) -> ContractAddress {
+    let contract = declare('PriceFeed');
+    deploy_mock_contract(contract, @array![address_provider.into(), pragma_contract.into()])
+}
+
+
+/// Utility function to deploy a AddressProvider contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_address_provider() -> ContractAddress {
+    let contract = declare('AddressProvider');
+    deploy_mock_contract(contract, @array![])
 }

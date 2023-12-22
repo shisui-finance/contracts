@@ -1,0 +1,33 @@
+test_valid_insert_position.cairo
+├── when the prev_id and the next_id are address zero
+│   ├── when the list is empty
+│   │   └── it should return true
+│   └── when the list is not empty
+│       └── it should return false
+├── when the prev_id is not address zero
+│   ├── when the list is empty
+│   │   └── it should return false
+│   ├── when the next_id is not the head
+│   │   └── it should return false
+│   ├── when the NICR is lower than next_id's NICR
+│   │   └── it should return false
+│   └── when the NICR is greater than next_id's NICR and next_id is the head
+│       └── it should return true
+├── when the next_id is not address zero
+│   ├── when the list is empty
+│   │   └── it should return false
+│   ├── when the prev_id is not the tail
+│   │   └── it should return false
+│   ├── when the NICR is greater than prev_id's NICR
+│   │   └── it should return false
+│   └── when the NICR is lower than prev_id's NICR and prev_id is the tail
+│       └── it should return true
+└── when the prev_id and the next_id are not address zero
+    ├── when the next_id of the prev_id node is not the next_id
+    │   └── it should return false
+    ├── when the NICR is greater than prev_id's NICR
+    │   └── it should return false
+    ├── when the NICR is lower than next_id's NICR
+    │   └── it should return false
+    └── when the NICR is lower than prev_id's NICR and the NICR is greater than next_id's NICR
+        └── it should return true

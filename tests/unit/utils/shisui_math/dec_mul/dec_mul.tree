@@ -1,0 +1,8 @@
+test_dec_mul.cairo
+├── when a * b result is exact
+│   └── it should return a*b
+├── when a * b result is not exact but lower than 5 bps
+│   └── it should return the result rounding down
+└── when a * b result is not exact but greater than 5 bps
+    └── it should return the result rounding up
+

@@ -1,0 +1,18 @@
+test_fetch_price.cairo
+├── when token oracle is not set
+│   └── it should revert with PriceFeed__UnknownAssetError
+└── when token oracle is set
+    ├── when oracle price answer is 0
+    │   └── it should revert with PriceFeed__InvalidOracleResponseError
+    ├── when oracle answer is stale
+    │   └── it should revert with PriceFeed__InvalidOracleResponseError
+    ├── when oracle answer decimals is not TARGET_DECIMALS and price scaled to it is 0
+    │   └── it should revert with PriceFeed__InvalidOracleResponseError
+    └── when oracle answer decimals is not equal to TARGET_DECIMALS
+        ├── when anwser decimals is greater than TARGET_DECIMALS
+        │   └── it should return oracle price scaled to TARGET_DECIMALS
+        ├── when anwser decimals is less than TARGET_DECIMALS
+        │   └── it should return oracle price scaled to TARGET_DECIMALS
+        └── when oracle answer decimals is equal to TARGET_DECIMALS
+            └── it should return oracle price
+

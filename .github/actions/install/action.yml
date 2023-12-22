@@ -6,12 +6,10 @@ runs:
   steps:    
       - name: Step 1 - Install Scarb
         uses: software-mansion/setup-scarb@v1.3.2
-        with:
-          scarb-version: 2.3.1
       - name: Step 2 - Install snforge
         uses: foundry-rs/setup-snfoundry@v2
         with:
-          starknet-foundry-version: 0.11.0
+          starknet-foundry-version: 0.13.0
       - name: Step 3 - Restore compilation cache
         uses: actions/cache/restore@v3
         with:

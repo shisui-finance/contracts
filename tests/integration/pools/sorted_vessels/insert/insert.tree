@@ -1,0 +1,22 @@
+test_insert.cairo
+├── when the caller is neither the Borrower Operations nor the Vessel Manager contract
+│   └── it should revert with CommunErrors__CallerNotAuthorized
+├── when the list already contains this node
+│   └── it should revert with VesselManagerErrors__NodeAlreadyExists
+├── when the id is address zero
+│   └── it should revert with CommunErrors__AddressIsZero
+├── when the NICR is zero
+│   └── it should revert with VesselManagerErrors__NICRIsZero
+└── when the insert position is valid
+    ├── when the list is empty
+    │   └── it should insert the node and set head and tail to the node id
+    ├── when the prev_id is address zero
+    │   └── it should insert the node and set head to the node id
+    ├── when the next_id is address zero
+    │   └── it should insert the node and set tail to the node id
+    ├── when the next_id and prev_id are not address zero
+    │   └── it should correclty insert the node between the two
+    ├── when the insert position is not valid
+    │   └── it should find the correct position and insert the node
+    ├── it should increase the length of the list by one
+    └── it should emit {NodeAdded} event

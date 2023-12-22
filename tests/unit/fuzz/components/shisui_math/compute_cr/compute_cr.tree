@@ -1,5 +1,0 @@
-test_compute_cr.cairo
-├── when _debt is not zero
-│   └── it should return the collateral ratio
-└── when _debt is zero
-    └── it should return max u256
