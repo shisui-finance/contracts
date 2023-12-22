@@ -9,6 +9,7 @@ mod core {
     mod price_feed;
     mod fee_collector;
     mod admin_contract;
+    mod debt_token;
 }
 
 mod pools {
