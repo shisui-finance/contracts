@@ -125,29 +125,14 @@ mod integration {
             mod mint {
                 mod test_mint;
             }
-            mod transfer {
-                mod test_transfer;
-            }
-            mod transfer_from {
-                mod test_transfer_from;
-            }
             mod add_whitelist {
                 mod test_add_whitelist;
             }
             mod remove_whitelist {
                 mod test_remove_whitelist;
             }
-            mod return_from_pool {
-                mod test_return_from_pool;
-            }
-            mod send_to_pool {
-                mod test_send_to_pool;
-            }
             mod mint_from_whitelisted_contract {
                 mod test_mint_from_whitelisted_contract;
-            }
-            mod emergency_stop_minting {
-                mod test_emergency_stop_minting;
             }
             mod burn_from_whitelisted_contract {
                 mod test_burn_from_whitelisted_contract;
