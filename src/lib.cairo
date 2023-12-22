@@ -2,6 +2,10 @@ mod components {
     mod shisui_base;
 }
 
+mod interfaces{
+    mod deposit;
+}
+
 mod core {
     mod address_provider;
     mod timelock;
@@ -20,6 +24,7 @@ mod pools {
 }
 
 mod utils {
+    mod asserts;
     mod errors;
     mod constants;
     mod array;
