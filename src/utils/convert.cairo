@@ -8,7 +8,7 @@ use shisui::utils::errors::CommunErrors;
 fn decimals_correction(token: ContractAddress, amount: u256) -> u256 {
     assert(token.is_non_zero(), CommunErrors::AddressZero);
 
-    if amount == 0 {
+    if amount.is_zero() {
         return 0;
     }
 
