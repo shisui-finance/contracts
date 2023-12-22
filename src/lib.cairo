@@ -1,3 +1,6 @@
+mod interfaces{
+    mod deposit;
+}
 mod core {
     mod address_provider;
     mod timelock;
