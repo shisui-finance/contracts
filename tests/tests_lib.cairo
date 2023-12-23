@@ -133,6 +133,17 @@ fn deploy_active_pool(address_provider: ContractAddress) -> ContractAddress {
 }
 
 
+/// Utility function to deploy a DefaultPool contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_default_pool(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('DefaultPool');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}
+
+
 fn deploy_receive_erc20_mock() -> ContractAddress {
     let contract = declare('ReceiveERC20Mock');
     deploy_mock_contract(contract, @array![])

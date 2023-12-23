@@ -176,6 +176,7 @@ mod integration {
             }
         }
         mod default_pool {
+            mod setup;
             mod decrease_debt {
                 mod test_decrease_debt;
             }

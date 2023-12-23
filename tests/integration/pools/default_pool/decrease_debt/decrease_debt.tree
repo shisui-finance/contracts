@@ -1,6 +1,12 @@
 test_decrease_debt.cairo
 ├── when caller is not the Vessel Manager contract
 │   └── it should revert with CallerNotAuthorized
-└── when caller is the Vessel Manager contract
-    ├── it should correclty decrease the debt balance for the given asset with the given amount
-    └── it should emit {DefaultPoolDebtUpdated} event
+└── when caller is valid
+    ├── when the amount if less than the current debt balance
+    │   ├── it should correclty decrease the debt balance for the given asset with the given amount
+    │   └── it should emit {DefaultPoolDebtUpdated} event
+    ├── when the amount if equal to the current debt balance
+    │   ├── it should correclty set the debt balance for the given asset to 0
+    │   └── it should emit {DefaultPoolDebtUpdated} event
+    └── when the amount if greater to the current debt balance
+        └── it should revert with 'u256_sub Overflow'

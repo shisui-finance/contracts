@@ -8,4 +8,4 @@ test_send_asset_to_active_pool.cairo
         ├── it should correclty transfer the amount of asset to the Active Pool
         ├── it should emit {DefaultPoolAssetBalanceUpdated} event
         ├── it should emit {AssetSent} event
-        └── it should correclty call  the Active Pool receive_erc20() function
+        └── it should correclty call the receive_erc20() function of the Active Pool
