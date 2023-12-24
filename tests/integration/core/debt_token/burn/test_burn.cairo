@@ -42,7 +42,7 @@ fn setup() -> (IAddressProviderDispatcher, IDebtTokenDispatcher, ContractAddress
 }
 
 #[test]
-#[should_panic(expected: ('Caller is not authorized',))]
+#[should_panic(expected: ('Caller not authorized',))]
 fn given_caller_is_not_borrower_operations_nor_vessel_manager_nor_stability_pool_it_should_revert() {
     let (_, debt_token, caller) = setup();
     debt_token.burn(caller, MINT_AMOUNT);

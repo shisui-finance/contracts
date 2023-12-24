@@ -10,7 +10,6 @@ trait IActivePool<TContractState> {
         ref self: TContractState, asset: ContractAddress, account: ContractAddress, amount: u256
     );
 
-
     fn received_erc20(ref self: TContractState, asset: ContractAddress, amount: u256);
 
     fn get_asset_balance(self: @TContractState, asset: ContractAddress) -> u256;
@@ -171,7 +170,7 @@ mod ActivePool {
             assert(
                 caller == address_provider.get_address(AddressesKey::borrower_operations)
                     || caller == address_provider.get_address(AddressesKey::default_pool),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -182,7 +181,7 @@ mod ActivePool {
             assert(
                 caller == address_provider.get_address(AddressesKey::borrower_operations)
                     || caller == address_provider.get_address(AddressesKey::vessel_manager),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -196,7 +195,7 @@ mod ActivePool {
                 caller == address_provider.get_address(AddressesKey::borrower_operations)
                     || caller == address_provider.get_address(AddressesKey::stability_pool)
                     || caller == address_provider.get_address(AddressesKey::vessel_manager),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -210,7 +209,7 @@ mod ActivePool {
                     || caller == address_provider.get_address(AddressesKey::vessel_manager)
                     || caller == address_provider
                         .get_address(AddressesKey::vessel_manager_operations),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
     }
