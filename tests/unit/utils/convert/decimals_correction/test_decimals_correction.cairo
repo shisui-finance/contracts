@@ -2,10 +2,10 @@ use starknet::{ContractAddress, contract_address_const,};
 use shisui::utils::convert::decimals_correction;
 
 
-const amount: u256 = 1000000000000000001;
+const amount: u256 = 1000000000000000000;
 const amount_12Dec: u256 = 1000000000000;
 const amount_16Dec: u256 = 10000000000000000;
-const amount_20Dec: u256 = 100000000000000000100;
+const amount_20Dec: u256 = 100000000000000000000;
 
 
 // This tests check decimal correction with a token having 16 dec using mock contract deployment
