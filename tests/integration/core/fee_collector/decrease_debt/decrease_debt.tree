@@ -1,6 +1,6 @@
 test_decrease_debt.cairo
 ├── when caller is neither the Borrower Operator nor the Vessel Manager contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 └── when caller is either the Borrower Operator or the Vessel Manager contract
     ├── when payback_fraction is 0
     │   └── it should revert with CommunErrors_CantBeZero

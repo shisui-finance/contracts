@@ -1,6 +1,6 @@
 test_liquidate_debt.cairo
 ├── when caller is not the Vessel Manager contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 └── when caller is the Vessel Manager contract
     ├── when borrower record amount is 0
     │   └── it should do nothing

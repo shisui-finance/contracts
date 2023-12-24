@@ -1,9 +1,9 @@
 test_cancel_transaction.cairo
 ├── when caller is not the admin
-│   └── it should revert with Timelock__AdminOnly
+│   └── it should revert with AdminOnly
 └── when caller is the admin
     ├── when the transaction is not in queue
-    │   └── it should revert with Timelock__TxNoQueued
+    │   └── it should revert with TxNoQueued
     └── when the transaction is in queue
         ├── it should set the transaction hash to false
         └── it should emit a {CancelTransaction} event

@@ -87,7 +87,7 @@ mod AddressProvider {
     impl AddressProviderInternalImpl of AddressProviderInternalTrait {
         #[inline(always)]
         fn assert_address_not_zero(ref self: ContractState, address: ContractAddress) {
-            assert(address.is_non_zero(), CommunErrors::CommunErrors__AddressZero);
+            assert(address.is_non_zero(), CommunErrors::AddressZero);
         }
 
         #[inline(always)]
@@ -98,7 +98,7 @@ mod AddressProvider {
             } else {
                 assert(
                     caller == self.addresses.read(AddressesKey::timelock),
-                    CommunErrors::CommunErrors__OnlyTimelock
+                    CommunErrors::OnlyTimelock
                 );
             }
         }

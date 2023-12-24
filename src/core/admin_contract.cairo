@@ -108,13 +108,12 @@ mod AdminContract {
     const REDEMPTION_FEE_FLOOR_DEFAULT: u256 = 5_000_000_000_000_000; // 0.5%
     const REDEMPTION_BLOCK_TIMESTAMP_DEFAULT: u256 = 1_000_000_000_000_000_000_000_000; // 1 million
 
-    mod Errors {
-        const AdminContract__CollateralAlreadyExist: felt252 = 'Collateral already exist';
-        const AdminContract__CollateralNotEqualToDefault: felt252 =
-            'Collateral decimals not default';
-        const AdminContract__CollateralNotActive: felt252 = 'Collateral not active';
-        const AdminContract__CollateralNotExist: felt252 = 'Collateral does not exist';
-        const AdminContract__SafeCheckError: felt252 = 'Collateral already init';
+    mod AdminContractErrors {
+        const CollateralAlreadyExist: felt252 = 'Collateral already exist';
+        const CollateralNotEqualToDefault: felt252 = 'Collateral decimals not default';
+        const CollateralNotActive: felt252 = 'Collateral not active';
+        const CollateralNotExist: felt252 = 'Collateral does not exist';
+        const SafeCheckError: felt252 = 'Collateral already init';
     }
 
     #[storage]

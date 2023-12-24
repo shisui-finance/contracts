@@ -1,10 +1,10 @@
 test_insert.cairo
 ├── when the caller is neither the Borrower Operations nor the Vessel Manager contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 ├── when the list already contains this node
 │   └── it should revert with VesselManagerErrors__NodeAlreadyExists
 ├── when the id is address zero
-│   └── it should revert with CommunErrors__AddressIsZero
+│   └── it should revert with AddressIsZero
 ├── when the NICR is zero
 │   └── it should revert with VesselManagerErrors__NICRIsZero
 └── when the insert position is valid

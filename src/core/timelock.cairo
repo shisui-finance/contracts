@@ -49,18 +49,18 @@ mod Timelock {
         queued_transactions: LegacyMap::<felt252, bool>,
     }
 
-    mod Errors {
-        const Timelock__DelayMustExceedMininumDelay: felt252 = 'Delay must exceed mininum delay';
-        const Timelock__DelayMustNotExceedMaximumDelay: felt252 = 'Delay must under maximum delay';
-        const Timelock__TimelockOnly: felt252 = 'Timelock only';
-        const Timelock__PendingAdminOnly: felt252 = 'Pending admin only';
-        const Timelock__AdminOnly: felt252 = 'Admin only';
-        const Timelock__ETAMustSatisfyDelay: felt252 = 'ETA must satisfy delay';
-        const Timelock__TxNoQueued: felt252 = 'Tx no queued';
-        const Timelock__TxAlreadyQueued: felt252 = 'Tx already queued';
-        const Timelock__TxStillLocked: felt252 = 'Tx still locked';
-        const Timelock__TxExpired: felt252 = 'Tx expired';
-        const Timelock__TxReverted: felt252 = 'Tx reverted';
+    mod TimelockErrors {
+        const DelayMustExceedMininumDelay: felt252 = 'Delay must exceed mininum delay';
+        const DelayMustNotExceedMaximumDelay: felt252 = 'Delay must under maximum delay';
+        const TimelockOnly: felt252 = 'Timelock only';
+        const PendingAdminOnly: felt252 = 'Pending admin only';
+        const AdminOnly: felt252 = 'Admin only';
+        const ETAMustSatisfyDelay: felt252 = 'ETA must satisfy delay';
+        const TxNoQueued: felt252 = 'Tx no queued';
+        const TxAlreadyQueued: felt252 = 'Tx already queued';
+        const TxStillLocked: felt252 = 'Tx still locked';
+        const TxExpired: felt252 = 'Tx expired';
+        const TxReverted: felt252 = 'Tx reverted';
     }
 
 

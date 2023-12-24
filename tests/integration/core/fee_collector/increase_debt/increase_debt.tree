@@ -1,6 +1,6 @@
 test_increase_debt.cairo
 ├── when caller is not the Borrower Operator contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 └── when caller is the Borrower Operator contract
     ├── when it is the first borrower debt on the asset
     │   └── it should correctly create the fee record

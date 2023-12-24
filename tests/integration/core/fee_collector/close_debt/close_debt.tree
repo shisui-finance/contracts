@@ -1,6 +1,6 @@
 test_close_debt.cairo
 ├── when caller is neither the Borrower Operator nor the Vessel Manager contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 └── when caller is either the Borrower Operator or the Vessel Manager contract
     └── when current timestamp is lower than the fee_record.to
         ├── it should correctly burn the right amount of debt token

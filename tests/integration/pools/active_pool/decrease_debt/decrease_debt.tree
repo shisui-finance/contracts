@@ -1,6 +1,6 @@
 test_decrease_debt.cairo
 ├── when caller is neither the Borrower Operation nor the Vessel Manager nor the Stability Pool contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 └── when caller is either the Borrower Operation or the Vessel Manager or the Stability Pool contract
     ├── it should correclty decrease the debt balance for the given asset with the given amount
     └── it should emit {ActivePoolDebtUpdated} event

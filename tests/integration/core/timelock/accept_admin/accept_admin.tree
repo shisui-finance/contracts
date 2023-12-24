@@ -1,6 +1,6 @@
 test_accept_admin.cairo
 ├── when caller is not the pending admin
-│   └── it should revert with Timelock__PendingAdminOnly
+│   └── it should revert with PendingAdminOnly
 └── when caller is the pending admin
     ├── it should set the admin as pending admin
     └── it should set the pending admin as zero

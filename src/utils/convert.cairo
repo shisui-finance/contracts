@@ -8,7 +8,7 @@ use shisui::utils::math::pow;
 use shisui::utils::errors::CommunErrors;
 
 fn decimals_correction(token: ContractAddress, amount: u256) -> u256 {
-    assert(token.is_non_zero(), CommunErrors::CommunErrors__AddressZero);
+    assert(token.is_non_zero(), CommunErrors::AddressZero);
 
     if amount == 0 {
         return 0;
@@ -17,7 +17,7 @@ fn decimals_correction(token: ContractAddress, amount: u256) -> u256 {
     let decimals: u8 = IERC20MetadataDispatcher { contract_address: token }.decimals();
     if decimals < 18 {
         let divisor: u256 = pow(10, 18 - decimals);
-        assert(amount % divisor != 0, CommunErrors::CommunErrors__Invalid_amount);
+        assert(amount % divisor != 0, CommunErrors::Invalid_amount);
         return amount / divisor;
     } else if decimals > 18 {
         let multiplier = pow(10, decimals - 18);

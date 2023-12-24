@@ -1,6 +1,6 @@
 test_set_redemption_block_timestamp.cairo
 ├── when caller is not the timelock
-│   └── it should revert CommunErrors__OnlyTimelock
+│   └── it should revert OnlyTimelock
 └── when caller is the timelock
     ├── when collateral is not active
     │   └── it should revert AdminContract__CollateralNotActive

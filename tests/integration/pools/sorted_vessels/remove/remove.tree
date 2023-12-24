@@ -1,6 +1,6 @@
 test_remove.cairo
 ├── when the caller is not the Vessel Manager contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 ├── when the node is not in the list
 │   └── it should revert with VesselManagerErrors__NodeDoesNotExist
 ├── when the list has one node

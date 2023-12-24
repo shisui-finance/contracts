@@ -1,6 +1,6 @@
 test_account_surplus.cairo
 ├── when caller is neither the Vessel Manager nor the Vessel Manager Operation contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 └── when caller is either the Vessel Manager or the Vessel Manager Operation contract
     ├── it should correclty update the user balance for the given asset with the given amount
     └── it should emit {CollBalanceUpdated} event

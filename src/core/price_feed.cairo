@@ -82,10 +82,10 @@ mod PriceFeed {
         timeout_seconds: u64
     }
 
-    mod Errors {
-        const PriceFeed__InvalidOracleResponseError: felt252 = 'Invalid Oracle Response Error';
-        const PriceFeed__UnknownAssetError: felt252 = 'Unknown Asset Error';
-        const PriceFeed__InvalidPairId: felt252 = 'Unknown Pair Id Error';
+    mod PriceFeedErrors {
+        const InvalidOracleResponseError: felt252 = 'Invalid Oracle Response Error';
+        const UnknownAssetError: felt252 = 'Unknown Asset Error';
+        const InvalidPairId: felt252 = 'Unknown Pair Id Error';
     }
 
     #[constructor]
@@ -94,12 +94,8 @@ mod PriceFeed {
         address_provider: IAddressProviderDispatcher,
         pragma_contract: IPragmaABIDispatcher
     ) {
-        assert(
-            address_provider.contract_address.is_non_zero(), CommunErrors::CommunErrors__AddressZero
-        );
-        assert(
-            pragma_contract.contract_address.is_non_zero(), CommunErrors::CommunErrors__AddressZero
-        );
+        assert(address_provider.contract_address.is_non_zero(), CommunErrors::AddressZero);
+        assert(pragma_contract.contract_address.is_non_zero(), CommunErrors::AddressZero);
         self.pragma_contract.write(pragma_contract);
         self.address_provider.write(address_provider);
         self.ownable.initializer(get_caller_address());
@@ -108,9 +104,7 @@ mod PriceFeed {
     #[external(v0)]
     impl PriceFeedImpl of super::IPriceFeed<ContractState> {
         fn set_pragma_contract(ref self: ContractState, pragma_contract: IPragmaABIDispatcher) {
-            assert(
-                pragma_contract.contract_address.is_non_zero(), Errors::PriceFeed__InvalidPairId
-            );
+            assert(pragma_contract.contract_address.is_non_zero(), PriceFeedErrors::InvalidPairId);
             self.assert_owner_or_timelock(self.pragma_contract.read().contract_address.is_zero());
             self.pragma_contract.write(pragma_contract);
         }
@@ -132,7 +126,7 @@ mod PriceFeed {
 
         fn fetch_price(self: @ContractState, token: ContractAddress) -> u256 {
             let oracle: OracleRecord = self.oracles.read(token);
-            assert(oracle.pair_id.is_non_zero(), Errors::PriceFeed__UnknownAssetError);
+            assert(oracle.pair_id.is_non_zero(), PriceFeedErrors::UnknownAssetError);
 
             return self.fetch_oracle_scaled_price(oracle);
         }
@@ -158,7 +152,7 @@ mod PriceFeed {
                 .scale_price_by_digits(
                     prices_response.price.into(), prices_response.decimals.try_into().unwrap()
                 );
-            assert(price.is_non_zero(), Errors::PriceFeed__InvalidOracleResponseError);
+            assert(price.is_non_zero(), PriceFeedErrors::InvalidOracleResponseError);
             return price;
         }
 
@@ -167,10 +161,10 @@ mod PriceFeed {
             let data: PragmaPricesResponse = pragma_contract
                 .get_data(DataType::SpotEntry(oracle.pair_id), AggregationMode::Median(()));
 
-            assert(data.decimals.is_non_zero(), Errors::PriceFeed__InvalidPairId);
+            assert(data.decimals.is_non_zero(), PriceFeedErrors::InvalidPairId);
             assert(
                 self.is_not_stale_price(data.last_updated_timestamp, oracle.timeout_seconds),
-                Errors::PriceFeed__InvalidOracleResponseError
+                PriceFeedErrors::InvalidOracleResponseError
             );
             return data;
         }
@@ -198,7 +192,7 @@ mod PriceFeed {
             } else {
                 assert(
                     caller == self.address_provider.read().get_address(AddressesKey::timelock),
-                    CommunErrors::CommunErrors__OnlyTimelock
+                    CommunErrors::OnlyTimelock
                 );
             }
         }

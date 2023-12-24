@@ -1,6 +1,6 @@
 test_handle_redemption_fee.cairo
 ├── when caller is not the Vessel Manager contract
-│   └── it should revert with CommunErrors__CallerNotAuthorized
+│   └── it should revert with CallerNotAuthorized
 └── when caller is the Vessel Manager contract
     ├── when borrowers array length is 0
     │   └── it should revert with FeeCollector__ArrayMismatch
