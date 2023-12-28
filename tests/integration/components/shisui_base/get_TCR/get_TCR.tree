@@ -1,7 +1,0 @@
-test_get_TCR.cairo
-├── when the _asset is not whitelisted
-│   └── it should return max u256
-└── when the _asset is whitelisted
-    ├── when the _price is 0
-    │   └── it should return 0
-    └── it should return the correct amount

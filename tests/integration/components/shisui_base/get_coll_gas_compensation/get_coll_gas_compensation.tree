@@ -1,5 +1,0 @@
-test_get_coll_gas_compensation.cairo
-├── when the _asset is not whitelisted
-│   └── it should revert
-└── when the _asset is whitelisted
-    └── it should return the correct gas compensation
