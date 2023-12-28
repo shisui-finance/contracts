@@ -5,3 +5,7 @@ mod CommunErrors {
     const CommunErrors__CallerNotAuthorized: felt252 = 'Caller is not authorized';
     const CommunErrors__Invalid_amount: felt252 = 'Invalid_amount';
 }
+
+mod DebtTokenErrors {
+    const DebtTokenErrors__BurnAmountGtBalance: felt252 = 'Burn amount gt balance';
+}
