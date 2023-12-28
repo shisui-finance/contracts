@@ -17,6 +17,7 @@ mod pools {
     mod default_pool;
     mod collateral_surplus_pool;
     mod active_pool;
+    mod vessel_manager;
 }
 
 mod utils {
@@ -27,6 +28,7 @@ mod utils {
     mod math;
     mod shisui_math;
     mod convert;
+    mod doubly_linked_list;
 }
 
 mod mocks {

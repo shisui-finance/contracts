@@ -9,3 +9,9 @@ mod CommunErrors {
 mod DebtTokenErrors {
     const DebtTokenErrors__BurnAmountGtBalance: felt252 = 'Burn amount gt balance';
 }
+
+mod SortedVesselsErrors {
+    const NodeAlreadyExists: felt252 = 'Node already exists';
+    const NodeDoesntExist: felt252 = 'Node doesnt exist';
+    const NICRMustBePositive: felt252 = 'NICR must be positive';
+}

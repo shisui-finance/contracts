@@ -8,15 +8,13 @@ test_insert.cairo
 ├── when the NICR is zero
 │   └── it should revert with VesselManagerErrors__NICRIsZero
 └── when the insert position is valid
-    ├── when the list is empty
-    │   └── it should insert the node and set head and tail to the node id
-    ├── when the prev_id is address zero
-    │   └── it should insert the node and set head to the node id
-    ├── when the next_id is address zero
-    │   └── it should insert the node and set tail to the node id
-    ├── when the next_id and prev_id are not address zero
-    │   └── it should correclty insert the node between the two
-    ├── when the insert position is not valid
-    │   └── it should find the correct position and insert the node
-    ├── it should increase the length of the list by one
-    └── it should emit {NodeAdded} event
+│   ├── when the list is empty
+│   │   └── it should insert the node and set head and tail to the node id
+│   ├── when the prev_id is address zero
+│   │   └── it should insert the node and set head to the node id
+│   ├── when the next_id is address zero
+│   │   └── it should insert the node and set tail to the node id
+│   └── when the next_id and prev_id are not address zero
+│       └── it should correclty insert the node between the two
+└── when the insert position is not valid
+    └── it should find the correct position and insert the node
