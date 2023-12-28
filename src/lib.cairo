@@ -6,9 +6,11 @@ mod core {
     mod address_provider;
     mod timelock;
     mod gas_pool;
+    mod debt_token;
     mod price_feed;
     mod fee_collector;
     mod admin_contract;
+    mod vessel_manager;
 }
 
 mod pools {

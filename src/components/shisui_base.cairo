@@ -41,11 +41,15 @@ mod ShisuiBaseComponent {
             return 0;
         }
 
-        fn get_TCR(_asset: ContractAddress, _price: u256) -> u256 {
+        fn get_TCR(
+            self: @ComponentState<TContractState>, _asset: ContractAddress, _price: u256
+        ) -> u256 {
             return 0;
         }
 
-        fn check_recovery_mode(_asset: ContractAddress, _price: u256) -> bool {
+        fn check_recovery_mode(
+            self: @ComponentState<TContractState>, _asset: ContractAddress, _price: u256
+        ) -> bool {
             return true;
         }
 
