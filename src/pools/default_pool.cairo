@@ -47,6 +47,7 @@ mod DefaultPool {
 
         fn decrease_debt(ref self: ContractState, asset: ContractAddress, amount: u256) {}
 
+        // Useless just do a send_asset with proper access control
         fn send_asset_to_active_pool(
             ref self: ContractState, asset: ContractAddress, amount: u256
         ) {}
