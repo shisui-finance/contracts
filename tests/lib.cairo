@@ -125,29 +125,14 @@ mod integration {
             mod mint {
                 mod test_mint;
             }
-            mod transfer {
-                mod test_transfer;
-            }
-            mod transfer_from {
-                mod test_transfer_from;
-            }
             mod add_whitelist {
                 mod test_add_whitelist;
             }
             mod remove_whitelist {
                 mod test_remove_whitelist;
             }
-            mod return_from_pool {
-                mod test_return_from_pool;
-            }
-            mod send_to_pool {
-                mod test_send_to_pool;
-            }
             mod mint_from_whitelisted_contract {
                 mod test_mint_from_whitelisted_contract;
-            }
-            mod emergency_stop_minting {
-                mod test_emergency_stop_minting;
             }
             mod burn_from_whitelisted_contract {
                 mod test_burn_from_whitelisted_contract;
@@ -166,6 +151,7 @@ mod integration {
             }
         }
         mod fee_collector {
+            mod setup;
             mod increase_debt {
                 mod test_increase_debt;
             }
@@ -184,8 +170,8 @@ mod integration {
             mod handle_redemption_fee {
                 mod test_handle_redemption_fee;
             }
-            mod set_route_to_SHVT_staking {
-                mod test_set_route_to_SHVT_staking;
+            mod set_is_route_to_SHVT_staking {
+                mod test_set_is_route_to_SHVT_staking;
             }
         }
     }
@@ -202,6 +188,7 @@ mod integration {
             }
         }
         mod active_pool {
+            mod setup;
             mod decrease_debt {
                 mod test_decrease_debt;
             }
@@ -256,6 +243,7 @@ mod helpers {
 mod tests_lib;
 
 mod utils {
+    mod asserts;
     mod constant;
     mod aggregator;
     mod callers;

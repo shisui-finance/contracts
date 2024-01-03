@@ -6,4 +6,4 @@ test_liquidate_debt.cairo
     │   └── it should do nothing
     └── when borrower record amount is not 0
         ├── it should correctly liquidate debt and collect fees
-        └── it should emit {FeeRecordUpdated} event
+        └── it should emit {FeeRecordUpdated} and {FeeCollector} event

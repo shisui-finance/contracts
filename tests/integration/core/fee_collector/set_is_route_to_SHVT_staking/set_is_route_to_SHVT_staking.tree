@@ -1,4 +1,4 @@
-test_set_route_to_SHVT_staking.cairo
+test_is_set_route_to_SHVT_staking.cairo
 ├── when caller is not the Timelock contract
 │   └── it should revert with CallerNotAuthorized
 └── when caller is the Timelock contract

@@ -2,6 +2,14 @@ mod components {
     mod shisui_base;
 }
 
+mod interfaces {
+    mod deposit;
+}
+
+mod shvt {
+    mod shvt_staking;
+}
+
 mod core {
     mod address_provider;
     mod timelock;
@@ -9,6 +17,7 @@ mod core {
     mod price_feed;
     mod fee_collector;
     mod admin_contract;
+    mod debt_token;
 }
 
 mod pools {
@@ -19,6 +28,7 @@ mod pools {
 }
 
 mod utils {
+    mod asserts;
     mod errors;
     mod constants;
     mod array;
@@ -31,5 +41,6 @@ mod utils {
 mod mocks {
     mod erc20_mock;
     mod pragma_oracle_mock;
+    mod receive_erc20_mock;
 }
 

@@ -1,16 +1,18 @@
 test_decrease_debt.cairo
-├── when caller is neither the Borrower Operator nor the Vessel Manager contract
+├── when caller is neither the Borrower Operations nor the Vessel Manager contract
 │   └── it should revert with CallerNotAuthorized
-└── when caller is either the Borrower Operator or the Vessel Manager contract
+└── when caller is either the Borrower Operations or the Vessel Manager contract
     ├── when payback_fraction is 0
     │   └── it should revert with CommunErrors_CantBeZero
     ├── when payback_fraction is greater than 1e18
     │   └── it should revert with FeeCollector__PaybackFractionTooHigh
-    └── when current timestamp is lower than the fee_record.to
-        ├── when payback_fraction is equal to 1e18
-        │   └── it should correctly burn the right amount of debt token
-        ├── when payback_fraction is lower than 1e18
-        │   └── it should correctly refund the borrower
-        ├── when the current timestamp is greater than the fee_record.to
-        │   └── it should correctly delete the fee_record
-        └── it should emit {FeeRecordUpdated} event
+    ├──  when current timestamp is lower than the fee_record.to
+    │   ├── when payback_fraction is equal to 1e18
+    │   │   ├── it should correctly burn the amount left after fees
+    │   │   └── it should emit {FeeRecordUpdated} and {FeeCollected} event
+    │   ├── when payback_fraction is lower than 1e18
+    │   │   ├── it should correctly refund the borrower
+    │   │   └── it should emit {FeeRecordUpdated}, {FeeCollected} and {FeeRefunded} event
+    └── when the current timestamp is greater than the fee_record.to
+        ├── it should correctly delete the fee_record and send all fees
+        └── it should emit {FeeRecordUpdated} and {FeeCollected} event

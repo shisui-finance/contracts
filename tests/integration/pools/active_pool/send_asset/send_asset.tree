@@ -1,7 +1,7 @@
 test_send_asset.cairo
 ├── when caller is neither the Borrower Operation nor the Stability Pool nor the Vessel Manager nor the Vessel Manager Operation contract
 │   └── it should revert with CallerNotAuthorized
-└── when caller is either the Borrower Operation or the Stability Pool or the Vessel Manager contract
+└── when caller is either the Borrower Operation or the Stability Pool or the Vessel Manager or the Vessel Manager Operation contract
     ├── when amount scale to asset decimals is zero
     │   └── it should do nothing
     └── when amount scale to asset decimals is not zero

@@ -1,8 +1,11 @@
 test_collect_fees.cairo
 ├── when borrowers array length is 0
-│   └── it should revert with FeeCollector__ArrayMismatch
+│   └── it should revert with ArrayMismatch
 ├── when borrowers array length is not equal to assets array length
-│   └── it should revert with FeeCollector__ArrayMismatch
-└── when array lengths are equal and not 0
-    ├── it should correctly collect fees and delete the fee_record
-    └── it should emit {FeeRecordUpdated} event
+│   └── it should revert with ArrayMismatch
+└── when input valid
+    ├── when 2 loans partially collected and then after they expired 
+    │   ├── it should correctly collect fees
+    │   └── it should emit {FeeRecordUpdated} and {FeeCollected} event
+    └── when input does not contain fees to collect
+        └── it should do nothing

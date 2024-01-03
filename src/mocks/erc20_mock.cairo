@@ -1,4 +1,14 @@
 //! Contract to mock ERC20 with specfic decimals
+use starknet::ContractAddress;
+use openzeppelin::token::erc20::interface::IERC20;
+
+#[starknet::interface]
+trait IERC20MintBurn<TContractState> {
+    fn mint(ref self: TContractState, recipient: ContractAddress, amount: u256);
+
+    fn burn(ref self: TContractState, recipient: ContractAddress, amount: u256);
+}
+
 
 #[starknet::contract]
 mod ERC20Mock {
@@ -44,7 +54,7 @@ mod ERC20Mock {
     #[constructor]
     fn constructor(ref self: ContractState, decimals: u8) {
         // Call the internal function that writes decimals to storage
-        self._set_decimals(decimals);
+        self.decimals.write(decimals);
         // Initialize ERC20
         let name = 'ERC20Mock';
         let symbol = 'MOCK';
@@ -70,13 +80,14 @@ mod ERC20Mock {
         }
     }
 
-    // *************************************************************************
-    //                          INTERNAL FUNCTIONS
-    // *************************************************************************
-    #[generate_trait]
-    impl InternalImpl of InternalTrait {
-        fn _set_decimals(ref self: ContractState, decimals: u8) {
-            self.decimals.write(decimals);
+    #[external(v0)]
+    impl ERC20MockImpl of super::IERC20MintBurn<ContractState> {
+        fn mint(ref self: ContractState, recipient: ContractAddress, amount: u256) {
+            self.erc20._mint(recipient, amount);
+        }
+
+        fn burn(ref self: ContractState, recipient: ContractAddress, amount: u256) {
+            self.erc20._burn(recipient, amount);
         }
     }
 }
