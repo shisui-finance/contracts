@@ -1,14 +1,13 @@
-mod components {
-    mod shisui_base;
-}
-
 mod core {
     mod address_provider;
     mod timelock;
     mod gas_pool;
+    mod debt_token;
     mod price_feed;
     mod fee_collector;
     mod admin_contract;
+    mod debt_token;
+    mod vessel_manager;
 }
 
 mod pools {
@@ -16,6 +15,7 @@ mod pools {
     mod default_pool;
     mod collateral_surplus_pool;
     mod active_pool;
+    mod vessel_manager;
 }
 
 mod utils {
@@ -25,7 +25,9 @@ mod utils {
     mod traits;
     mod math;
     mod shisui_math;
+    mod shisui_base;
     mod convert;
+    mod doubly_linked_list;
 }
 
 mod mocks {

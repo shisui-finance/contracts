@@ -1,7 +1,0 @@
-test_check_recovery_mode.cairo
-├── when the _asset is not whitelisted
-│   └── it should return false
-└── when the _asset is whitelisted
-    ├── when the _price is 0
-    │   └── it should return true
-    └── it should return the correct bool
