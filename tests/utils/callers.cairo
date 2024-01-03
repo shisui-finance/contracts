@@ -28,6 +28,10 @@ fn active_pool_address() -> ContractAddress {
     return contract_address_const::<'active_pool'>();
 }
 
+fn treasury_address() -> ContractAddress {
+    return contract_address_const::<'treasury'>();
+}
+
 fn default_pool_address() -> ContractAddress {
     return contract_address_const::<'default_pool'>();
 }
@@ -36,9 +40,14 @@ fn stability_pool_address() -> ContractAddress {
     return contract_address_const::<'stability_pool'>();
 }
 
+fn borrower() -> ContractAddress {
+    return contract_address_const::<'borrower'>();
+}
+
 fn alice() -> ContractAddress {
     return contract_address_const::<'alice'>();
 }
+
 
 fn bob() -> ContractAddress {
     return contract_address_const::<'bob'>();

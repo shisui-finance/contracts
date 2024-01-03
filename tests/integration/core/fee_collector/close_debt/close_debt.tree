@@ -1,9 +1,13 @@
 test_close_debt.cairo
-├── when caller is neither the Borrower Operator nor the Vessel Manager contract
+├── when caller is neither the Borrower Operations nor the Vessel Manager contract
 │   └── it should revert with CallerNotAuthorized
-└── when caller is either the Borrower Operator or the Vessel Manager contract
-    └── when current timestamp is lower than the fee_record.to
-        ├── it should correctly burn the right amount of debt token
-        ├── when the current timestamp is greater than the fee_record.to
-        │   └── it should correctly delete the fee_record
-        └── it should emit {FeeRecordUpdated} event
+└── when caller is either the Borrower Operations or the Vessel Manager contract
+    ├── when current timestamp is lower than 1 week after the fee_record.from
+    │    └── it should correctly collect the min amount of fee
+    ├── when current timestamp is lower than the fee_record.to
+    │    ├── it should correctly burn the right amount of debt token
+    │    └── it should emit {FeeCollected} event
+    ├── when the current timestamp is greater than the fee_record.from
+    │   ├── it should correctly delete the fee_record and send all fee to the right protocol revenue destination
+    │   └── it should emit {FeeCollected} event
+    └── it should emit {FeeRecordUpdated} event

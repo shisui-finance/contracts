@@ -20,7 +20,6 @@ trait IDebtToken<TContractState> {
 
 #[starknet::contract]
 mod DebtToken {
-    use core::starknet::event::EventEmitter;
     use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
     use shisui::core::debt_token::IDebtToken;
     use openzeppelin::token::erc20::erc20::ERC20Component::InternalTrait as ERC20InternalTrait;

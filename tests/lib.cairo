@@ -151,6 +151,7 @@ mod integration {
             }
         }
         mod fee_collector {
+            mod setup;
             mod increase_debt {
                 mod test_increase_debt;
             }
@@ -169,8 +170,8 @@ mod integration {
             mod handle_redemption_fee {
                 mod test_handle_redemption_fee;
             }
-            mod set_route_to_SHVT_staking {
-                mod test_set_route_to_SHVT_staking;
+            mod set_is_route_to_SHVT_staking {
+                mod test_set_is_route_to_SHVT_staking;
             }
         }
     }
@@ -242,6 +243,7 @@ mod helpers {
 mod tests_lib;
 
 mod utils {
+    mod asserts;
     mod constant;
     mod aggregator;
     mod callers;

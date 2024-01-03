@@ -1,13 +1,13 @@
 test_increase_debt.cairo
-├── when caller is not the Borrower Operator contract
+├── when caller is not the Borrower Operations contract
 │   └── it should revert with CallerNotAuthorized
-└── when caller is the Borrower Operator contract
+└── when caller is the Borrower Operations contract
     ├── when it is the first borrower debt on the asset
     │   └── it should correctly create the fee record
     └── when it is not the first borrower debt on the asset
-        ├── when the current timestamp is lower than the fee_record.to
-        │   └── it should correctly update fee_record
-        ├── when the current timestamp is greater than the fee_record.to
-        │   └── it should create a new fee_record
-        ├── it should correctly collect fees
-        └── it should emit {FeeRecordUpdated} event
+    │   ├── when the current timestamp is lower than the fee_record.to
+    │   │   └── it should correctly update fee_record
+    │   ├── when the current timestamp is greater than the fee_record.to
+    │   │   └── it should create a new fee_record
+    │   └── it should correctly collect fees
+    └── it should emit {FeeRecordUpdated} and {FeeCollected} event

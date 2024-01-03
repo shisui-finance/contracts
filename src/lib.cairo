@@ -6,6 +6,10 @@ mod interfaces {
     mod deposit;
 }
 
+mod shvt {
+    mod shvt_staking;
+}
+
 mod core {
     mod address_provider;
     mod timelock;
