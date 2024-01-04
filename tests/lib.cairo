@@ -146,6 +146,12 @@ mod integration {
                 mod test_set_route_to_SHVT_staking;
             }
         }
+        mod vessel_manager {
+            mod setup;
+            mod get_current_icr {
+                mod test_get_current_icr;
+            }
+        }
     }
     mod pools {
         mod collateral_surplus_pool {

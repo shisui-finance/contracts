@@ -75,7 +75,6 @@ fn deploy_address_provider() -> ContractAddress {
     deploy_mock_contract(contract, @array![])
 }
 
-
 /// Utility function to deploy the AdminContract and return its address.
 ///
 /// # Arguments
@@ -87,7 +86,6 @@ fn deploy_admin_contract(address_provider: ContractAddress) -> ContractAddress {
     let contract = declare('AdminContract');
     deploy_mock_contract(contract, @array![address_provider.into()])
 }
-
 
 /// Utility function to deploy the StabilityPool contract and return its address.
 ///
@@ -118,5 +116,30 @@ fn deploy_collateral_surplus_pool(address_provider: ContractAddress) -> Contract
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_debt_token(address_provider: ContractAddress) -> ContractAddress {
     let contract = declare('DebtToken');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}
+
+/// Utility function to deploy a FeeCollector contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_fee_collector(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('FeeCollector');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}
+
+/// Utility function to deploy a VesselManager contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_vessel_manager(
+    address_provider: ContractAddress,
+    admin_contract: ContractAddress,
+    debt_token: ContractAddress,
+    fee_collector: ContractAddress
+) -> ContractAddress {
+    let contract = declare('VesselManager');
     deploy_mock_contract(contract, @array![address_provider.into()])
 }

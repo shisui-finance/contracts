@@ -983,7 +983,7 @@ mod VesselManager {
         ) -> (u256, u256) {
             let pending_coll_reward = self.get_pending_asset_reward(asset, borrower);
             let pending_debt_reward = self.get_pending_debt_token_reward(asset, borrower);
-            let vessel: super::Vessel = self.vessels.read((borrower, asset));
+            let vessel = self.vessels.read((borrower, asset));
             let coll = vessel.coll + pending_coll_reward;
             let debt = vessel.debt + pending_debt_reward;
             (coll, debt)
