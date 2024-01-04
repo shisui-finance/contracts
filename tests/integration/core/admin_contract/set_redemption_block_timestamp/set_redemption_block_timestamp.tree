@@ -1,11 +1,11 @@
 test_set_redemption_block_timestamp.cairo
 ├── when setup is not initialized and caller not the owner
-│   └── it should revert CommunErrors__OnlyOwner
+│   └── it should revert OnlyOwner
 ├── when setup is initialized and caller is not the timelock contract
-│   └── it should revert CommunErrors__OnlyTimelock
+│   └── it should revert OnlyTimelock
 └── when caller is valid
     ├── when collateral is not active
-    │   └── it should revert AdminContract__CollateralNotActive
+    │   └── it should revert CollateralNotActive
     └──  when collateral is active
         ├── it should correclty set the redemption block timestamp
         └── it should emit {RedemptionBlockTimestampUpdated} event

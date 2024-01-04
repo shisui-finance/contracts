@@ -88,6 +88,7 @@ trait IAdminContract<TContractState> {
 
 #[starknet::contract]
 mod AdminContract {
+    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait;
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::access::ownable::{OwnableComponent, OwnableComponent::InternalImpl};
     use shisui::utils::{
@@ -124,12 +125,12 @@ mod AdminContract {
     const PERCENT_DIVISOR_DEFAULT: u256 = 200; // dividing by 200 yields 0.5%
     const REDEMPTION_BLOCK_TIMESTAMP_DEFAULT: u64 = 0xffffffffffffffff_u64; // max u64
 
-    mod AdminContractErrors {
+    mod Errors {
         const CollateralAlreadyExist: felt252 = 'Collateral already exist';
-        const CollateralNotEqualToDefault: felt252 = 'Collateral decimals not default';
+        const CollateralDecimalsNotSupported: felt252 = 'Collateral decimals not default';
         const CollateralNotActive: felt252 = 'Collateral not active';
         const CollateralNotExist: felt252 = 'Collateral does not exist';
-        const SafeCheckError: felt252 = 'Collateral already init';
+        const ValueOutOfRange: felt252 = 'Value out of range';
     }
 
 
@@ -224,9 +225,7 @@ mod AdminContract {
 
     #[constructor]
     fn constructor(ref self: ContractState, address_provider: IAddressProviderDispatcher) {
-        assert(
-            address_provider.contract_address.is_non_zero(), CommunErrors::CommunErrors__AddressZero
-        );
+        assert(address_provider.contract_address.is_non_zero(), CommunErrors::AddressZero);
         self.address_provider.write(address_provider);
         self.ownable.initializer(get_caller_address());
     }
@@ -240,10 +239,8 @@ mod AdminContract {
             decimals: u8
         ) {
             self.assert_caller_is_timelock();
-            assert(!self.exist(collateral), Errors::AdminContract__CollateralAlreadyExist);
-            assert(
-                decimals == DEFAULT_DECIMALS, Errors::AdminContract__CollateralDecimalsNotSupported
-            );
+            assert(!self.exist(collateral), Errors::CollateralAlreadyExist);
+            assert(decimals == DEFAULT_DECIMALS, Errors::CollateralDecimalsNotSupported);
             let mut coll_array = self.supported_collateral.read();
             let index = coll_array.len();
             coll_array.append(collateral);
@@ -292,7 +289,7 @@ mod AdminContract {
             redemption_fee_floor: u256,
         ) {
             self.assert_caller_is_timelock();
-            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
+            assert(self.exist(collateral), Errors::CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             params.is_active = true;
             self.set_borrowing_fee_internal(ref params, collateral, borrowing_fee);
@@ -307,7 +304,7 @@ mod AdminContract {
 
         fn set_is_active(ref self: ContractState, collateral: ContractAddress, active: bool) {
             self.assert_caller_is_timelock();
-            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
+            assert(self.exist(collateral), Errors::CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             params.is_active = active;
             self.collateral_params.write(collateral, params);
@@ -347,7 +344,7 @@ mod AdminContract {
 
         fn set_mint_cap(ref self: ContractState, collateral: ContractAddress, mint_cap: u256) {
             self.assert_caller_is_timelock();
-            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
+            assert(self.exist(collateral), Errors::CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             self.set_mint_cap_internal(ref params, collateral, mint_cap);
             self.collateral_params.write(collateral, params);
@@ -375,7 +372,7 @@ mod AdminContract {
             ref self: ContractState, collateral: ContractAddress, block_timestamp: u64
         ) {
             self.assert_caller_is_timelock();
-            assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
+            assert(self.exist(collateral), Errors::CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             self.set_redemption_block_timestamp_internal(ref params, collateral, block_timestamp);
             self.collateral_params.write(collateral, params);
@@ -408,9 +405,7 @@ mod AdminContract {
             loop {
                 match colls.pop_front() {
                     Option::Some(collateral) => {
-                        assert(
-                            self.exist(*collateral), Errors::AdminContract__CollateralAlreadyExist
-                        );
+                        assert(self.exist(*collateral), Errors::CollateralAlreadyExist);
                         let index = self.collateral_params.read(*collateral).index;
                         indices.append(index);
                     },
@@ -659,11 +654,11 @@ mod AdminContract {
             if (self.is_setup_initialized.read()) {
                 assert(
                     caller == self.address_provider.read().get_address(AddressesKey::timelock),
-                    CommunErrors::CommunErrors__OnlyTimelock
+                    CommunErrors::OnlyTimelock
                 );
                 return;
             }
-            assert(caller == self.ownable.owner(), CommunErrors::CommunErrors__OnlyOwner);
+            self.ownable.assert_only_owner();
         }
 
         #[inline(always)]
@@ -675,11 +670,9 @@ mod AdminContract {
             min: u256,
             max: u256
         ) {
-            assert(*coll_params.is_active, Errors::AdminContract__CollateralNotActive);
+            assert(*coll_params.is_active, Errors::CollateralNotActive);
             // Todo: refact with a panic(array![parameter, entered_value.try_into().unwrap(), min.try_into().unwrap(), max.try_into().unwrap()])
-            assert(
-                entered_value >= min && entered_value <= max, Errors::AdminContract__ValueOutOfRange
-            );
+            assert(entered_value >= min && entered_value <= max, Errors::ValueOutOfRange);
         }
     }
 }
