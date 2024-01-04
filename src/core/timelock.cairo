@@ -83,6 +83,7 @@ mod Timelock {
 
     #[derive(Drop, starknet::Event)]
     struct NewAdmin {
+        #[key]
         old_admin: ContractAddress,
         #[key]
         new_admin: ContractAddress
@@ -308,11 +309,13 @@ mod Timelock {
     // *************************************************************************
     #[generate_trait]
     impl InternalFunctions of InternalFunctionsTrait {
+        #[inline(always)]
         fn is_valid_delay(self: @ContractState, delay: u256) {
             assert(delay > MINIMUM_DELAY, Errors::Timelock__DelayMustExceedMininumDelay);
             assert(delay < MAXIMUM_DELAY, Errors::Timelock__DelayMustNotExceedMaximumDelay);
         }
 
+        #[inline(always)]
         fn admin_only(self: @ContractState) {
             assert(get_caller_address() == self.admin.read(), Errors::Timelock__AdminOnly)
         }
