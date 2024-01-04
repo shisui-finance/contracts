@@ -9,7 +9,7 @@ const valid_decimals: u8 = 18;
 const debt_token_gas_compensation: u256 = 1000;
 
 #[test]
-#[should_panic(expected: ('Caller is not Owner',))]
+#[should_panic(expected: ('Caller is not the owner',))]
 fn given_setup_not_initialized_and_caller_is_not_owner_it_should_revert() {
     let (admin_contract, _) = setup();
 

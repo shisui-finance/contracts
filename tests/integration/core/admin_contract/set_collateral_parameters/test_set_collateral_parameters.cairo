@@ -17,7 +17,7 @@ fn test_setup() -> (IAdminContractDispatcher, ContractAddress, ContractAddress) 
 }
 
 #[test]
-#[should_panic(expected: ('Caller is not Owner',))]
+#[should_panic(expected: ('Caller is not the owner',))]
 fn given_setup_not_initialized_and_caller_is_not_owner_it_should_revert() {
     let (admin_contract, collateral_address, _) = test_setup();
     start_prank(
