@@ -64,11 +64,10 @@ mod CollateralSurplusPool {
     }
 
     mod Errors {
-        const CollateralSurplusPool__CallerNotVesselManager: felt252 = 'Caller not Vessel Manager';
-        const CollateralSurplusPool__CallerNotActivePool: felt252 = 'Caller not Active Pool';
-        const CollateralSurplusPool__CallerNotBorrowerOperation: felt252 =
-            'Caller not Borrower Operation';
-        const CollateralSurplusPool__NoCollateralToClaim: felt252 = 'No collateral to claim';
+        const CallerNotVesselManager: felt252 = 'Caller not Vessel Manager';
+        const CallerNotActivePool: felt252 = 'Caller not Active Pool';
+        const CallerNotBorrowerOperation: felt252 = 'Caller not Borrower Operation';
+        const NoCollateralToClaim: felt252 = 'No collateral to claim';
     }
 
     #[constructor]
@@ -99,11 +98,8 @@ mod CollateralSurplusPool {
         fn claim_coll(ref self: ContractState, asset: ContractAddress, account: ContractAddress) {
             self.assert_caller_is_borrower_operation();
             let claimable_coll_ether = self.user_balances.read((account, asset));
-            let safety_transferclaimable_coll = decimals_correction(asset, claimable_coll_ether);
-            assert(
-                safety_transferclaimable_coll.is_non_zero(),
-                Errors::CollateralSurplusPool__NoCollateralToClaim
-            );
+            let safety_transfer_claimable_coll = decimals_correction(asset, claimable_coll_ether);
+            assert(safety_transfer_claimable_coll.is_non_zero(), Errors::NoCollateralToClaim);
             self.user_balances.write((account, asset), 0);
             self
                 .emit(
@@ -111,11 +107,11 @@ mod CollateralSurplusPool {
                         account, asset, old_balance: claimable_coll_ether, new_balance: 0
                     }
                 );
-            self.balances.write(asset, self.balances.read(asset) - safety_transferclaimable_coll);
-            self.emit(AssetSent { account, asset, amount: safety_transferclaimable_coll });
-            // TODO : NO TRANSFER HPN
+            self.balances.write(asset, self.balances.read(asset) - safety_transfer_claimable_coll);
+            self.emit(AssetSent { account, asset, amount: safety_transfer_claimable_coll });
+
             IERC20Dispatcher { contract_address: asset }
-                .transfer(account, safety_transferclaimable_coll);
+                .transfer(account, safety_transfer_claimable_coll);
         }
 
         fn received_erc20(ref self: ContractState, asset: ContractAddress, amount: u256) {
@@ -146,7 +142,7 @@ mod CollateralSurplusPool {
                 caller == address_provider.get_address(AddressesKey::vessel_manager)
                     || caller == address_provider
                         .get_address(AddressesKey::vessel_manager_operations),
-                Errors::CollateralSurplusPool__CallerNotVesselManager
+                Errors::CallerNotVesselManager
             );
         }
 
@@ -156,7 +152,7 @@ mod CollateralSurplusPool {
             let address_provider = self.address_provider.read();
             assert(
                 caller == address_provider.get_address(AddressesKey::active_pool),
-                Errors::CollateralSurplusPool__CallerNotActivePool
+                Errors::CallerNotActivePool
             );
         }
 
@@ -166,7 +162,7 @@ mod CollateralSurplusPool {
             let address_provider = self.address_provider.read();
             assert(
                 caller == address_provider.get_address(AddressesKey::borrower_operations),
-                Errors::CollateralSurplusPool__CallerNotBorrowerOperation
+                Errors::CallerNotBorrowerOperation
             );
         }
     }
