@@ -112,7 +112,7 @@ mod AdminContract {
     const ONE_THOUSAND_PCT: u256 = 10_000000000000000000; // 1e18 == 100%
     const ONE_HUNDRED_PCT: u256 = 1_000000000000000000; // 1e18 == 100%
     const TEN_PCT: u256 = 100000000000000000; // 1e18 == 100%
-    const ONE_PCT: u256 = 10000000000000000; // 1e18 == 1%
+    const ONE_PCT: u256 = 10000000000000000; // 1e17 == 10%
     const DEFAULT_DECIMALS: u8 = 18;
 
     const BORROWING_FEE_DEFAULT: u256 = 5000000000000000; // 0.5%
@@ -239,7 +239,7 @@ mod AdminContract {
             debt_token_gas_compensation: u256,
             decimals: u8
         ) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             assert(!self.exist(collateral), Errors::AdminContract__CollateralAlreadyExist);
             assert(
                 decimals == DEFAULT_DECIMALS, Errors::AdminContract__CollateralDecimalsNotSupported
@@ -291,7 +291,7 @@ mod AdminContract {
             percent_divisor: u256,
             redemption_fee_floor: u256,
         ) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             params.is_active = true;
@@ -306,7 +306,7 @@ mod AdminContract {
         }
 
         fn set_is_active(ref self: ContractState, collateral: ContractAddress, active: bool) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             params.is_active = active;
@@ -316,21 +316,21 @@ mod AdminContract {
         fn set_borrowing_fee(
             ref self: ContractState, collateral: ContractAddress, borrowing_fee: u256
         ) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             let mut params = self.collateral_params.read(collateral);
             self.set_borrowing_fee_internal(ref params, collateral, borrowing_fee);
             self.collateral_params.write(collateral, params);
         }
 
         fn set_ccr(ref self: ContractState, collateral: ContractAddress, ccr: u256) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             let mut params = self.collateral_params.read(collateral);
             self.set_ccr_internal(ref params, collateral, ccr);
             self.collateral_params.write(collateral, params);
         }
 
         fn set_mcr(ref self: ContractState, collateral: ContractAddress, mcr: u256) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             let mut params = self.collateral_params.read(collateral);
             self.set_mcr_internal(ref params, collateral, mcr);
             self.collateral_params.write(collateral, params);
@@ -339,14 +339,14 @@ mod AdminContract {
         fn set_min_net_debt(
             ref self: ContractState, collateral: ContractAddress, min_net_debt: u256
         ) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             let mut params = self.collateral_params.read(collateral);
             self.set_min_net_debt_internal(ref params, collateral, min_net_debt);
             self.collateral_params.write(collateral, params);
         }
 
         fn set_mint_cap(ref self: ContractState, collateral: ContractAddress, mint_cap: u256) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             self.set_mint_cap_internal(ref params, collateral, mint_cap);
@@ -356,7 +356,7 @@ mod AdminContract {
         fn set_percent_divisor(
             ref self: ContractState, collateral: ContractAddress, percent_divisor: u256
         ) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             let mut params = self.collateral_params.read(collateral);
             self.set_percent_divisor_internal(ref params, collateral, percent_divisor);
             self.collateral_params.write(collateral, params);
@@ -365,7 +365,7 @@ mod AdminContract {
         fn set_redemption_fee_floor(
             ref self: ContractState, collateral: ContractAddress, redemption_fee_floor: u256
         ) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             let mut params = self.collateral_params.read(collateral);
             self.set_redemption_fee_floor_internal(ref params, collateral, redemption_fee_floor);
             self.collateral_params.write(collateral, params);
@@ -374,7 +374,7 @@ mod AdminContract {
         fn set_redemption_block_timestamp(
             ref self: ContractState, collateral: ContractAddress, block_timestamp: u64
         ) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             assert(self.exist(collateral), Errors::AdminContract__CollateralNotExist);
             let mut params = self.collateral_params.read(collateral);
             self.set_redemption_block_timestamp_internal(ref params, collateral, block_timestamp);
@@ -382,24 +382,24 @@ mod AdminContract {
         }
 
         fn set_setup_initialized(ref self: ContractState) {
-            self.only_timelock();
+            self.assert_caller_is_timelock();
             self.is_setup_initialized.write(true);
         }
 
         fn get_supported_collateral(self: @ContractState) -> Span<ContractAddress> {
-            return self.supported_collateral.read().span();
+            self.supported_collateral.read().span()
         }
 
         fn get_is_active(self: @ContractState, collateral: ContractAddress) -> bool {
-            return self.collateral_params.read(collateral).is_active;
+            self.collateral_params.read(collateral).is_active
         }
 
         fn get_decimals(self: @ContractState, collateral: ContractAddress) -> u8 {
-            return self.collateral_params.read(collateral).decimals;
+            self.collateral_params.read(collateral).decimals
         }
 
         fn get_index(self: @ContractState, collateral: ContractAddress) -> usize {
-            return self.collateral_params.read(collateral).index;
+            self.collateral_params.read(collateral).index
         }
 
         fn get_indices(self: @ContractState, collaterals: Span<ContractAddress>) -> Span<usize> {
@@ -418,47 +418,47 @@ mod AdminContract {
                 };
             };
 
-            return indices.span();
+            indices.span()
         }
 
         fn get_mcr(self: @ContractState, collateral: ContractAddress) -> u256 {
-            return self.collateral_params.read(collateral).mcr;
+            self.collateral_params.read(collateral).mcr
         }
 
         fn get_ccr(self: @ContractState, collateral: ContractAddress) -> u256 {
-            return self.collateral_params.read(collateral).ccr;
+            self.collateral_params.read(collateral).ccr
         }
 
         fn get_debt_token_gas_compensation(
             self: @ContractState, collateral: ContractAddress
         ) -> u256 {
-            return self.collateral_params.read(collateral).debt_token_gas_compensation;
+            self.collateral_params.read(collateral).debt_token_gas_compensation
         }
 
         fn get_min_net_debt(self: @ContractState, collateral: ContractAddress) -> u256 {
-            return self.collateral_params.read(collateral).min_net_debt;
+            self.collateral_params.read(collateral).min_net_debt
         }
 
         fn get_percent_divisor(self: @ContractState, collateral: ContractAddress) -> u256 {
-            return self.collateral_params.read(collateral).percent_divisor;
+            self.collateral_params.read(collateral).percent_divisor
         }
 
         fn get_borrowing_fee(self: @ContractState, collateral: ContractAddress) -> u256 {
-            return self.collateral_params.read(collateral).borrowing_fee;
+            self.collateral_params.read(collateral).borrowing_fee
         }
 
         fn get_redemption_fee_floor(self: @ContractState, collateral: ContractAddress) -> u256 {
-            return self.collateral_params.read(collateral).redemption_fee_floor;
+            self.collateral_params.read(collateral).redemption_fee_floor
         }
 
         fn get_redemption_block_timestamp(
             self: @ContractState, collateral: ContractAddress
         ) -> u64 {
-            return self.collateral_params.read(collateral).redemption_block_timestamp;
+            self.collateral_params.read(collateral).redemption_block_timestamp
         }
 
         fn get_mint_cap(self: @ContractState, collateral: ContractAddress) -> u256 {
-            return self.collateral_params.read(collateral).mint_cap;
+            self.collateral_params.read(collateral).mint_cap
         }
 
         fn get_total_asset_debt(self: @ContractState, asset: ContractAddress) -> u256 {
@@ -476,38 +476,39 @@ mod AdminContract {
                     .get_address(AddressesKey::default_pool)
             }
                 .get_debt_token_balance(asset);
-            return active_pool_debt_balance + default_pool_debt_balance;
+
+            active_pool_debt_balance + default_pool_debt_balance
         }
 
         fn get_collaterals_params(
             self: @ContractState, collateral: ContractAddress
         ) -> CollateralParams {
-            return self.collateral_params.read(collateral);
+            self.collateral_params.read(collateral)
         }
 
         fn get_default_borrowing_fee(self: @ContractState) -> u256 {
-            return BORROWING_FEE_DEFAULT;
+            BORROWING_FEE_DEFAULT
         }
         fn get_default_ccr(self: @ContractState) -> u256 {
-            return CCR_DEFAULT;
+            CCR_DEFAULT
         }
         fn get_default_mcr(self: @ContractState) -> u256 {
-            return MCR_DEFAULT;
+            MCR_DEFAULT
         }
         fn get_default_min_net_debt(self: @ContractState) -> u256 {
-            return MIN_NET_DEBT_DEFAULT;
+            MIN_NET_DEBT_DEFAULT
         }
         fn get_default_mint_cap(self: @ContractState) -> u256 {
-            return MINT_CAP_DEFAULT;
+            MINT_CAP_DEFAULT
         }
         fn get_default_percent_divisor(self: @ContractState) -> u256 {
-            return PERCENT_DIVISOR_DEFAULT;
+            PERCENT_DIVISOR_DEFAULT
         }
         fn get_default_redemption_fee_floor(self: @ContractState) -> u256 {
-            return REDEMPTION_FEE_FLOOR_DEFAULT;
+            REDEMPTION_FEE_FLOOR_DEFAULT
         }
         fn get_default_redemption_block_timestamp(self: @ContractState) -> u64 {
-            return REDEMPTION_BLOCK_TIMESTAMP_DEFAULT;
+            REDEMPTION_BLOCK_TIMESTAMP_DEFAULT
         }
     }
 
@@ -648,11 +649,11 @@ mod AdminContract {
 
         #[inline(always)]
         fn exist(self: @ContractState, collateral: ContractAddress) -> bool {
-            return self.collateral_params.read(collateral).mcr.is_non_zero();
+            self.collateral_params.read(collateral).mcr.is_non_zero()
         }
 
         #[inline(always)]
-        fn only_timelock(self: @ContractState) {
+        fn assert_caller_is_timelock(self: @ContractState) {
             let caller = get_caller_address();
 
             if (self.is_setup_initialized.read()) {
