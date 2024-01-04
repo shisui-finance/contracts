@@ -84,9 +84,8 @@ mod Timelock {
     #[derive(Drop, starknet::Event)]
     struct NewAdmin {
         #[key]
+        new_admin: ContractAddress,
         old_admin: ContractAddress,
-        #[key]
-        new_admin: ContractAddress
     }
 
     #[derive(Drop, starknet::Event)]
