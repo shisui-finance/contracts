@@ -1,5 +1,0 @@
-test_get_composite_debt.cairo
-├── when the _asset is not whitelisted
-│   └── it should return the _debt
-└── when the _asset is whitelisted
-    └── it should return the correct composite debt
