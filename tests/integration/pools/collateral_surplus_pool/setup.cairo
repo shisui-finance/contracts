@@ -8,7 +8,7 @@ use shisui::pools::collateral_surplus_pool::{
 use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use tests::tests_lib::{deploy_address_provider, deploy_erc20_mock, deploy_collateral_surplus_pool};
 use tests::utils::callers::{
-    active_pool_address, borrower_operation_address, vessel_manager_address
+    active_pool_address, borrower_operations_address, vessel_manager_address
 };
 
 fn setup() -> (IAddressProviderDispatcher, ICollateralSurplusPoolDispatcher, IERC20Dispatcher) {
@@ -28,7 +28,7 @@ fn setup() -> (IAddressProviderDispatcher, ICollateralSurplusPoolDispatcher, IER
     };
 
     address_provider.set_address(AddressesKey::vessel_manager, vessel_manager_address());
-    address_provider.set_address(AddressesKey::borrower_operations, borrower_operation_address());
+    address_provider.set_address(AddressesKey::borrower_operations, borrower_operations_address());
     address_provider.set_address(AddressesKey::active_pool, active_pool_address());
 
     return (address_provider, collateral_surplus_pool, asset);
