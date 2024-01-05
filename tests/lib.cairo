@@ -164,11 +164,12 @@ mod integration {
     }
     mod pools {
         mod collateral_surplus_pool {
+            mod setup;
             mod account_surplus {
                 mod test_account_surplus;
             }
-            mod claim_cool {
-                mod test_claim_cool;
+            mod claim_coll {
+                mod test_claim_coll;
             }
             mod received_erc20 {
                 mod test_received_erc20;

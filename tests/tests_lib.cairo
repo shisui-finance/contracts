@@ -100,3 +100,13 @@ fn deploy_stability_pool(address_provider: ContractAddress) -> ContractAddress {
     let contract = declare('StabilityPool');
     deploy_mock_contract(contract, @array![address_provider.into()])
 }
+
+/// Utility function to deploy a CollateralSurplusPool contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_collateral_surplus_pool(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('CollateralSurplusPool');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}
