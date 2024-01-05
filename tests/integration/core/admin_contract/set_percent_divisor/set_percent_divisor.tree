@@ -1,13 +1,19 @@
 test_set_percent_divisor.cairo
-├── when caller is not the timelock
+├── when setup is not initialized and caller not the owner
+│   └── it should revert OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
 │   └── it should revert OnlyTimelock
-└── when caller is the timelock
+└── when caller is valid
     ├── when collateral is not active
-    │   └── it should revert AdminContract__CollateralNotActive
+    │   └── it should revert CollateralNotActive
     └──  when collateral is active
         ├── when value is not between 2 and 200
-        │   └── it should revert AdminContract__SafeCheckError
+        │   └── it should revert ValueOutOfRange
+        ├── when value is equal to 2
+        │   └── it should correclty set the percent divisor
+        ├── when value is equal to 200
+        │   └── it should correclty set the percent divisor
         └── when value is between 2 and 200
             ├── it should correclty set the percent divisor
-            └── it should emit {PercentDivisorChanged} event
+            └── it should emit {PercentDivisorUpdated} event
 

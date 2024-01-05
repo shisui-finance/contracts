@@ -1,13 +1,17 @@
 test_add_new_collateral.cairo
-├── when caller is not the timelock
+├── when setup is not initialized and caller not the owner
+│   └── it should revert OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
 │   └── it should revert OnlyTimelock
-└── when caller is the timelock
-    ├── when collateral already exist
-    │   └── it should revert AdminContract__CollateralAlreadyExist
-    └── when collateral not exist
-        ├── when decimals not equal to DEFAULT_DECIMALS
-        │   └── it should revert AdminContract__CollateralNotEqualToDefault
-        └── when decimals equal to DEFAULT_DECIMALS
-            ├── it should init the new collateral in collateral_params and add it to valid_collateral
-            ├── it should add the collateral to the stability pool
-            └── it should emit {CollateralAdded} event
+└── when caller is valid
+    ├── when collateral not exist
+    │   ├── when collateral's decimals not equal to DEFAULT_DECIMALS
+    │   │   └── it should revert CollateralNotEqualToDefault
+    │   └── when decimals equal to DEFAULT_DECIMALS
+    │   │   ├── it should init the new collateral in collateral_params and add it to valid_collateral
+    │   │   ├── it should add the collateral to the stability pool
+    │   │   └── it should emit {CollateralAdded} event
+    │   └── when several collaterals are added
+    │       └── it should correclty be added 
+    └── when collateral already exist
+        └── it should revert CollateralAlreadyExist

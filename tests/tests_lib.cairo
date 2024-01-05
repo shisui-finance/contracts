@@ -8,12 +8,10 @@ use starknet::{ContractAddress, Felt252TryIntoContractAddress, contract_address_
 /// Utility function to pre-calculate the address of a mock contract & deploy it.
 ///
 /// # Arguments
-///
 /// * `contract` - The contract class
 /// * `calldata` - The calldata used for the contract constructor
 ///
 /// # Returns
-///
 /// * `ContractAddress` - The pre-calculated address of the deployed contract
 fn deploy_mock_contract(contract: ContractClass, calldata: @Array<felt252>) -> ContractAddress {
     let future_deployed_address = contract.precalculate_address(calldata);
@@ -24,7 +22,6 @@ fn deploy_mock_contract(contract: ContractClass, calldata: @Array<felt252>) -> C
 /// Utility function to deploy a SafetyTransferMockContract contract and return its address.
 ///
 /// # Returns
-///
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_safety_transfer_mock() -> ContractAddress {
     let contract = declare('SafetyTransferMockContract');
@@ -33,8 +30,10 @@ fn deploy_safety_transfer_mock() -> ContractAddress {
 
 /// Utility function to deploy a erc20 mock contract and return its address.
 ///
-/// # Returns
+/// # Arguments
+/// * `decimals` - The decimals of the erc20 mock contract.
 ///
+/// # Returns
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_erc20_mock(decimals: u8) -> ContractAddress {
     let contract = declare('ERC20Mock');
@@ -66,10 +65,38 @@ fn deploy_price_feed(
 
 /// Utility function to deploy a AddressProvider contract and return its address.
 ///
-/// # Returns
+/// # Arguments
+/// * `address_provider` - The address of the address provider contract.
 ///
+/// # Returns
 /// * `ContractAddress` - The address of the deployed data store contract.
 fn deploy_address_provider() -> ContractAddress {
     let contract = declare('AddressProvider');
     deploy_mock_contract(contract, @array![])
+}
+
+
+/// Utility function to deploy the AdminContract and return its address.
+///
+/// # Arguments
+/// * `address_provider` - The address of the address provider contract.
+///
+/// # Returns
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_admin_contract(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('AdminContract');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}
+
+
+/// Utility function to deploy the StabilityPool contract and return its address.
+///
+/// # Arguments
+/// * `address_provider` - The address of the address provider contract.
+///
+/// # Returns
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_stability_pool(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('StabilityPool');
+    deploy_mock_contract(contract, @array![address_provider.into()])
 }

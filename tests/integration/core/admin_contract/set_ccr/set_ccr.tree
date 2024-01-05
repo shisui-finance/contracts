@@ -1,13 +1,18 @@
 test_set_ccr.cairo
-├── when caller is not the timelock
+├── when setup is not initialized and caller not the owner
+│   └── it should revert OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
 │   └── it should revert OnlyTimelock
-└── when caller is the timelock
+└── when caller is valid
     ├── when collateral is not active
-    │   └── it should revert AdminContract__CollateralNotActive
+    │   └── it should revert CollateralNotActive
     └──  when collateral is active
         ├── when value is not between 100% and 1000%
-        │   └── it should revert AdminContract__SafeCheckError
-        └── when value is between 100% and 1000%
-            ├── it should correclty set the ccr
-            └── it should emit {CCRChanged} event
-
+        │   └── it should revert ValueOutOfRange
+        ├── when value is equal to 100%
+        │   └── it should correclty set the ccr
+        ├── when value is equal to 1000%
+        │   └── it should correclty set the ccr
+        ├── when value is between 100% and 1000%
+        │   └── it should correclty set the ccr
+        └── it should emit {CCRUpdated} event

@@ -1,8 +1,10 @@
 test_set_is_active.cairo
-├── when caller is not the timelock
+├── when setup is not initialized and caller not the owner
+│   └── it should revert OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
 │   └── it should revert OnlyTimelock
-└── when caller is the timelock
+└── when caller is valid
     ├── when collateral not exist
-    │   └── it should revert AdminContract__CollateralNotExist
-    └──  when collateral is active
-        └── it should correclty set the is_active
+    │   └── it should revert CollateralNotExist
+    └── when collateral exist
+        └── it should correclty set collateral is_active var

@@ -1,13 +1,19 @@
 test_set_borrowing_fee.cairo
-├── when caller is not the timelock
+├── when setup is not initialized and caller not the owner
+│   └── it should revert OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
 │   └── it should revert OnlyTimelock
-└── when caller is the timelock
+└── when caller is valid
     ├── when collateral is not active
-    │   └── it should revert AdminContract__CollateralNotActive
+    │   └── it should revert CollateralNotActive
     └──  when collateral is active
         ├── when value is not between 0 and 0.1e18
-        │   └── it should revert AdminContract__SafeCheckError
-        └── when value is between 0 and 0.1e18
-            ├── it should correclty set the borrowing fee
-            └── it should emit {BorrowingFeeChanged} event
+        │   └── it should revert ValueOutOfRange
+        ├── when value is equal to 0
+        │   └── it should correclty set the Borrowing Fee
+        ├── when value is equal to 0.1e18
+        │   └── it should correclty set the Borrowing Fee
+        ├── when value is between 0 and 0.1e18
+        │   └── it should correclty set the Borrowing Fee
+        └── it should emit {BorrowingFeeUpdated} event
 

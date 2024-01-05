@@ -1,13 +1,19 @@
 test_set_min_net_debt.cairo
-├── when caller is not the timelock
+├── when setup is not initialized and caller not the owner
+│   └── it should revert OnlyOwner
+├── when setup is initialized and caller is not the timelock contract
 │   └── it should revert OnlyTimelock
-└── when caller is the timelock
+└── when caller is valid
     ├── when collateral is not active
-    │   └── it should revert AdminContract__CollateralNotActive
+    │   └── it should revert CollateralNotActive
     └──  when collateral is active
         ├── when value is not between 0 and 2000
-        │   └── it should revert AdminContract__SafeCheckError
-        └── when value is between 0 and 2000
-            ├── it should correclty set the min net debt
-            └── it should emit {MinNetDebtChanged} event
+        │   └── it should revert ValueOutOfRange
+        ├── when value is euqal to 0
+        │   └── it should correclty set the Min Net Debt
+        ├── when value is equal to 2000
+        │   └── it should correclty set the Min Net Debt
+        ├── when value is  between 0 and 2000
+        │   └── it should correclty set the Min Net Debt
+        └── it should emit {MinNetDebtUpdated} event
 
