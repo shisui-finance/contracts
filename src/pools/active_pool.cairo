@@ -41,7 +41,6 @@ mod ActivePool {
 
     component!(path: ReentrancyGuardComponent, storage: reentrancy, event: ReentrancyEvent);
 
-    component!(path: ReentrancyGuardComponent, storage: reentrancy, event: ReentrancyEvent);
 
     #[storage]
     struct Storage {

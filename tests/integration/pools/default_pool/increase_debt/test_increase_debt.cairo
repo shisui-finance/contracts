@@ -11,7 +11,7 @@ use super::super::setup::setup;
 const AMOUNT: u256 = 5_000000;
 
 #[test]
-#[should_panic(expected: ('Caller not authorized',))]
+#[should_panic(expected: ('Caller is not authorized',))]
 fn when_caller_is_not_vessel_manager_it_should_revert() {
     let (_, default_pool, asset, active_pool) = setup();
     default_pool.increase_debt(asset.contract_address, AMOUNT);

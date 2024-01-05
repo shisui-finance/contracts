@@ -42,7 +42,7 @@ fn test_setup() -> (IDefaultPoolDispatcher, IERC20Dispatcher, IIsCalledDispatche
 }
 
 #[test]
-#[should_panic(expected: ('Caller not authorized',))]
+#[should_panic(expected: ('Caller is not authorized',))]
 fn when_caller_is_not_the_active_pool_it_should_revert() {
     let (default_pool, asset, _) = test_setup();
     default_pool.send_asset_to_active_pool(asset.contract_address, ONE);

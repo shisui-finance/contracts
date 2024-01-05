@@ -21,7 +21,7 @@ fn test_setup() -> (IDefaultPoolDispatcher, IERC20Dispatcher) {
 }
 
 #[test]
-#[should_panic(expected: ('Caller not authorized',))]
+#[should_panic(expected: ('Caller is not authorized',))]
 fn when_caller_is_not_vessel_manager_it_should_revert() {
     let (default_pool, asset) = test_setup();
     default_pool.decrease_debt(asset.contract_address, BASE_AMOUNT);

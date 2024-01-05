@@ -160,7 +160,7 @@ mod DefaultPool {
             let address_provider = self.address_provider.read();
             assert(
                 caller == address_provider.get_address(AddressesKey::vessel_manager),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -170,7 +170,7 @@ mod DefaultPool {
             let address_provider = self.address_provider.read();
             assert(
                 caller == address_provider.get_address(AddressesKey::active_pool),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
     }
