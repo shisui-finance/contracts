@@ -122,7 +122,7 @@ mod DebtToken {
         fn require_caller_is_whitelisted_contract(self: @ContractState) {
             let caller = get_caller_address();
             assert(
-                self.is_whitelisted(caller) == true, CommunErrors::CommunErrors__CallerNotAuthorized
+                self.is_whitelisted(caller), CommunErrors::CommunErrors__CallerNotAuthorized
             );
         }
         #[inline(always)]
