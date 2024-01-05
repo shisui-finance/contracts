@@ -12,7 +12,7 @@ use openzeppelin::token::erc20::{
 
 use shisui::mocks::erc20_mock::{IERC20MintBurnDispatcher, IERC20MintBurnDispatcherTrait, ERC20Mock};
 use tests::utils::callers::{
-    active_pool_address, borrower_operation_address, vessel_manager_address, alice
+    active_pool_address, borrower_operations_address, vessel_manager_address, alice
 };
 
 use super::super::setup::setup;
@@ -59,7 +59,7 @@ fn when_caller_is_not_borrower_operation_it_should_revert() {
 fn when_caller_is_borrower_operation__and_claim_amount_is_zero_it_should_revert() {
     let (_, collateral_surplus_pool, asset) = test_setup();
     start_prank(
-        CheatTarget::One(collateral_surplus_pool.contract_address), borrower_operation_address()
+        CheatTarget::One(collateral_surplus_pool.contract_address), borrower_operations_address()
     );
 
     collateral_surplus_pool
@@ -72,7 +72,7 @@ fn when_caller_is_borrower_operation_it_should_correctly_claim() {
     let mut spy = spy_events(SpyOn::One(collateral_surplus_pool.contract_address));
 
     start_prank(
-        CheatTarget::One(collateral_surplus_pool.contract_address), borrower_operation_address()
+        CheatTarget::One(collateral_surplus_pool.contract_address), borrower_operations_address()
     );
 
     collateral_surplus_pool.claim_coll(asset.contract_address, alice());

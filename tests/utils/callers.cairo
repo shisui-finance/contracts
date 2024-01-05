@@ -16,12 +16,24 @@ fn vessel_manager_address() -> ContractAddress {
     return contract_address_const::<'vessel_manager'>();
 }
 
-fn borrower_operation_address() -> ContractAddress {
-    return contract_address_const::<'borrower_operation'>();
+fn vessel_manager_operations_address() -> ContractAddress {
+    return contract_address_const::<'vessel_manager_operations'>();
+}
+
+fn borrower_operations_address() -> ContractAddress {
+    return contract_address_const::<'borrower_operations'>();
 }
 
 fn active_pool_address() -> ContractAddress {
     return contract_address_const::<'active_pool'>();
+}
+
+fn default_pool_address() -> ContractAddress {
+    return contract_address_const::<'default_pool'>();
+}
+
+fn stability_pool_address() -> ContractAddress {
+    return contract_address_const::<'stability_pool'>();
 }
 
 fn alice() -> ContractAddress {

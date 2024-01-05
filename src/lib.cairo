@@ -1,3 +1,7 @@
+mod interfaces {
+    mod deposit;
+}
+
 mod core {
     mod address_provider;
     mod timelock;
@@ -31,5 +35,6 @@ mod utils {
 mod mocks {
     mod erc20_mock;
     mod pragma_oracle_mock;
+    mod receive_erc20_mock;
 }
 
