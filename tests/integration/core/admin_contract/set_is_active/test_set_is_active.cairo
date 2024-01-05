@@ -23,7 +23,7 @@ fn given_setup_not_initialized_and_caller_is_not_owner_it_should_revert() {
 }
 
 #[test]
-#[should_panic(expected: ('Caller not Timelock',))]
+#[should_panic(expected: ('Caller is not Timelock',))]
 fn given_setup_is_initialized_and_caller_is_not_timelock_it_should_revert() {
     let (admin_contract, collateral_address, _) = test_setup();
     admin_contract.set_setup_initialized();

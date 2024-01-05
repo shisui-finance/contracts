@@ -110,3 +110,13 @@ fn deploy_collateral_surplus_pool(address_provider: ContractAddress) -> Contract
     let contract = declare('CollateralSurplusPool');
     deploy_mock_contract(contract, @array![address_provider.into()])
 }
+
+/// Utility function to deploy a DebtToken contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_debt_token(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('DebtToken');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}

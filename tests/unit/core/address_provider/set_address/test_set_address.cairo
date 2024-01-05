@@ -35,7 +35,7 @@ fn given_caller_is_owner_setting_new_address_zero_it_should_revert() {
 
 
 #[test]
-#[should_panic(expected: ('Caller not Timelock',))]
+#[should_panic(expected: ('Caller is not Timelock',))]
 fn given_caller_is_owner_and_key_already_has_an_address_it_should_revert() {
     let (address_provider, address_provider_address) = setup();
     address_provider
@@ -77,7 +77,7 @@ fn given_caller_is_owner_it_should_set_new_address() {
 }
 
 #[test]
-#[should_panic(expected: ('Caller not Timelock',))]
+#[should_panic(expected: ('Caller is not Timelock',))]
 fn given_caller_is_not_timelock_and_updating_address_of_key_it_should_revert() {
     let (address_provider, address_provider_address) = setup();
     address_provider
