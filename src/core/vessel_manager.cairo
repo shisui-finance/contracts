@@ -203,7 +203,6 @@ trait IVesselManager<TContractState> {
 
 #[starknet::contract]
 mod VesselManager {
-    use shisui::core::vessel_manager::IVesselManager;
     use core::traits::Into;
     use openzeppelin::security::reentrancyguard::ReentrancyGuardComponent::InternalTrait;
     use starknet::{
@@ -216,9 +215,8 @@ mod VesselManager {
     use shisui::core::admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait,};
     use shisui::core::debt_token::{IDebtTokenDispatcher, IDebtTokenDispatcherTrait,};
     use shisui::core::fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait,};
-    use shisui::utils::shisui_math;
-    use shisui::components::shisui_base::ShisuiBaseComponent;
-    use shisui::utils::constants::DECIMAL_PRECISION;
+    use shisui::core::vessel_manager::IVesselManager;
+    use shisui::utils::{shisui_math, shisui_base, constants::DECIMAL_PRECISION};
     use super::{RewardSnapshot, Vessel, Status, VesselManagerOperation};
     use openzeppelin::security::reentrancyguard::ReentrancyGuardComponent;
     use alexandria_storage::list::{List, ListTrait};
@@ -232,9 +230,6 @@ mod VesselManager {
         path: ReentrancyGuardComponent, storage: reentrancy_guard, event: ReentrancyGuardEvent
     );
     impl ReentrancyGuardInternalImpl = ReentrancyGuardComponent::InternalImpl<ContractState>;
-
-    component!(path: ShisuiBaseComponent, storage: shisui_base, event: ShisuiBaseEvent);
-    impl ShisuiBaseInternalImpl = ShisuiBaseComponent::InternalImpl<ContractState>;
 
     // *************************************************************************
     //                              CONSTANTS
@@ -276,8 +271,6 @@ mod VesselManager {
     struct Storage {
         #[substorage(v0)]
         reentrancy_guard: ReentrancyGuardComponent::Storage,
-        #[substorage(v0)]
-        shisui_base: ShisuiBaseComponent::Storage,
         base_rate: LegacyMap::<ContractAddress, u256>,
         // The timestamp of the latest fee operation (redemption or new debt token issuance)
         last_fee_operation_time: LegacyMap::<ContractAddress, u256>,
@@ -318,8 +311,6 @@ mod VesselManager {
     enum Event {
         #[flat]
         ReentrancyGuardEvent: ReentrancyGuardComponent::Event,
-        #[flat]
-        ShisuiBaseEvent: ShisuiBaseComponent::Event,
         VesselIndexUpdated: VesselIndexUpdated,
         VesselUpdated: VesselUpdated,
         BaseRateUpdated: BaseRateUpdated,
@@ -499,11 +490,11 @@ mod VesselManager {
         }
 
         fn get_tcr(self: @ContractState, asset: ContractAddress, price: u256) -> u256 {
-            self.shisui_base.get_TCR(asset, price)
+            shisui_base::get_TCR(self.address_provider.read(), asset, price)
         }
 
         fn check_recovery_mode(self: @ContractState, asset: ContractAddress, price: u256) -> bool {
-            self.shisui_base.check_recovery_mode(asset, price)
+            shisui_base::check_recovery_mode(self.address_provider.read(), asset, price)
         }
 
         fn get_borrowing_rate(self: @ContractState, asset: ContractAddress) -> u256 {
@@ -799,7 +790,7 @@ mod VesselManager {
         }
 
 
-        // TODO implement IActivePool
+        // TODO implement IActivePool and call return_from_pool when ready
         fn send_gas_compensation(
             ref self: ContractState,
             asset: ContractAddress,
@@ -814,10 +805,10 @@ mod VesselManager {
                     .address_provider
                     .read()
                     .get_address(AddressesKey::gas_pool);
-                self
-                    .debt_token
-                    .read()
-                    .return_from_pool(gas_pool_address, liquidator, debt_token_amount);
+            // self
+            //     .debt_token
+            //     .read()
+            //     .return_from_pool(gas_pool_address, liquidator, debt_token_amount);
             }
 
             if asset_amount != 0 { //IActivePool(activePool).sendAsset(_asset, _liquidator, _assetAmount);
