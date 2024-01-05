@@ -32,7 +32,7 @@ fn setup() -> (IAddressProviderDispatcher, IDebtTokenDispatcher, ContractAddress
 
 #[test]
 #[should_panic(expected: ('Caller is not the owner',))]
-fn given_caller_is_not_owner_it_should_revert() {
+fn when_caller_is_not_owner_it_should_revert() {
     let (_, debt_token, caller, not_caller) = setup();
 
     start_prank(CheatTarget::One(debt_token.contract_address), not_caller);
@@ -41,7 +41,14 @@ fn given_caller_is_not_owner_it_should_revert() {
 }
 
 #[test]
-fn given_caller_is_owner_it_should_remove_whitelist() {
+#[should_panic(expected: ('Not whitelisted',))]
+fn when_caller_is_owner_removing_address_not_whitelisted_it_should_revert() {
+    let (_, debt_token, caller, _) = setup();
+    debt_token.remove_whitelist(contract_address_const::<'not_whitelisted'>());
+}
+
+#[test]
+fn when_caller_is_owner_it_should_remove_whitelist() {
     let (_, debt_token, caller, _) = setup();
     let mut spy = spy_events(SpyOn::One(debt_token.contract_address));
 

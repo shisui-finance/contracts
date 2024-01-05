@@ -20,20 +20,19 @@ trait IDebtToken<TContractState> {
 
 #[starknet::contract]
 mod DebtToken {
+    use shisui::core::debt_token::IDebtToken;
     use starknet::{ContractAddress, get_caller_address};
-    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait as OwnableInternalTrait;
-    use openzeppelin::token::erc20::erc20::ERC20Component::InternalTrait as ERC20InternalTrait;
     use openzeppelin::{
-        access::ownable::{OwnableComponent, OwnableComponent::InternalImpl},
-        token::erc20::ERC20Component
+        access::ownable::{OwnableComponent, OwnableComponent::InternalImpl as OwnableInternalTrait},
+        token::erc20::{ERC20Component, ERC20Component::InternalTrait as ERC20InternalTrait}
     };
+
     use shisui::{
-        utils::errors::{CommunErrors, DebtTokenErrors},
+        utils::errors::CommunErrors,
         core::address_provider::{
             IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey
         }
     };
-    use shisui::core::debt_token::IDebtToken;
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: ERC20Component, storage: erc20, event: ERC20Event);
@@ -69,6 +68,11 @@ mod DebtToken {
         is_whitelisted: bool,
     }
 
+    mod Errors {
+        const AlreadyWhitelisted: felt252 = 'Already whitelisted';
+        const NotWhitelisted: felt252 = 'Not whitelisted';
+    }
+
     #[constructor]
     fn constructor(ref self: ContractState, address_provider: IAddressProviderDispatcher) {
         self.ownable.initializer(get_caller_address());
@@ -101,12 +105,14 @@ mod DebtToken {
         fn add_whitelist(ref self: ContractState, address: ContractAddress) {
             self.ownable.assert_only_owner();
             assert(address.is_non_zero(), CommunErrors::CommunErrors__AddressZero);
+            assert(!self.is_whitelisted(address), Errors::AlreadyWhitelisted);
             self.whitelisted_contracts.write(address, true);
             self.emit(WhitelistChanged { address: address, is_whitelisted: true });
         }
 
         fn remove_whitelist(ref self: ContractState, address: ContractAddress) {
             self.ownable.assert_only_owner();
+            assert(self.is_whitelisted(address), Errors::NotWhitelisted);
             self.whitelisted_contracts.write(address, false);
             self.emit(WhitelistChanged { address: address, is_whitelisted: false });
         }
@@ -123,6 +129,7 @@ mod DebtToken {
             let caller = get_caller_address();
             assert(self.is_whitelisted(caller), CommunErrors::CommunErrors__CallerNotAuthorized);
         }
+
         #[inline(always)]
         fn assert_caller_is_borrower_operations(self: @ContractState) {
             let caller = get_caller_address();
@@ -135,6 +142,7 @@ mod DebtToken {
                 CommunErrors::CommunErrors__CallerNotAuthorized
             );
         }
+
         #[inline(always)]
         fn assert_caller_is_bo_or_vesselm_or_sp(self: @ContractState) {
             let caller = get_caller_address();
@@ -150,6 +158,7 @@ mod DebtToken {
                 CommunErrors::CommunErrors__CallerNotAuthorized
             );
         }
+
         #[inline(always)]
         fn assert_caller_is_stability_pool(self: @ContractState) {
             let caller = get_caller_address();

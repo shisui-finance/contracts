@@ -43,13 +43,13 @@ fn setup() -> (IAddressProviderDispatcher, IDebtTokenDispatcher, ContractAddress
 
 #[test]
 #[should_panic(expected: ('Caller is not authorized',))]
-fn given_caller_is_not_borrower_operations_nor_vessel_manager_nor_stability_pool_it_should_revert() {
+fn when_caller_is_not_borrower_operations_nor_vessel_manager_nor_stability_pool_it_should_revert() {
     let (_, debt_token, caller) = setup();
     debt_token.burn(caller, MINT_AMOUNT);
 }
 
 #[test]
-fn given_caller_is_borrower_operations_it_should_burn() {
+fn when_caller_is_borrower_operations_it_should_burn() {
     let (_, debt_token, caller) = setup();
     start_prank(
         CheatTarget::One(debt_token.contract_address),
@@ -66,7 +66,7 @@ fn given_caller_is_borrower_operations_it_should_burn() {
 }
 
 #[test]
-fn given_caller_is_vessel_manager_it_should_burn() {
+fn when_caller_is_vessel_manager_it_should_burn() {
     let (_, debt_token, caller) = setup();
     start_prank(
         CheatTarget::One(debt_token.contract_address), contract_address_const::<'vessel_manager'>()
@@ -82,7 +82,7 @@ fn given_caller_is_vessel_manager_it_should_burn() {
 }
 
 #[test]
-fn given_caller_is_stability_pool_it_should_burn() {
+fn when_caller_is_stability_pool_it_should_burn() {
     let (_, debt_token, caller) = setup();
     start_prank(
         CheatTarget::One(debt_token.contract_address), contract_address_const::<'stability_pool'>()

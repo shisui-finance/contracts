@@ -22,7 +22,7 @@ fn setup() -> (IAddressProviderDispatcher, IDebtTokenDispatcher) {
 
 #[test]
 #[should_panic(expected: ('Caller is not the owner',))]
-fn given_caller_is_not_owner_on_add_whitelist_it_should_revert() {
+fn when_caller_is_not_owner_on_add_whitelist_it_should_revert() {
     let (_, debt_token) = setup();
     start_prank(
         CheatTarget::One(debt_token.contract_address), contract_address_const::<'not_owner'>()
@@ -32,13 +32,22 @@ fn given_caller_is_not_owner_on_add_whitelist_it_should_revert() {
 
 #[test]
 #[should_panic(expected: ('Address is zero',))]
-fn given_caller_is_owner_whitelisting_new_address_zero_it_should_revert() {
+fn when_caller_is_owner_whitelisting_new_address_zero_it_should_revert() {
     let (_, debt_token) = setup();
     debt_token.add_whitelist(contract_address_const::<0x00>());
 }
 
+
 #[test]
-fn given_caller_is_owner_it_should_add_whitelist() {
+#[should_panic(expected: ('Already whitelisted',))]
+fn when_caller_is_owner_whitelisting_address_already_whitelisted_it_should_revert() {
+    let (_, debt_token) = setup();
+    debt_token.add_whitelist(contract_address_const::<'fee_collector'>());
+    debt_token.add_whitelist(contract_address_const::<'fee_collector'>());
+}
+
+#[test]
+fn when_caller_is_owner_it_should_add_whitelist() {
     let (_, debt_token) = setup();
     let mut spy = spy_events(SpyOn::One(debt_token.contract_address));
 

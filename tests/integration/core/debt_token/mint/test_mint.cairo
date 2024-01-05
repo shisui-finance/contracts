@@ -32,13 +32,13 @@ fn setup() -> (IAddressProviderDispatcher, IDebtTokenDispatcher, ContractAddress
 
 #[test]
 #[should_panic(expected: ('Caller is not authorized',))]
-fn given_caller_is_not_borrower_operations_it_should_revert() {
+fn when_caller_is_not_borrower_operations_it_should_revert() {
     let (_, debt_token, caller) = setup();
     debt_token.burn(caller, MINT_AMOUNT);
 }
 
 #[test]
-fn given_caller_is_borrower_operations_it_should_mint() {
+fn when_caller_is_borrower_operations_it_should_mint() {
     let (_, debt_token, caller) = setup();
     start_prank(
         CheatTarget::One(debt_token.contract_address),

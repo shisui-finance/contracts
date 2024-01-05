@@ -36,7 +36,7 @@ fn setup() -> (IAddressProviderDispatcher, IDebtTokenDispatcher, ContractAddress
 
 #[test]
 #[should_panic(expected: ('Caller is not authorized',))]
-fn given_caller_is_not_whitelisted_it_should_revert() {
+fn when_caller_is_not_whitelisted_it_should_revert() {
     let (_, debt_token, caller, not_caller) = setup();
 
     start_prank(CheatTarget::One(debt_token.contract_address), not_caller);
@@ -45,7 +45,7 @@ fn given_caller_is_not_whitelisted_it_should_revert() {
 }
 
 #[test]
-fn given_caller_is_whitelisted_should_mint() {
+fn when_caller_is_whitelisted_should_mint() {
     let (_, debt_token, caller, _) = setup();
 
     debt_token.mint_from_whitelisted_contract(MINT_AMOUNT);
