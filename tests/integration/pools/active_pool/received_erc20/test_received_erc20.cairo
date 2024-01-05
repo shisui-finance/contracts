@@ -9,7 +9,7 @@ use super::super::setup::setup;
 const AMOUNT: u256 = 5_000000;
 
 #[test]
-#[should_panic(expected: ('Caller not authorized',))]
+#[should_panic(expected: ('Caller is not authorized',))]
 fn when_caller_is_neither_borrower_operations_nor_default_pool_it_should_revert() {
     let (_, active_pool, asset) = setup();
     active_pool.received_erc20(asset.contract_address, AMOUNT);

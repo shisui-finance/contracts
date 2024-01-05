@@ -23,7 +23,7 @@ fn test_setup() -> (IActivePoolDispatcher, IERC20Dispatcher) {
 }
 
 #[test]
-#[should_panic(expected: ('Caller not authorized',))]
+#[should_panic(expected: ('Caller is not authorized',))]
 fn when_caller_is_neither_borrower_operations_nor_vessel_manager_it_should_revert() {
     let (active_pool, asset) = test_setup();
     active_pool.decrease_debt(asset.contract_address, BASE_AMOUNT);

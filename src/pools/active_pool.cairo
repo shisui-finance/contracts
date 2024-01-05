@@ -10,7 +10,6 @@ trait IActivePool<TContractState> {
         ref self: TContractState, asset: ContractAddress, account: ContractAddress, amount: u256
     );
 
-
     fn received_erc20(ref self: TContractState, asset: ContractAddress, amount: u256);
 
     fn get_asset_balance(self: @TContractState, asset: ContractAddress) -> u256;
@@ -39,8 +38,7 @@ mod ActivePool {
         errors::CommunErrors, asserts::assert_address_non_zero, convert::decimals_correction
     };
     use shisui::interfaces::deposit::{IDepositDispatcher, IDepositDispatcherTrait};
-    use super::IActivePool;
-    use snforge_std::PrintTrait;
+
 
     component!(path: ReentrancyGuardComponent, storage: reentrancy, event: ReentrancyEvent);
 
@@ -95,7 +93,7 @@ mod ActivePool {
     }
 
     #[external(v0)]
-    impl ActivePoolImpl of IActivePool<ContractState> {
+    impl ActivePoolImpl of super::IActivePool<ContractState> {
         fn increase_debt(ref self: ContractState, asset: ContractAddress, amount: u256) {
             self.assert_caller_is_borrow_operations_or_vessel_manager();
             let old_balance = self.debt_token_balances.read(asset);
@@ -171,7 +169,7 @@ mod ActivePool {
             assert(
                 caller == address_provider.get_address(AddressesKey::borrower_operations)
                     || caller == address_provider.get_address(AddressesKey::default_pool),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -182,7 +180,7 @@ mod ActivePool {
             assert(
                 caller == address_provider.get_address(AddressesKey::borrower_operations)
                     || caller == address_provider.get_address(AddressesKey::vessel_manager),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -196,7 +194,7 @@ mod ActivePool {
                 caller == address_provider.get_address(AddressesKey::borrower_operations)
                     || caller == address_provider.get_address(AddressesKey::stability_pool)
                     || caller == address_provider.get_address(AddressesKey::vessel_manager),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -210,7 +208,7 @@ mod ActivePool {
                     || caller == address_provider.get_address(AddressesKey::vessel_manager)
                     || caller == address_provider
                         .get_address(AddressesKey::vessel_manager_operations),
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
     }

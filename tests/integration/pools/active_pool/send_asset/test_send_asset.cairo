@@ -50,7 +50,7 @@ fn test_setup() -> (IActivePoolDispatcher, IERC20Dispatcher, IIsCalledDispatcher
 }
 
 #[test]
-#[should_panic(expected: ('Caller not authorized',))]
+#[should_panic(expected: ('Caller is not authorized',))]
 fn when_caller_is_neither_borrower_operations_nor_stability_pool_nor_vessel_manager_nor_vessel_manager_operations_it_should_revert() {
     let (active_pool, asset, _) = test_setup();
     active_pool.send_asset(asset.contract_address, alice(), ONE);
