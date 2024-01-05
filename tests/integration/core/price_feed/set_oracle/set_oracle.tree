@@ -1,7 +1,7 @@
 test_set_oracle.cairo
 ├── when set a new oracle and caller not owner
 │   └── it should revert
-├── when set an oracle that alreay exist and caller not timelock contract
+├── when set an oracle that alreay exist and Caller is not Timelock contract
 │   └── it should revert with TimelockOnlyError
 └── when caller is valid
     ├── when decimals is zero

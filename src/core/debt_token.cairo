@@ -104,7 +104,7 @@ mod DebtToken {
 
         fn add_whitelist(ref self: ContractState, address: ContractAddress) {
             self.ownable.assert_only_owner();
-            assert(address.is_non_zero(), CommunErrors::CommunErrors__AddressZero);
+            assert(address.is_non_zero(), CommunErrors::AddressZero);
             assert(!self.is_whitelisted(address), Errors::AlreadyWhitelisted);
             self.whitelisted_contracts.write(address, true);
             self.emit(WhitelistChanged { address: address, is_whitelisted: true });
@@ -127,7 +127,7 @@ mod DebtToken {
         #[inline(always)]
         fn assert_caller_is_whitelisted_contract(self: @ContractState) {
             let caller = get_caller_address();
-            assert(self.is_whitelisted(caller), CommunErrors::CommunErrors__CallerNotAuthorized);
+            assert(self.is_whitelisted(caller), CommunErrors::CallerNotAuthorized);
         }
 
         #[inline(always)]
@@ -137,10 +137,7 @@ mod DebtToken {
                 .address_provider
                 .read()
                 .get_address(AddressesKey::borrower_operations);
-            assert(
-                caller == borrower_operations_manager,
-                CommunErrors::CommunErrors__CallerNotAuthorized
-            );
+            assert(caller == borrower_operations_manager, CommunErrors::CallerNotAuthorized);
         }
 
         #[inline(always)]
@@ -155,7 +152,7 @@ mod DebtToken {
                 caller == borrower_operations_manager
                     || caller == vessel_manager
                     || caller == stability_pool,
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
 
@@ -164,7 +161,7 @@ mod DebtToken {
             let caller = get_caller_address();
             let address_provider = self.address_provider.read();
             let stability_pool = address_provider.get_address(AddressesKey::stability_pool);
-            assert(caller == stability_pool, CommunErrors::CommunErrors__CallerNotAuthorized);
+            assert(caller == stability_pool, CommunErrors::CallerNotAuthorized);
         }
 
         #[inline(always)]
@@ -175,7 +172,7 @@ mod DebtToken {
             let stability_pool = address_provider.get_address(AddressesKey::stability_pool);
             assert(
                 caller == vessel_manager || caller == stability_pool,
-                CommunErrors::CommunErrors__CallerNotAuthorized
+                CommunErrors::CallerNotAuthorized
             );
         }
     }
