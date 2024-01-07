@@ -25,7 +25,7 @@ fn setup() -> (
         contract_address: address_provider_address
     };
 
-    let admin_contract_address: ContractAddress = deploy_admin_contract();
+    let admin_contract_address: ContractAddress = deploy_admin_contract(address_provider_address);
     let admin_contract: IAdminContractDispatcher = IAdminContractDispatcher {
         contract_address: admin_contract_address
     };

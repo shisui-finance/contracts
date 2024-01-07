@@ -141,5 +141,57 @@ fn deploy_vessel_manager(
     fee_collector: ContractAddress
 ) -> ContractAddress {
     let contract = declare('VesselManager');
+    deploy_mock_contract(
+        contract,
+        @array![
+            address_provider.into(), admin_contract.into(), debt_token.into(), fee_collector.into()
+        ]
+    )
+}
+
+/// Utility function to deploy a ActivePool contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_active_pool(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('ActivePool');
     deploy_mock_contract(contract, @array![address_provider.into()])
+}
+
+/// Utility function to deploy a DefaultPool contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_default_pool(address_provider: ContractAddress) -> ContractAddress {
+    let contract = declare('DefaultPool');
+    deploy_mock_contract(contract, @array![address_provider.into()])
+}
+
+/// Utility function to deploy a BorrowerOperations contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_borrower_operations(
+    address_provider: ContractAddress,
+    admin_contract: ContractAddress,
+    price_feed: ContractAddress,
+    vessel_manager: ContractAddress,
+    debt_token: ContractAddress,
+    fee_collector: ContractAddress
+) -> ContractAddress {
+    let contract = declare('BorrowerOperations');
+    deploy_mock_contract(
+        contract,
+        @array![
+            address_provider.into(),
+            admin_contract.into(),
+            price_feed.into(),
+            vessel_manager.into(),
+            debt_token.into(),
+            fee_collector.into()
+        ]
+    )
 }

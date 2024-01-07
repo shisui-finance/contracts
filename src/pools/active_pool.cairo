@@ -40,8 +40,10 @@ mod ActivePool {
 
 
     #[constructor]
-    fn constructor(ref self: ContractState, address_provider: IAddressProviderDispatcher) {
-        self.address_provider.write(address_provider);
+    fn constructor(ref self: ContractState, address_provider: ContractAddress) {
+        self
+            .address_provider
+            .write(IAddressProviderDispatcher { contract_address: address_provider });
     }
 
     #[external(v0)]

@@ -152,6 +152,12 @@ mod integration {
                 mod test_get_current_icr;
             }
         }
+        mod borrower_operations {
+            mod setup;
+            mod open_vessel {
+                mod test_open_vessel;
+            }
+        }
     }
     mod pools {
         mod collateral_surplus_pool {

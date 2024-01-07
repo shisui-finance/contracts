@@ -7,6 +7,7 @@ mod core {
     mod fee_collector;
     mod admin_contract;
     mod vessel_manager;
+    mod borrower_operations;
 }
 
 mod pools {

@@ -6,6 +6,7 @@ use starknet::ContractAddress;
 // *************************************************************************
 #[derive(Copy, Drop, Serde, PartialEq, starknet::Store)]
 enum Status {
+    #[default]
     NonExistent,
     Active,
     ClosedByOwner,
