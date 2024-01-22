@@ -529,7 +529,7 @@ mod VesselManager {
         fn add_vessel_owner_to_array(
             ref self: ContractState, asset: ContractAddress, borrower: ContractAddress
         ) -> u256 {
-            self.only_vessel_manager_operations();
+            self.only_borrower_operations();
             let mut asset_owners = self.vessel_owners.read(asset);
             asset_owners.append(borrower);
             let index = asset_owners.len() - 1;

@@ -60,6 +60,7 @@ mod ERC20Mock {
         let symbol = 'MOCK';
 
         self.erc20.initializer(name, symbol);
+        self.mint(starknet::get_caller_address(), 10000_000000000000000000);
     }
 
     // *************************************************************************

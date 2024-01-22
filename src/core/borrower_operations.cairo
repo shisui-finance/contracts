@@ -66,6 +66,7 @@ mod BorrowerOperations {
     };
     use openzeppelin::security::reentrancyguard::ReentrancyGuardComponent::InternalTrait;
     use openzeppelin::security::reentrancyguard::ReentrancyGuardComponent;
+    use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use super::{BorrowerOperation, AdjustVessel, OpenVessel};
     use shisui::core::address_provider::{
         IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey
@@ -75,7 +76,12 @@ mod BorrowerOperations {
     use shisui::core::vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait};
     use shisui::core::debt_token::{IDebtTokenDispatcher, IDebtTokenDispatcherTrait,};
     use shisui::core::fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait,};
-    use shisui::utils::{shisui_math, shisui_base, constants::DECIMAL_PRECISION};
+    use shisui::pools::active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait,};
+    use shisui::pools::default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait,};
+    use shisui::utils::{
+        shisui_math, shisui_base, constants::DECIMAL_PRECISION, convert::decimals_correction
+    };
+
     use snforge_std::PrintTrait;
 
     // *************************************************************************
@@ -98,6 +104,7 @@ mod BorrowerOperations {
         const BorrowerOperations_VesselICRMustbeGOECCR: felt252 = 'Vessel must have ICR >= CCR';
         const BorrowerOperations_VesselTCRMustbeGOECCR: felt252 = 'Vessel must have TCR >= CCR';
         const BorrowerOperations_VesselICRMustbeGOEMCR: felt252 = 'Vessel must have ICR >= MCR';
+        const BorrowerOperations_ExceedsMintCap: felt252 = 'Exceeds mint cap';
     }
 
     // *************************************************************************
@@ -112,7 +119,10 @@ mod BorrowerOperations {
         price_feed: IPriceFeedDispatcher,
         vessel_manager: IVesselManagerDispatcher,
         debt_token: IDebtTokenDispatcher,
-        fee_collector: IFeeCollectorDispatcher
+        fee_collector: IFeeCollectorDispatcher,
+        active_pool: IActivePoolDispatcher,
+        default_pool: IDefaultPoolDispatcher,
+        gas_pool_address: ContractAddress
     }
 
     // *************************************************************************
@@ -167,7 +177,10 @@ mod BorrowerOperations {
         price_feed: ContractAddress,
         vessel_manager: ContractAddress,
         debt_token: ContractAddress,
-        fee_collector: ContractAddress
+        fee_collector: ContractAddress,
+        active_pool: ContractAddress,
+        default_pool: ContractAddress,
+        gas_pool_address: ContractAddress
     ) {
         self
             .address_provider
@@ -178,6 +191,9 @@ mod BorrowerOperations {
         self.vessel_manager.write(IVesselManagerDispatcher { contract_address: vessel_manager });
         self.debt_token.write(IDebtTokenDispatcher { contract_address: debt_token });
         self.fee_collector.write(IFeeCollectorDispatcher { contract_address: fee_collector });
+        self.active_pool.write(IActivePoolDispatcher { contract_address: active_pool });
+        self.default_pool.write(IDefaultPoolDispatcher { contract_address: default_pool });
+        self.gas_pool_address.write(gas_pool_address);
     }
 
     // *************************************************************************
@@ -266,15 +282,48 @@ mod BorrowerOperations {
                 .increase_vessel_debt(asset, get_caller_address(), composite_debt);
 
             self.vessel_manager.read().update_vessel_reward_snapshots(asset, get_caller_address());
-
-            self.vessel_manager.read().update_stake_and_total_stakes(asset, get_caller_address());
+            let stake = self
+                .vessel_manager
+                .read()
+                .update_stake_and_total_stakes(asset, get_caller_address());
 
             let array_index = self
                 .vessel_manager
                 .read()
                 .add_vessel_owner_to_array(asset, get_caller_address());
 
+            // TODO insert sortedVessel     
+            //ISortedVessels(sortedVessels).insert(vars.asset, msg.sender, vars.NICR, _upperHint, _lowerHint);
+
             self.emit(VesselCreated { asset, borrower: get_caller_address(), array_index });
+            // Move the asset to the Active Pool, and mint the debtToken amount to the borrower
+            self.active_pool_add_coll(asset, asset_amount);
+            //self.withdraw_debt_token(asset, get_caller_address(), debt_token_amount, net_debt);
+
+            // Move the debtToken gas compensation to the Gas Pool
+            if gas_compensation != 0 { // self
+            //     .withdraw_debt_token(
+            //         asset, self.gas_pool_address.read(), gas_compensation, gas_compensation
+            //     );
+            }
+
+            self
+                .emit(
+                    VesselUpdated {
+                        asset,
+                        borrower: get_caller_address(),
+                        debt: composite_debt,
+                        coll: asset_amount,
+                        stake,
+                        operation: BorrowerOperation::OpenVessel
+                    }
+                );
+            self
+                .emit(
+                    BorrowingFeePaid {
+                        asset, borrower: get_caller_address(), fee_amount: debt_token_fee
+                    }
+                );
         }
     }
 
@@ -319,6 +368,8 @@ mod BorrowerOperations {
         }
 
         fn require_icr_is_above_mcr(self: @ContractState, asset: ContractAddress, new_icr: u256) {
+            'mcr'.print();
+            self.admin_contract.read().get_mcr(asset).print();
             assert(
                 new_icr >= self.admin_contract.read().get_mcr(asset),
                 Errors::BorrowerOperations_VesselICRMustbeGOEMCR
@@ -374,6 +425,42 @@ mod BorrowerOperations {
 
             let new_tcr = shisui_math::compute_cr(total_coll, total_debt, price);
             new_tcr
+        }
+
+        fn active_pool_add_coll(ref self: ContractState, asset: ContractAddress, amount: u256) {
+            let safety_transfer_amount = decimals_correction(asset, amount);
+            safety_transfer_amount.print();
+
+            self.active_pool.read().received_erc20(asset, amount);
+
+            // check allowance
+            IERC20Dispatcher { contract_address: asset }
+                .allowance(get_caller_address(), get_contract_address())
+                .print();
+
+            get_caller_address().print();
+            get_contract_address().print();
+
+            IERC20Dispatcher { contract_address: asset }
+                .transfer_from(get_caller_address(), get_caller_address(), 1);
+        }
+
+        fn withdraw_debt_token(
+            ref self: ContractState,
+            asset: ContractAddress,
+            account: ContractAddress,
+            debt_token_amount: u256,
+            net_debt_increase: u256
+        ) {
+            let new_total_asset_debt = self.active_pool.read().get_debt_token_balance(asset)
+                + self.default_pool.read().get_debt_token_balance(asset)
+                + net_debt_increase;
+            assert(
+                new_total_asset_debt <= self.admin_contract.read().get_mint_cap(asset),
+                Errors::BorrowerOperations_ExceedsMintCap
+            );
+            self.active_pool.read().increase_debt(asset, net_debt_increase);
+            self.debt_token.read().mint(account, debt_token_amount);
         }
     }
 }

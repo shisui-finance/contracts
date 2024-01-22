@@ -13,13 +13,15 @@ use shisui::mocks::pragma_oracle_mock::{
 };
 use shisui::pools::active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait};
 use shisui::pools::default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait};
+use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use snforge_std::PrintTrait;
 
 
 use tests::tests_lib::{
     deploy_address_provider, deploy_fee_collector, deploy_debt_token, deploy_admin_contract,
     deploy_vessel_manager, deploy_pragma_oracle_mock, deploy_price_feed, deploy_borrower_operations,
-    deploy_stability_pool, deploy_active_pool, deploy_default_pool
+    deploy_stability_pool, deploy_active_pool, deploy_default_pool, deploy_gas_pool,
+    deploy_erc20_mock
 };
 
 
@@ -33,7 +35,8 @@ fn setup() -> (
     IPriceFeedDispatcher,
     IPragmaOracleMockDispatcher,
     IActivePoolDispatcher,
-    IDefaultPoolDispatcher
+    IDefaultPoolDispatcher,
+    IERC20Dispatcher
 ) {
     // address provider
     let address_provider_address: ContractAddress = deploy_address_provider();
@@ -89,6 +92,9 @@ fn setup() -> (
         contract_address: price_feed_address
     };
 
+    // gas pool 
+    let gas_pool_address = deploy_gas_pool();
+
     // borrower operations
     let borrower_operations_address: ContractAddress = deploy_borrower_operations(
         address_provider_address,
@@ -96,7 +102,10 @@ fn setup() -> (
         price_feed_address,
         vessel_manager_address,
         debt_token_address,
-        fee_collector_address
+        fee_collector_address,
+        active_pool_address,
+        default_pool_address,
+        gas_pool_address
     );
     let borrower_operations: IBorrowerOperationsDispatcher = IBorrowerOperationsDispatcher {
         contract_address: borrower_operations_address
@@ -114,6 +123,9 @@ fn setup() -> (
     address_provider.set_address(AddressesKey::borrower_operations, borrower_operations_address);
     address_provider.set_address(AddressesKey::debt_token, debt_token_address);
 
+    let asset_address: ContractAddress = deploy_erc20_mock(18);
+    let asset: IERC20Dispatcher = IERC20Dispatcher { contract_address: asset_address };
+
     return (
         borrower_operations,
         vessel_manager,
@@ -124,6 +136,7 @@ fn setup() -> (
         price_feed,
         pragma_mock,
         active_pool,
-        default_pool
+        default_pool,
+        asset
     );
 }

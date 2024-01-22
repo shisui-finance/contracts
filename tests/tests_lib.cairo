@@ -169,6 +169,17 @@ fn deploy_default_pool(address_provider: ContractAddress) -> ContractAddress {
     deploy_mock_contract(contract, @array![address_provider.into()])
 }
 
+/// Utility function to deploy a GasPool contract and return its address.
+///
+/// # Returns
+///
+/// * `ContractAddress` - The address of the deployed data store contract.
+fn deploy_gas_pool() -> ContractAddress {
+    let contract = declare('GasPool');
+    deploy_mock_contract(contract, @array![])
+}
+
+
 /// Utility function to deploy a BorrowerOperations contract and return its address.
 ///
 /// # Returns
@@ -180,7 +191,10 @@ fn deploy_borrower_operations(
     price_feed: ContractAddress,
     vessel_manager: ContractAddress,
     debt_token: ContractAddress,
-    fee_collector: ContractAddress
+    fee_collector: ContractAddress,
+    active_pool_address: ContractAddress,
+    default_pool_address: ContractAddress,
+    gas_pool_address: ContractAddress
 ) -> ContractAddress {
     let contract = declare('BorrowerOperations');
     deploy_mock_contract(
@@ -191,7 +205,10 @@ fn deploy_borrower_operations(
             price_feed.into(),
             vessel_manager.into(),
             debt_token.into(),
-            fee_collector.into()
+            fee_collector.into(),
+            active_pool_address.into(),
+            default_pool_address.into(),
+            gas_pool_address.into()
         ]
     )
 }
