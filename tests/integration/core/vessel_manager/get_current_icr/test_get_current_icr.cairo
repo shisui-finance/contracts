@@ -54,7 +54,7 @@ fn when_vessel_exists_current_icr_is_correctly_calculated() {
 
     let icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
     assert(icr >= 1_500000000000000000 && icr <= 1_505000000000000000, 'Wrong icr');
-    
+
     // simulate price change
     asset_price = 2000_000000000000000000; //price increase from 1600 to 2000
     let new_icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
