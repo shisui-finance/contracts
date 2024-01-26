@@ -222,6 +222,7 @@ mod VesselManager {
     use openzeppelin::security::reentrancyguard::ReentrancyGuardComponent;
     use alexandria_storage::list::{List, ListTrait};
     use core::cmp::{min, max};
+    use snforge_std::{PrintTrait};
 
 
     // *************************************************************************

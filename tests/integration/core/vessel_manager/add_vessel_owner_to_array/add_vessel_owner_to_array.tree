@@ -1,0 +1,6 @@
+test_add_vessel_owner_to_array.cairo
+├── when caller is not the Borrower Operation contract
+│   └── it should revert with error Only borrower operations
+└── when caller is the Borrower Operation contract
+    ├── it should add borrower to asset owner array
+

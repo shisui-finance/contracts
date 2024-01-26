@@ -243,7 +243,8 @@ mod BorrowerOperations {
             'composite_debt'.print();
             composite_debt.print();
             assert(composite_debt != 0, Errors::BorrowerOperations_CompositeDebtCantBeZero);
-
+            asset_amount.print();
+            price.print();
             let icr = shisui_math::compute_cr(asset_amount, composite_debt, price);
             'icr'.print();
             icr.print();
@@ -259,7 +260,8 @@ mod BorrowerOperations {
                     .get_new_tcr_from_vessel_change(
                         asset, asset_amount, true, composite_debt, true, price
                     );
-
+                'new_tcr'.print();
+                new_tcr.print();
                 self.require_new_tcr_is_above_ccr(asset, new_tcr);
             }
 
@@ -298,13 +300,13 @@ mod BorrowerOperations {
             self.emit(VesselCreated { asset, borrower: get_caller_address(), array_index });
             // Move the asset to the Active Pool, and mint the debtToken amount to the borrower
             self.active_pool_add_coll(asset, asset_amount);
-            //self.withdraw_debt_token(asset, get_caller_address(), debt_token_amount, net_debt);
-
+            self.withdraw_debt_token(asset, get_caller_address(), debt_token_amount, net_debt);
             // Move the debtToken gas compensation to the Gas Pool
-            if gas_compensation != 0 { // self
-            //     .withdraw_debt_token(
-            //         asset, self.gas_pool_address.read(), gas_compensation, gas_compensation
-            //     );
+            if gas_compensation != 0 {
+                self
+                    .withdraw_debt_token(
+                        asset, self.gas_pool_address.read(), gas_compensation, gas_compensation
+                    );
             }
 
             self
@@ -429,20 +431,9 @@ mod BorrowerOperations {
 
         fn active_pool_add_coll(ref self: ContractState, asset: ContractAddress, amount: u256) {
             let safety_transfer_amount = decimals_correction(asset, amount);
-            safety_transfer_amount.print();
-
             self.active_pool.read().received_erc20(asset, amount);
-
-            // check allowance
             IERC20Dispatcher { contract_address: asset }
-                .allowance(get_caller_address(), get_contract_address())
-                .print();
-
-            get_caller_address().print();
-            get_contract_address().print();
-
-            IERC20Dispatcher { contract_address: asset }
-                .transfer_from(get_caller_address(), get_caller_address(), 1);
+                .transfer_from(get_caller_address(), self.active_pool.read().contract_address, 1);
         }
 
         fn withdraw_debt_token(

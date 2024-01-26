@@ -151,6 +151,9 @@ mod integration {
             mod get_current_icr {
                 mod test_get_current_icr;
             }
+            mod add_vessel_owner_to_array {
+                mod test_add_vessel_owner_to_array;
+            }
         }
         mod borrower_operations {
             mod setup;

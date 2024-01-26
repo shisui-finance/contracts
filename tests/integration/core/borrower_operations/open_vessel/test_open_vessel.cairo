@@ -1,9 +1,11 @@
 use openzeppelin::token::erc20::interface::IERC20DispatcherTrait;
 use shisui::core::price_feed::IPriceFeedDispatcherTrait;
 use shisui::core::borrower_operations::IBorrowerOperationsDispatcherTrait;
+use shisui::mocks::erc20_mock::{IERC20MintBurnDispatcher, IERC20MintBurnDispatcherTrait};
 use starknet::{ContractAddress, contract_address_const, get_caller_address};
 use snforge_std::{
-    start_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions, start_mock_call
+    start_prank, stop_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions,
+    start_mock_call
 };
 use shisui::core::admin_contract::{
     IAdminContractDispatcher, IAdminContractDispatcherTrait, AdminContract
@@ -40,6 +42,8 @@ fn given_normal_condition_should_open_vessel() {
     let collateral_address = asset.contract_address;
     let upper_hint_address = contract_address_const::<'upper_hint'>();
     let lower_hint_address = contract_address_const::<'lower_hint'>();
+    let caller = contract_address_const::<'caller'>();
+    let caller2 = contract_address_const::<'caller2'>();
 
     // declare new collateral
     admin_contract
@@ -65,16 +69,44 @@ fn given_normal_condition_should_open_vessel() {
         CheatTarget::One(vessel_manager.contract_address), borrower_operations.contract_address
     );
 
-    // approve unlimited 
-    asset.approve(borrower_operations.contract_address, BoundedInt::max());
+    // mint token for caller
+    IERC20MintBurnDispatcher { contract_address: asset.contract_address }
+        .mint(caller, 10000_000000000000000000);
 
-    // open vessel with min debt of 2000. Let's define 1.5 ETH (2400 USD) for 2000 debt token.
+    IERC20MintBurnDispatcher { contract_address: asset.contract_address }
+        .mint(caller2, 10000_000000000000000000);
+
+    // approve borrower operation to transfer asset from caller to active pool when opening vessel
+    start_prank(CheatTarget::One(asset.contract_address), caller);
+    asset.approve(borrower_operations.contract_address, 10000_000000000000000000);
+    stop_prank(CheatTarget::One(asset.contract_address));
+
+    // approve borrower operation to transfer asset from caller to active pool when opening vessel
+    start_prank(CheatTarget::One(asset.contract_address), caller2);
+    asset.approve(borrower_operations.contract_address, 10000_000000000000000000);
+    stop_prank(CheatTarget::One(asset.contract_address));
+
+    start_prank(CheatTarget::One(asset.contract_address), borrower_operations.contract_address);
+    start_prank(CheatTarget::One(borrower_operations.contract_address), caller);
+    // open vessel with min debt of 2000. Let's define 1.89 ETH (3024 USD) for 2000 debt token. We get icr >=MCR and tcr >=CCR
     borrower_operations
         .open_vessel(
             collateral_address,
-            2400_000000000000000000, // deposit
+            1_890000000000000000, // deposit
             2000_000000000000000000, // debt token amount
             upper_hint_address,
             lower_hint_address
         );
+
+    stop_prank(CheatTarget::One(borrower_operations.contract_address));
+    start_prank(CheatTarget::One(borrower_operations.contract_address), caller2);
+    borrower_operations
+        .open_vessel(
+            collateral_address,
+            2_400000000000000000, // deposit
+            2000_000000000000000000, // debt token amount
+            upper_hint_address,
+            lower_hint_address
+        );
+    stop_prank(CheatTarget::One(borrower_operations.contract_address));
 }

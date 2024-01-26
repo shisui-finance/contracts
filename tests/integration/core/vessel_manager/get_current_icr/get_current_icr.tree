@@ -1,2 +1,2 @@
-get_current_icr.cairo
-#When vessel exist
+test_get_current_icr.cairo
+└── When vessel exist icr is correctly returned
