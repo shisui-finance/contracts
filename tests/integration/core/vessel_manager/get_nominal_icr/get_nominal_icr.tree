@@ -1,0 +1,2 @@
+test_get_nominal_icr.cairo
+└── When vessel exist nominal icr is correctly returned

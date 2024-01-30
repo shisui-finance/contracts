@@ -9,7 +9,7 @@ keywords = ["starknet", "defi", "syntethics"]
 
 [dependencies]
 starknet = "2.4.0"
-snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry", tag = "v0.13.0" }
+snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry", tag = "v0.16.0" }
 openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts.git", tag = "v0.8.0" }
 pragma_lib = { git = "https://github.com/astraly-labs/pragma-lib"}
 alexandria_storage = { git = "https://github.com/keep-starknet-strange/alexandria.git", tag="cairo-v2.3.0-rc0"}

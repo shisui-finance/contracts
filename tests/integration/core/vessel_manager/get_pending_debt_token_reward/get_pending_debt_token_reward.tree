@@ -1,0 +1,4 @@
+test_get_pending_asset_reward.cairo
+└── When vessel exist return expected pending debt token reward
+├── when vessel is not active should return 0
+└── when having no reward per unit staked should return 0

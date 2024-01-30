@@ -240,17 +240,13 @@ mod BorrowerOperations {
                 .get_debt_token_gas_compensation(asset);
 
             let composite_debt = net_debt + gas_compensation;
-            'composite_debt'.print();
-            composite_debt.print();
+
             assert(composite_debt != 0, Errors::BorrowerOperations_CompositeDebtCantBeZero);
-            asset_amount.print();
-            price.print();
+
             let icr = shisui_math::compute_cr(asset_amount, composite_debt, price);
-            'icr'.print();
-            icr.print();
+
             let nicr = shisui_math::compute_nominal_cr(asset_amount, composite_debt);
-            'nicr'.print();
-            nicr.print();
+
             if is_recovery_mode {
                 self.require_icr_is_above_ccr(asset, icr);
             } else {
@@ -260,8 +256,6 @@ mod BorrowerOperations {
                     .get_new_tcr_from_vessel_change(
                         asset, asset_amount, true, composite_debt, true, price
                     );
-                'new_tcr'.print();
-                new_tcr.print();
                 self.require_new_tcr_is_above_ccr(asset, new_tcr);
             }
 
@@ -370,8 +364,6 @@ mod BorrowerOperations {
         }
 
         fn require_icr_is_above_mcr(self: @ContractState, asset: ContractAddress, new_icr: u256) {
-            'mcr'.print();
-            self.admin_contract.read().get_mcr(asset).print();
             assert(
                 new_icr >= self.admin_contract.read().get_mcr(asset),
                 Errors::BorrowerOperations_VesselICRMustbeGOEMCR

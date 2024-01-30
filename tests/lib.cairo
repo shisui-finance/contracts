@@ -151,8 +151,17 @@ mod integration {
             mod get_current_icr {
                 mod test_get_current_icr;
             }
+            mod get_nominal_icr {
+                mod test_get_nominal_icr;
+            }
             mod add_vessel_owner_to_array {
                 mod test_add_vessel_owner_to_array;
+            }
+            mod get_pending_asset_reward {
+                mod test_get_pending_asset_reward;
+            }
+            mod get_pending_debt_token_reward {
+                mod test_get_pending_debt_token_reward;
             }
         }
         mod borrower_operations {

@@ -1000,6 +1000,7 @@ mod VesselManager {
             let old_stake = vessel.stake;
             vessel.stake = new_stake;
             let new_total = self.total_stakes.read(asset) - old_stake + new_stake;
+            self.vessels.write((borrower, asset), vessel);
             self.total_stakes.write(asset, new_total);
             self.emit(TotalStakesUpdated { asset, new_total_stakes: new_total });
             new_stake
