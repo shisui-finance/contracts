@@ -1,0 +1,7 @@
+test_has_pending_reward.cairo
+├── When vessel is not active
+│   └── it should retrun false
+└── when vessel is active
+    ├── it should return false if reward snapshot > l_coll
+└── when vessel is active
+    └── it should return true if reward snapshot > l_coll

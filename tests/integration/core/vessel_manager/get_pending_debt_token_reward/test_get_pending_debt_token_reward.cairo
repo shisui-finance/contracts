@@ -58,7 +58,8 @@ fn when_vessel_exists_return_expected_pending_asset_reward() {
         array![10].span()
     );
 
-    let pending_reward = vessel_manager.get_pending_debt_token_reward(asset.contract_address, caller);
+    let pending_reward = vessel_manager
+        .get_pending_debt_token_reward(asset.contract_address, caller);
     assert(pending_reward == 18, 'Wrong debt pending reward'); //deposit_amount * 10 / precision
 }
 
@@ -110,7 +111,8 @@ fn when_vessel_is_not_active_should_return_0() {
     vessel_manager.set_vessel_status(asset.contract_address, caller, Status::ClosedByLiquidation);
     stop_prank(CheatTarget::One(vessel_manager.contract_address));
 
-    let pending_reward = vessel_manager.get_pending_debt_token_reward(asset.contract_address, caller);
+    let pending_reward = vessel_manager
+        .get_pending_debt_token_reward(asset.contract_address, caller);
     assert(pending_reward == 0, 'Wrong debt pending reward');
 }
 
@@ -150,6 +152,7 @@ fn when_having_no_reward_per_unit_staked_should_return_0() {
         debt_token_amount
     );
 
-    let pending_reward = vessel_manager.get_pending_debt_token_reward(asset.contract_address, caller);
+    let pending_reward = vessel_manager
+        .get_pending_debt_token_reward(asset.contract_address, caller);
     assert(pending_reward == 0, 'Wrong debt pending reward');
 }

@@ -1,0 +1,6 @@
+test_increase_vessel_debt.cairo
+├── When caller is not borrower operation
+│   └── it should revert
+└── when caller is borrower operation
+    ├── it should return new debt value
+    └── it should update vessel

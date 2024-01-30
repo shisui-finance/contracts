@@ -465,12 +465,12 @@ mod VesselManager {
         fn has_pending_rewards(
             self: @ContractState, asset: ContractAddress, borrower: ContractAddress
         ) -> bool {
-            if self.is_vessel_active(asset, borrower) {
+            if !self.is_vessel_active(asset, borrower) {
                 return false;
             }
-
             self.reward_snapshots.read((borrower, asset)).asset < self.l_colls.read(asset)
         }
+
         //return debt,coll,pending_debt_reward, pending_coll_reward
         fn get_entire_debt_and_coll(
             self: @ContractState, asset: ContractAddress, borrower: ContractAddress

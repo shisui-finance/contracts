@@ -163,6 +163,15 @@ mod integration {
             mod get_pending_debt_token_reward {
                 mod test_get_pending_debt_token_reward;
             }
+            mod has_pending_rewards {
+                mod test_has_pending_rewards;
+            }
+            mod increase_vessel_coll {
+                mod test_increase_vessel_coll;
+            }
+            mod increase_vessel_debt {
+                mod test_increase_vessel_debt;
+            }
         }
         mod borrower_operations {
             mod setup;
