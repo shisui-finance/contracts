@@ -1,0 +1,6 @@
+test_frcrease_vessel_coll.cairo
+├── When caller is not borrower operation
+│   └── it should revert
+└── when caller is borrower operation
+    ├── it should return new coll value
+    └── it should update vessel

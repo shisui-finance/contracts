@@ -1,13 +1,15 @@
 use tests::tests_lib::{deploy_main_contracts};
 use super::super::setup::open_vessel;
 use shisui::core::{
-    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
-    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait, Status},
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
     admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait},
     fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait},
     debt_token::{IDebtTokenDispatcher, IDebtTokenDispatcherTrait},
     price_feed::{IPriceFeedDispatcher, IPriceFeedDispatcherTrait},
+};
+use shisui::pools::{
+    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
+    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
 };
 use snforge_std::{
     start_prank, stop_prank, store, map_entry_address, CheatTarget, spy_events, SpyOn, EventSpy,
@@ -39,21 +41,6 @@ fn when_caller_is_not_borrower_operation_it_should_revert() {
     let debt_token_amount: u256 = 2000_000000000000000000;
 
     let borrower = contract_address_const::<'borrower'>();
-
-    // let borrower = open_vessel(
-    //     asset,
-    //     price_feed,
-    //     admin_contract,
-    //     active_pool,
-    //     default_pool,
-    //     debt_token,
-    //     borrower_operations,
-    //     vessel_manager,
-    //     pragma_mock,
-    //     asset_price,
-    //     deposit_amount,
-    //     debt_token_amount
-    // );
 
     vessel_manager.increase_vessel_debt(asset.contract_address, borrower, 10);
 }
@@ -109,10 +96,7 @@ fn when_caller_is_borrower_it_should_update_vessel_debt() {
     stop_prank(CheatTarget::One(vessel_manager.contract_address));
 
     assert(new_debt == 2010000000000000001000 + debt_increment, 'Wrong new debt');
-    assert(
-        vessel_manager.get_vessel_debt(asset.contract_address, borrower) == 2010000000000000001000
-            + debt_increment,
-        'Wrong vessel debt'
-    );
+    let current_debt = vessel_manager.get_vessel_debt(asset.contract_address, borrower);
+    assert(current_debt == 2010000000000000001000 + debt_increment, 'Wrong vessel debt');
 }
 

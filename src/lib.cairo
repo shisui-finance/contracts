@@ -6,8 +6,6 @@ mod core {
     mod price_feed;
     mod fee_collector;
     mod admin_contract;
-    mod vessel_manager;
-    mod borrower_operations;
 }
 
 mod pools {
@@ -16,6 +14,8 @@ mod pools {
     mod default_pool;
     mod collateral_surplus_pool;
     mod active_pool;
+    mod vessel_manager;
+    mod borrower_operations;
 }
 
 mod utils {

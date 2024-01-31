@@ -73,9 +73,9 @@ mod BorrowerOperations {
     };
     use shisui::core::admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait,};
     use shisui::core::price_feed::{IPriceFeedDispatcher, IPriceFeedDispatcherTrait,};
-    use shisui::core::vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait};
     use shisui::core::debt_token::{IDebtTokenDispatcher, IDebtTokenDispatcherTrait,};
     use shisui::core::fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait,};
+    use shisui::pools::vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait};
     use shisui::pools::active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait,};
     use shisui::pools::default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait,};
     use shisui::utils::{
@@ -264,7 +264,7 @@ mod BorrowerOperations {
                 .vessel_manager
                 .read()
                 .set_vessel_status(
-                    asset, get_caller_address(), shisui::core::vessel_manager::Status::Active
+                    asset, get_caller_address(), shisui::pools::vessel_manager::Status::Active
                 );
 
             self
@@ -334,7 +334,7 @@ mod BorrowerOperations {
             let status = self.vessel_manager.read().get_vessel_status(asset, borrower);
 
             assert(
-                status != shisui::core::vessel_manager::Status::Active,
+                status != shisui::pools::vessel_manager::Status::Active,
                 Errors::BorrowerOperations_ActiveVessel
             );
         }

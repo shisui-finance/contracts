@@ -1,0 +1,6 @@
+test_is_vessel_active.cairo
+├── when vessel is active
+│   └── it should return true
+└── when vessel is not active
+    ├── it should return false
+    └── when vessel doesn't exist is should return false

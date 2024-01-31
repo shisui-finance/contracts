@@ -216,7 +216,7 @@ mod VesselManager {
     use shisui::core::admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait,};
     use shisui::core::debt_token::{IDebtTokenDispatcher, IDebtTokenDispatcherTrait,};
     use shisui::core::fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait,};
-    use shisui::core::vessel_manager::IVesselManager;
+    use shisui::pools::vessel_manager::IVesselManager;
     use shisui::utils::{shisui_math, shisui_base, constants::DECIMAL_PRECISION};
     use super::{RewardSnapshot, Vessel, Status, VesselManagerOperation};
     use openzeppelin::security::reentrancyguard::ReentrancyGuardComponent;

@@ -1,19 +1,21 @@
-use tests::tests_lib::{deploy_main_contracts};
+use starknet::{ContractAddress, contract_address_const, get_caller_address};
 use super::super::setup::open_vessel;
 use shisui::core::{
-    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
-    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
     admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait},
     fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait},
     debt_token::{IDebtTokenDispatcher, IDebtTokenDispatcherTrait},
     price_feed::{IPriceFeedDispatcher, IPriceFeedDispatcherTrait},
 };
+use shisui::pools::{
+    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
+    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
+};
+use tests::tests_lib::{deploy_main_contracts};
 use snforge_std::{
     start_prank, stop_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions,
     start_mock_call, PrintTrait
 };
-use starknet::{ContractAddress, contract_address_const, get_caller_address};
 
 
 #[test]

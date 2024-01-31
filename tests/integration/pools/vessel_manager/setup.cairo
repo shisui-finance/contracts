@@ -1,11 +1,13 @@
 use shisui::core::{
-    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
-    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
     admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait},
     fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait},
     debt_token::{IDebtTokenDispatcher, IDebtTokenDispatcherTrait},
     price_feed::{IPriceFeedDispatcher, IPriceFeedDispatcherTrait},
+};
+use shisui::pools::{
+    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
+    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
 };
 use shisui::mocks::pragma_oracle_mock::{
     IPragmaOracleMockDispatcher, IPragmaOracleMockDispatcherTrait

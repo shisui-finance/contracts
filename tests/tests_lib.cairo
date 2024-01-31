@@ -5,8 +5,6 @@ use snforge_std::{
 use starknet::{ContractAddress, Felt252TryIntoContractAddress, contract_address_const};
 
 use shisui::core::{
-    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
-    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
     admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait},
     fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait},
@@ -16,8 +14,12 @@ use shisui::core::{
 use shisui::mocks::pragma_oracle_mock::{
     IPragmaOracleMockDispatcher, IPragmaOracleMockDispatcherTrait
 };
-use shisui::pools::active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait};
-use shisui::pools::default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait};
+use shisui::pools::{
+    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
+    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
+    active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait},
+    default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait}
+};
 use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 
 

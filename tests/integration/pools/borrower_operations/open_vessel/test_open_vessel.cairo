@@ -1,6 +1,6 @@
 use openzeppelin::token::erc20::interface::IERC20DispatcherTrait;
 use shisui::core::price_feed::IPriceFeedDispatcherTrait;
-use shisui::core::borrower_operations::IBorrowerOperationsDispatcherTrait;
+use shisui::pools::borrower_operations::IBorrowerOperationsDispatcherTrait;
 use shisui::mocks::erc20_mock::{IERC20MintBurnDispatcher, IERC20MintBurnDispatcherTrait};
 use starknet::{ContractAddress, contract_address_const, get_caller_address};
 use snforge_std::{

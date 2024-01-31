@@ -1,7 +1,5 @@
 use starknet::{ContractAddress, contract_address_const};
 use shisui::core::{
-    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
-    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
     admin_contract::{IAdminContractDispatcher, IAdminContractDispatcherTrait},
     fee_collector::{IFeeCollectorDispatcher, IFeeCollectorDispatcherTrait},
@@ -11,8 +9,12 @@ use shisui::core::{
 use shisui::mocks::pragma_oracle_mock::{
     IPragmaOracleMockDispatcher, IPragmaOracleMockDispatcherTrait
 };
-use shisui::pools::active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait};
-use shisui::pools::default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait};
+use shisui::pools::{
+    active_pool::{IActivePoolDispatcher, IActivePoolDispatcherTrait},
+    default_pool::{IDefaultPoolDispatcher, IDefaultPoolDispatcherTrait},
+    borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
+    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
+};
 use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use snforge_std::PrintTrait;
 
