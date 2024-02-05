@@ -9,17 +9,19 @@ use shisui::core::{
 };
 use shisui::pools::{
     borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
-    vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
+    vessel_manager::{
+        IVesselManagerDispatcher, IVesselManagerDispatcherTrait, VesselManager,
+        VesselManagerOperation, Status
+    },
 };
 use snforge_std::{
-    start_prank, stop_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions,
-    start_mock_call, PrintTrait
+    start_prank, stop_prank, start_warp, store, map_entry_address, CheatTarget, spy_events, SpyOn,
+    EventSpy, EventAssertions, start_mock_call, PrintTrait
 };
 use starknet::{ContractAddress, contract_address_const, get_caller_address};
 
 #[test]
-#[should_panic(expected: ('Only borrower operations',))]
-fn when_caller_is_not_borrower_operations_it_should_revert() {
+fn when_base_rate_is_defined_should_return_redemption_fee() {
     let (
         borrower_operations,
         vessel_manager,
@@ -36,14 +38,18 @@ fn when_caller_is_not_borrower_operations_it_should_revert() {
     ) =
         deploy_main_contracts();
 
-    let caller = contract_address_const::<'caller'>();
-    let borrower = contract_address_const::<'borrower'>();
-    start_prank(CheatTarget::One(vessel_manager.contract_address), caller);
-    vessel_manager.add_vessel_owner_to_array(asset.contract_address, borrower);
+    admin_contract.add_new_collateral(asset.contract_address, 1000, 18);
+
+    vessel_manager.set_base_rate(asset.contract_address, 100000000000000000); // 1e17
+
+    let fee = vessel_manager.get_redemption_fee(asset.contract_address, 10);
+
+    assert(fee == 1, 'Wrong redemption fee');
 }
 
 #[test]
-fn when_caller_is_borrower_operations_it_add_vessel_to_owner_array() {
+#[should_panic(expected: ('Fee bigger than assert draw',))]
+fn when_base_rate_is_defined_redemption_fee_is_below_asset_draw_should_revert() {
     let (
         borrower_operations,
         vessel_manager,
@@ -60,14 +66,10 @@ fn when_caller_is_borrower_operations_it_add_vessel_to_owner_array() {
     ) =
         deploy_main_contracts();
 
-    let caller = contract_address_const::<'caller'>();
-    let borrower = contract_address_const::<'borrower'>();
-    start_prank(
-        CheatTarget::One(vessel_manager.contract_address), borrower_operations.contract_address
-    );
-    let mut nb_owners = vessel_manager.get_vessel_owners_count(asset.contract_address);
-    assert(nb_owners == 0, 'Wrong owner number at init');
-    vessel_manager.add_vessel_owner_to_array(asset.contract_address, borrower);
-    nb_owners = vessel_manager.get_vessel_owners_count(asset.contract_address);
-    assert(nb_owners == 1, 'Wrong owner number');
+    admin_contract.add_new_collateral(asset.contract_address, 1000, 18);
+
+    vessel_manager.set_base_rate(asset.contract_address, 1000000000000000000); // 1e18
+
+    vessel_manager.get_redemption_fee_with_decay(asset.contract_address, 10);
 }
+

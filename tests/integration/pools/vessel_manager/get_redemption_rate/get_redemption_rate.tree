@@ -1,0 +1,5 @@
+test_get_redemption_rate.cairo
+├── when redemption fee floor plus base rate is below decimal precision 
+│   └── it should return redemption fee floor plsu base rate
+└── when redemption fee floor plus base rate is greater decimal precision
+    └── it should return decimal precision

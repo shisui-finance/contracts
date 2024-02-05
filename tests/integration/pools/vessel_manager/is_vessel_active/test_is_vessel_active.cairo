@@ -31,7 +31,8 @@ fn when_vessel_is_active_return_true() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 
@@ -70,7 +71,8 @@ fn when_vessel_is_not_active_return_false() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 
@@ -147,7 +149,8 @@ fn when_vessel_is_not_existing_return_false() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 

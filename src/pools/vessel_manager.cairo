@@ -176,6 +176,7 @@ trait IVesselManager<TContractState> {
     fn set_vessel_status(
         ref self: TContractState, asset: ContractAddress, borrower: ContractAddress, status: Status
     );
+    fn set_base_rate(ref self: TContractState, asset: ContractAddress, rate: u256);
     fn increase_vessel_coll(
         ref self: TContractState,
         asset: ContractAddress,
@@ -630,6 +631,8 @@ mod VesselManager {
         // TODO IActivePool(activePool).sendAsset(_asset, _receiver, collToSendToRedeemer);
         }
 
+        // Decay the baseRate due to time passed and then increase it according to the size of this redemption
+        // Use the saved total GRAI supply value from before it was reduced by redemption
         fn update_base_rate_from_redemption(
             ref self: ContractState,
             asset: ContractAddress,
@@ -864,6 +867,14 @@ mod VesselManager {
             self.vessels.write((borrower, asset), vessel);
         }
 
+        fn set_base_rate(ref self: ContractState, asset: ContractAddress, rate: u256) {
+            self.only_vessel_manager_operations_or_borrower_operations();
+            let mut old_rate = self.base_rate.read(asset);
+            if (old_rate != rate) {
+                self.base_rate.write(asset, rate);
+            }
+        }
+
         fn increase_vessel_coll(
             ref self: ContractState,
             asset: ContractAddress,
@@ -966,7 +977,7 @@ mod VesselManager {
                 .get_address(AddressesKey::borrower_operations);
 
             assert(
-                caller != vessel_manager_operations && caller != borrower_operations,
+                caller == vessel_manager_operations || caller == borrower_operations,
                 Errors::VesselManager__OnlyVesselManagerOperationsOrBorrowerOperations
             )
         }
@@ -1120,7 +1131,7 @@ mod VesselManager {
 
         fn minutes_passed_since_last_fee_op(self: @ContractState, asset: ContractAddress) -> u256 {
             let time_stamp: u256 = get_block_timestamp().into();
-            time_stamp - self.last_fee_operation_time.read(asset) / SECONDS_IN_ONE_MINUTE.into()
+            (time_stamp - self.last_fee_operation_time.read(asset)) / SECONDS_IN_ONE_MINUTE.into()
         }
 
         // TODO implement function
@@ -1181,20 +1192,21 @@ mod VesselManager {
             vessel.debt = vessel.debt + pending_debt_reward;
             self.vessels.write((borrower, asset), vessel);
 
-            self.update_vessel_reward_snapshots(asset, borrower);
+            self.update_vessel_reward_snapshots_internal(asset, borrower);
 
             // Transfer from DefaultPool to ActivePool
             self
                 .move_pending_vessel_rewards_to_active_pool(
                     asset, pending_debt_reward, pending_coll_reward
                 );
+
             self
                 .emit(
                     VesselUpdated {
                         asset,
                         borrower,
                         debt: vessel.debt,
-                        coll: vessel.debt,
+                        coll: vessel.coll,
                         stake: vessel.stake,
                         operation: VesselManagerOperation::ApplyPendingRewards
                     }

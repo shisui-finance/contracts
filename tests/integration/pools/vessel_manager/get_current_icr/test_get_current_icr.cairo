@@ -31,7 +31,8 @@ fn when_vessel_exists_current_icr_is_correctly_calculated() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 

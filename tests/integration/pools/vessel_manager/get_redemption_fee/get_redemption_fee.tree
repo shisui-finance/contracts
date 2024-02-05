@@ -1,0 +1,5 @@
+test_get_redemption_fee.cairo
+├── when base rate is defined
+│   └── it should return redemption fee
+└── when base rate is defined and redemption fee below asset draw
+    └── it should revert with Fee bigger than assert draw

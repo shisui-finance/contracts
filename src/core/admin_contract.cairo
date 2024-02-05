@@ -657,8 +657,9 @@ mod AdminContract {
                     CommunErrors::OnlyTimelock
                 );
                 return;
+            } else {
+                self.ownable.assert_only_owner();
             }
-            self.ownable.assert_only_owner();
         }
 
         #[inline(always)]

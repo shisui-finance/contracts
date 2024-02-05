@@ -240,6 +240,18 @@ mod integration {
             mod is_vessel_active {
                 mod test_is_vessel_active;
             }
+            mod apply_pending_rewards {
+                mod test_apply_pending_rewards;
+            }
+            mod get_redemption_fee {
+                mod test_get_redemption_fee;
+            }
+            mod get_redemption_fee_with_decay {
+                mod test_get_redemption_fee_with_decay;
+            }
+             mod get_redemption_rate {
+                mod test_get_redemption_rate;
+            }
         }
         mod borrower_operations {
             mod setup;

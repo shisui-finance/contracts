@@ -243,7 +243,8 @@ fn deploy_main_contracts() -> (
     IPragmaOracleMockDispatcher,
     IActivePoolDispatcher,
     IDefaultPoolDispatcher,
-    IERC20Dispatcher
+    IERC20Dispatcher,
+    ContractAddress
 ) {
     // address provider
     let address_provider_address: ContractAddress = deploy_address_provider();
@@ -322,6 +323,7 @@ fn deploy_main_contracts() -> (
     let stability_pool_address = deploy_stability_pool(address_provider_address);
 
     let timelock_address = contract_address_const::<'timelock'>();
+    let vessel_manager_operations_address = contract_address_const::<'vessel_manager_operations'>();
     address_provider.set_address(AddressesKey::timelock, timelock_address);
     address_provider.set_address(AddressesKey::stability_pool, stability_pool_address);
     address_provider.set_address(AddressesKey::active_pool, active_pool_address);
@@ -329,6 +331,8 @@ fn deploy_main_contracts() -> (
     address_provider.set_address(AddressesKey::admin_contract, admin_contract_address);
     address_provider.set_address(AddressesKey::borrower_operations, borrower_operations_address);
     address_provider.set_address(AddressesKey::debt_token, debt_token_address);
+    address_provider
+        .set_address(AddressesKey::vessel_manager_operations, vessel_manager_operations_address);
 
     let asset_address: ContractAddress = deploy_erc20_mock(18);
     let asset: IERC20Dispatcher = IERC20Dispatcher { contract_address: asset_address };
@@ -344,6 +348,7 @@ fn deploy_main_contracts() -> (
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     );
 }

@@ -31,7 +31,8 @@ fn when_vessel_is_not_active_return_false() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 
@@ -65,7 +66,7 @@ fn when_vessel_is_not_active_return_false() {
 }
 
 #[test]
-fn when_vessel_is_active_and_rewd_snapshot_greater_than_l_colls_return_false() {
+fn when_vessel_is_active_and_reward_snapshot_greater_than_l_colls_return_false() {
     let (
         borrower_operations,
         vessel_manager,
@@ -77,7 +78,8 @@ fn when_vessel_is_active_and_rewd_snapshot_greater_than_l_colls_return_false() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 
@@ -123,7 +125,7 @@ fn when_vessel_is_active_and_rewd_snapshot_greater_than_l_colls_return_false() {
 }
 
 #[test]
-fn when_vessel_is_active_and_rewd_snapshot_lower_than_l_colls_return_true() {
+fn when_vessel_is_active_and_reward_snapshot_lower_than_l_colls_return_true() {
     let (
         borrower_operations,
         vessel_manager,
@@ -135,7 +137,8 @@ fn when_vessel_is_active_and_rewd_snapshot_lower_than_l_colls_return_true() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 

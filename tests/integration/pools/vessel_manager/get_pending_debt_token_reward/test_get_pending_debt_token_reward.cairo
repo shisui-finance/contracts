@@ -31,7 +31,8 @@ fn when_vessel_exists_return_expected_pending_asset_reward() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 
@@ -78,7 +79,8 @@ fn when_vessel_is_not_active_should_return_0() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 
@@ -131,7 +133,8 @@ fn when_having_no_reward_per_unit_staked_should_return_0() {
         pragma_mock,
         active_pool,
         default_pool,
-        asset
+        asset,
+        vessel_manager_operations_address
     ) =
         deploy_main_contracts();
 
