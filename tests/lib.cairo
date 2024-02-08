@@ -249,8 +249,20 @@ mod integration {
             mod get_redemption_fee_with_decay {
                 mod test_get_redemption_fee_with_decay;
             }
-             mod get_redemption_rate {
+            mod get_redemption_rate {
                 mod test_get_redemption_rate;
+            }
+            mod get_borrowing_fee {
+                mod test_get_borrowing_fee;
+            }
+            mod get_borrowing_rate {
+                mod test_get_borrowing_rate;
+            }
+            mod check_recovery_mode {
+                mod test_check_recovery_mode;
+            }
+            mod get_tcr {
+                mod test_get_tcr;
             }
         }
         mod borrower_operations {

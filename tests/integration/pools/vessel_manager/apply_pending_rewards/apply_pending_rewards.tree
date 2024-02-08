@@ -1,6 +1,6 @@
 test_apply_pending_rewards.cairo
 ├── when caller is not borrower or vessel manager operation
-│   └── it should revert
+│   └── it should revert with message Only vessel mngr op or borrower
 ├── when caller is vessel manager operation and vessel has no pending rewards
 │   ├── it should not update vessel
 │   ├── it should not raised VesselSnapshotsUpdated event

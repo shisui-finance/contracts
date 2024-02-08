@@ -1,0 +1,5 @@
+test_get_tcr.cairo
+├── When asset exists as collateral 
+├── it should return tcr correctly calculated
+├── When asset is not existing as collateral
+└── it should return max value

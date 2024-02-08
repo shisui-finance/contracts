@@ -1,5 +1,4 @@
-use starknet::{ContractAddress, contract_address_const, get_caller_address};
-use core::integer::BoundedU256;
+use tests::tests_lib::{deploy_main_contracts};
 use super::super::setup::open_vessel;
 use shisui::core::{
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
@@ -12,15 +11,15 @@ use shisui::pools::{
     borrower_operations::{IBorrowerOperationsDispatcher, IBorrowerOperationsDispatcherTrait},
     vessel_manager::{IVesselManagerDispatcher, IVesselManagerDispatcherTrait},
 };
-use tests::tests_lib::{deploy_main_contracts};
 use snforge_std::{
-    start_prank, stop_prank, CheatTarget, spy_events, SpyOn, EventSpy, EventAssertions,
-    start_mock_call, PrintTrait
+    start_prank, stop_prank, store, map_entry_address, CheatTarget, spy_events, SpyOn, EventSpy,
+    EventAssertions, start_mock_call, PrintTrait
 };
+use starknet::{ContractAddress, contract_address_const, get_caller_address};
 
 
 #[test]
-fn when_vessel_exists_current_icr_is_correctly_calculated() {
+fn when_tcr_is_greater_or_equals_than_ccr_should_return_false() {
     let (
         borrower_operations,
         vessel_manager,
@@ -41,7 +40,7 @@ fn when_vessel_exists_current_icr_is_correctly_calculated() {
     let deposit_amount: u256 = 1_890000000000000000;
     let debt_token_amount: u256 = 2000_000000000000000000;
 
-    let caller = open_vessel(
+    let borrower = open_vessel(
         asset,
         price_feed,
         admin_contract,
@@ -56,17 +55,17 @@ fn when_vessel_exists_current_icr_is_correctly_calculated() {
         debt_token_amount
     );
 
-    let icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
-    assert(icr >= 1_500000000000000000 && icr <= 1_505000000000000000, 'Wrong icr');
+    start_mock_call(active_pool.contract_address, 'get_asset_balance', 0_u256);
+    start_mock_call(default_pool.contract_address, 'get_asset_balance', 0_u256);
+    start_mock_call(active_pool.contract_address, 'get_debt_token_balance', 0_u256);
+    start_mock_call(default_pool.contract_address, 'get_debt_token_balance', 0_u256);
 
-    // simulate price change
-    asset_price = 2000_000000000000000000; //price increase from 1600 to 2000
-    let new_icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
-    assert(new_icr >= 1_880000000000000000 && new_icr <= 1_881000000000000000, 'Wrong icr');
+    let is_recovery = vessel_manager.check_recovery_mode(asset.contract_address, asset_price);
+    assert(!is_recovery, 'Wrong recovery mode');
 }
 
 #[test]
-fn when_vessel_not_exists_it_should_return_max_value() {
+fn when_tcr_is_lower_than_ccr_should_return_true() {
     let (
         borrower_operations,
         vessel_manager,
@@ -86,7 +85,28 @@ fn when_vessel_not_exists_it_should_return_max_value() {
     let mut asset_price: u256 = 1600_000000000000000000;
     let deposit_amount: u256 = 1_890000000000000000;
     let debt_token_amount: u256 = 2000_000000000000000000;
-    let caller = contract_address_const::<'caller'>();
-    let icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
-    assert(icr == BoundedU256::max(), 'Wrong icr');
+
+    let borrower = open_vessel(
+        asset,
+        price_feed,
+        admin_contract,
+        active_pool,
+        default_pool,
+        debt_token,
+        borrower_operations,
+        vessel_manager,
+        pragma_mock,
+        asset_price,
+        deposit_amount,
+        debt_token_amount
+    );
+
+    start_mock_call(active_pool.contract_address, 'get_asset_balance', deposit_amount);
+    start_mock_call(default_pool.contract_address, 'get_asset_balance', 0_u256);
+    start_mock_call(active_pool.contract_address, 'get_debt_token_balance', debt_token_amount * 2);
+    start_mock_call(default_pool.contract_address, 'get_debt_token_balance', 0_u256);
+
+    let is_recovery = vessel_manager.check_recovery_mode(asset.contract_address, asset_price);
+    assert(is_recovery, 'Wrong recovery mode');
 }
+

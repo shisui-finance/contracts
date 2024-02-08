@@ -1,5 +1,4 @@
 use starknet::{ContractAddress, contract_address_const, get_caller_address};
-use core::integer::BoundedU256;
 use super::super::setup::open_vessel;
 use shisui::core::{
     address_provider::{IAddressProviderDispatcher, IAddressProviderDispatcherTrait, AddressesKey},
@@ -20,7 +19,7 @@ use snforge_std::{
 
 
 #[test]
-fn when_vessel_exists_current_icr_is_correctly_calculated() {
+fn when_borrowing_fee_is_defined_for_asset_should_return_fee_based_on_debt() {
     let (
         borrower_operations,
         vessel_manager,
@@ -37,36 +36,16 @@ fn when_vessel_exists_current_icr_is_correctly_calculated() {
     ) =
         deploy_main_contracts();
 
-    let mut asset_price: u256 = 1600_000000000000000000;
-    let deposit_amount: u256 = 1_890000000000000000;
     let debt_token_amount: u256 = 2000_000000000000000000;
 
-    let caller = open_vessel(
-        asset,
-        price_feed,
-        admin_contract,
-        active_pool,
-        default_pool,
-        debt_token,
-        borrower_operations,
-        vessel_manager,
-        pragma_mock,
-        asset_price,
-        deposit_amount,
-        debt_token_amount
-    );
+    admin_contract.add_new_collateral(asset.contract_address, 1000, 18);
 
-    let icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
-    assert(icr >= 1_500000000000000000 && icr <= 1_505000000000000000, 'Wrong icr');
-
-    // simulate price change
-    asset_price = 2000_000000000000000000; //price increase from 1600 to 2000
-    let new_icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
-    assert(new_icr >= 1_880000000000000000 && new_icr <= 1_881000000000000000, 'Wrong icr');
+    let fee = vessel_manager.get_borrowing_fee(asset.contract_address, debt_token_amount);
+    assert(fee == 1_0000000000000000000, 'Wrong fee');
 }
 
 #[test]
-fn when_vessel_not_exists_it_should_return_max_value() {
+fn when_borrowing_fee_is_not_defined_for_asset_should_return_0() {
     let (
         borrower_operations,
         vessel_manager,
@@ -83,10 +62,8 @@ fn when_vessel_not_exists_it_should_return_max_value() {
     ) =
         deploy_main_contracts();
 
-    let mut asset_price: u256 = 1600_000000000000000000;
-    let deposit_amount: u256 = 1_890000000000000000;
     let debt_token_amount: u256 = 2000_000000000000000000;
-    let caller = contract_address_const::<'caller'>();
-    let icr = vessel_manager.get_current_icr(asset.contract_address, caller, asset_price);
-    assert(icr == BoundedU256::max(), 'Wrong icr');
+
+    let fee = vessel_manager.get_borrowing_fee(asset.contract_address, debt_token_amount);
+    assert(fee == 0, 'Wrong fee');
 }

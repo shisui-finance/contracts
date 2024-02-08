@@ -1,2 +1,5 @@
 test_get_nominal_icr.cairo
-└── When vessel exist nominal icr is correctly returned
+├── When vessel exist
+├── it should return nominal icr correctly calculated
+├── When vessel not exist
+└── it should return max value

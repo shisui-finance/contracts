@@ -1,0 +1,5 @@
+test_get_borrowing_fee.cairo
+├── When borrowing fee is defined for asset
+│   └── it should return borrowing fee
+└── When borrowing fee is not defined for asset
+    └── it should return 0

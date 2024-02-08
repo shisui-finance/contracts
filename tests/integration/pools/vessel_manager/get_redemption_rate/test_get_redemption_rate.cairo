@@ -14,9 +14,7 @@ use shisui::pools::{
         VesselManagerOperation, Status
     },
 };
-use shisui::utils::{
-        constants::{DECIMAL_PRECISION, ONE}
-    };
+use shisui::utils::{constants::{DECIMAL_PRECISION, ONE}};
 use snforge_std::{
     start_prank, stop_prank, start_warp, store, map_entry_address, CheatTarget, spy_events, SpyOn,
     EventSpy, EventAssertions, start_mock_call, PrintTrait
@@ -42,12 +40,14 @@ fn when_redemption_fee_floor_plus_base_rate_is_below_decimal_precision_should_re
         deploy_main_contracts();
 
     admin_contract.add_new_collateral(asset.contract_address, 1000, 18);
-
+    start_prank(
+        CheatTarget::One(vessel_manager.contract_address), borrower_operations.contract_address
+    );
     vessel_manager.set_base_rate(asset.contract_address, 100000000000000000); // 1e17
+    stop_prank(CheatTarget::One(vessel_manager.contract_address));
 
     let rate = vessel_manager.get_redemption_rate(asset.contract_address);
-
-    assert(rate == 5000000000000000+100000000000000000, 'Wrong redemption rate');
+    assert(rate == 5000000000000000 + 100000000000000000, 'Wrong redemption rate');
 }
 
 #[test]
@@ -70,10 +70,13 @@ fn when_redemption_fee_floor_plus_base_rate_is_below_decimal_precision_should_re
 
     admin_contract.add_new_collateral(asset.contract_address, 1000, 18);
 
+    start_prank(
+        CheatTarget::One(vessel_manager.contract_address), borrower_operations.contract_address
+    );
     vessel_manager.set_base_rate(asset.contract_address, 1000000000000000000); // 1e18
+    stop_prank(CheatTarget::One(vessel_manager.contract_address));
 
-     let rate = vessel_manager.get_redemption_rate(asset.contract_address);
-
+    let rate = vessel_manager.get_redemption_rate(asset.contract_address);
     assert(rate == DECIMAL_PRECISION, 'Wrong redemption rate');
 }
 

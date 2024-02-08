@@ -47,7 +47,7 @@ fn when_caller_is_not_borrower_operation_it_should_revert() {
 }
 
 #[test]
-fn when_vessel_has_no_pending_reward_should_return() {
+fn when_vessel_has_no_pending_reward_it_should_not_update_vessel() {
     let (
         borrower_operations,
         vessel_manager,

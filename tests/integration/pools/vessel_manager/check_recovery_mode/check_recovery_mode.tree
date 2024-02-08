@@ -1,0 +1,5 @@
+test_check_recovery_mode.cairo
+├── When TCR is greater or equals than CCR
+│   └── it should return false
+└── When TCR is lower than CCR
+    ├── it should return true
